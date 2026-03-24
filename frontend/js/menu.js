@@ -34,9 +34,10 @@ async function fetchMenuProducts(categoryId = null) {
     try {
         showLoading();
         
-        const url = categoryId 
-            ? `${window.API_URL}/menu/category/${categoryId}`
-            : `${window.API_URL}/menu`;
+        let url = `${window.API_URL}/products`;
+        if (categoryId) {
+            url += `?category=${categoryId}`;
+        }
         
         const response = await fetch(url);
         const result = await response.json();
@@ -45,10 +46,10 @@ async function fetchMenuProducts(categoryId = null) {
             allProducts = result.data;
             
             // Debug: Log rating data
-            console.log('📊 Menu products with ratings:');
-            allProducts.slice(0, 5).forEach(p => {
-                console.log(`  - ${p.ten_mon}: avg_rating=${p.avg_rating}, total_reviews=${p.total_reviews}`);
-            });
+            console.log('📊 Menu products loaded:', allProducts.length);
+            if (allProducts.length > 0) {
+                console.log('Sample product:', allProducts[0]);
+            }
             
             applyFiltersAndSort();
             

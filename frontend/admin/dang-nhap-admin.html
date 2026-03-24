@@ -136,10 +136,11 @@
 
             if (loginSuccess === 'success') {
                 showAlert('Đăng nhập thành công! Đang chuyển hướng...', 'success');
-
+                
+                // Chuyển đến dashboard sau 500ms
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
-                }, 1000);
+                }, 500);
             }
         });
     </script>

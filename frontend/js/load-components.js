@@ -133,15 +133,6 @@ async function loadAllComponents() {
     }
     promises.push(loadComponent('floating-contact-container', 'components/floating-contact.html'));
     
-    // Load scroll to top button
-    let scrollToTopContainer = document.getElementById('scroll-to-top-container');
-    if (!scrollToTopContainer) {
-        scrollToTopContainer = document.createElement('div');
-        scrollToTopContainer.id = 'scroll-to-top-container';
-        document.body.appendChild(scrollToTopContainer);
-    }
-    promises.push(loadComponent('scroll-to-top-container', 'components/scroll-to-top.html'));
-    
     // Load page header if container exists
     if (document.getElementById('page-header-container')) {
         promises.push(loadComponent('page-header-container', 'components/page-header.html'));

@@ -7,19 +7,20 @@ async function checkAdminAuth() {
         });
 
         const result = await response.json();
+        
+        console.log('🔍 Check auth result:', result);
 
         if (!result.isAuthenticated) {
-            // Chưa đăng nhập, chuyển về trang đăng nhập
-            window.location.href = '/admin/dang-nhap-admin.html?error=unauthorized';
+            console.log('❌ Not authenticated');
             return false;
         }
 
         // Đã đăng nhập, trả về thông tin admin
-        return result.data;
+        console.log('✅ Authenticated:', result.data?.email || result.user?.email);
+        return result.data || result.user;
 
     } catch (error) {
         console.error('Lỗi kiểm tra xác thực:', error);
-        window.location.href = '/admin/dang-nhap-admin.html?error=auth_failed';
         return false;
     }
 }
@@ -40,7 +41,7 @@ async function logoutAdmin() {
 
         if (result.success) {
             // Chuyển về trang đăng nhập
-            window.location.href = '/admin/dang-nhap-admin.html?logout=success';
+            window.location.href = 'dang-nhap-admin.html?logout=success';
         } else {
             alert('Lỗi đăng xuất. Vui lòng thử lại!');
         }
@@ -55,14 +56,35 @@ async function logoutAdmin() {
 window.checkAdminAuth = checkAdminAuth;
 window.logoutAdmin = logoutAdmin;
 
-// Tự động kiểm tra khi load trang admin (trừ trang đăng nhập)
-document.addEventListener('DOMContentLoaded', function() {
-    const currentPath = window.location.pathname;
-    const isLoginPage = currentPath.includes('dang-nhap-admin.html');
-    const isAdminPage = currentPath.includes('/admin/');
+// KHÔNG tự động kiểm tra khi load trang - để admin-layout.js xử lý
+// Tránh xung đột và redirect loop
+// document.addEventListener('DOMContentLoaded', async function() {
+//     // Logic đã được chuyển sang admin-layout.js
+// });
+
+// Hàm cập nhật thông tin admin trên UI
+function updateAdminUI(user) {
+    // Cập nhật avatar
+    const avatarElements = document.querySelectorAll('#admin-avatar, #admin-avatar-header');
+    avatarElements.forEach(el => {
+        if (el && user.avatar) {
+            el.src = user.avatar;
+        }
+    });
     
-    // Chỉ check auth nếu là trang admin và KHÔNG phải trang đăng nhập
-    if (isAdminPage && !isLoginPage) {
-        checkAdminAuth();
+    // Cập nhật tên
+    const nameElements = document.querySelectorAll('#admin-name, #admin-name-header');
+    nameElements.forEach(el => {
+        if (el && user.name) {
+            el.textContent = user.name;
+        }
+    });
+    
+    // Cập nhật email
+    const emailElement = document.getElementById('admin-email');
+    if (emailElement && user.email) {
+        emailElement.textContent = user.email;
     }
-});
+    
+    console.log('✅ Admin UI updated');
+}

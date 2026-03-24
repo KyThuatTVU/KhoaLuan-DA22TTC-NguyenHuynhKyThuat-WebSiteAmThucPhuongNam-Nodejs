@@ -914,29 +914,284 @@
         </div>
     </section>
 
-    <!-- Stats -->
-    <section class="stats-section py-10 sm:py-12 md:py-16 bg-gradient-to-r from-orange-600 to-red-600 text-white">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
-                <div>
-                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">20+</p>
-                    <p class="text-sm sm:text-base md:text-xl">Năm kinh nghiệm</p>
+    <!-- Stats Section with 3D Effect -->
+    <section class="stats-section py-6 sm:py-8 relative overflow-hidden">
+        <!-- 3D Background Layers -->
+        <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/20"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+                <div class="stat-card-3d group">
+                    <div class="stat-inner">
+                        <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 text-white drop-shadow-lg">20+</p>
+                        <p class="text-sm sm:text-base text-white/90">Năm kinh nghiệm</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">100+</p>
-                    <p class="text-sm sm:text-base md:text-xl">Món ăn đa dạng</p>
+                <div class="stat-card-3d group">
+                    <div class="stat-inner">
+                        <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 text-white drop-shadow-lg">100+</p>
+                        <p class="text-sm sm:text-base text-white/90">Món ăn đa dạng</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">50K+</p>
-                    <p class="text-sm sm:text-base md:text-xl">Khách hàng hài lòng</p>
+                <div class="stat-card-3d group">
+                    <div class="stat-inner">
+                        <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 text-white drop-shadow-lg">50K+</p>
+                        <p class="text-sm sm:text-base text-white/90">Khách hàng hài lòng</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">30+</p>
-                    <p class="text-sm sm:text-base md:text-xl">Nhân viên chuyên nghiệp</p>
+                <div class="stat-card-3d group">
+                    <div class="stat-inner">
+                        <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 text-white drop-shadow-lg">30+</p>
+                        <p class="text-sm sm:text-base text-white/90">Nhân viên chuyên nghiệp</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <style>
+        .stat-card-3d {
+            perspective: 1000px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-inner {
+            padding: 1.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 16px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .stat-card-3d:hover .stat-inner {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+    </style>
+
+    <!-- Brand Philosophy Section with 3D Effect -->
+    <section class="philosophy-section py-12 sm:py-16 md:py-20 relative overflow-hidden" 
+             style="background: linear-gradient(135deg, #4a5f3a 0%, #5d7347 50%, #4a5f3a 100%);">
+        
+        <!-- 3D Background Layers -->
+        <div class="absolute inset-0 opacity-30" 
+             style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%), 
+                    radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2) 0%, transparent 50%);">
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Title with 3D Effect -->
+            <div class="text-center mb-10 sm:mb-12 md:mb-16">
+                <div class="inline-block pb-2 mb-4 relative">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-wider title-3d"
+                        style="font-family: 'Montserrat', sans-serif; letter-spacing: 0.1em;">
+                        TRIẾT LÝ THƯƠNG HIỆU
+                    </h2>
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-3d"></div>
+                </div>
+                <p class="text-white/90 text-base sm:text-lg mt-4 max-w-3xl mx-auto leading-relaxed drop-shadow-lg">
+                    Madame Lam là nơi mà ẩm thực và văn hóa giao thoa, là không gian mà bạn luôn cảm thấy ấm áp, thân thuộc như đang trở về chính ngôi nhà của của mình. Madame Lam không chỉ phục vụ món ăn, mà là những ký ức, những giá trị tinh thần mà bạn sẽ mang theo mỗi lần rời đi.
+                </p>
+            </div>
+
+            <!-- Philosophy Grid with 3D Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 max-w-7xl mx-auto">
+                
+                <!-- Item 1 -->
+                <div class="philosophy-card-3d">
+                    <div class="card-3d-inner">
+                        <div class="aspect-[4/3] overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+                            <img src="images/tl5.jpg" 
+                                 alt="Ẩm Thực Truyền Thống Việt Nam" 
+                                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='images/g1.jpg'">
+                        </div>
+                        <div class="p-5 text-center bg-gradient-to-b from-white to-gray-50">
+                            <h3 class="text-lg sm:text-xl font-bold mb-2 text-gray-800 drop-shadow-sm">Ẩm Thực Truyền Thống Việt Nam</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Ẩm thực Phương Nam mang đến món ăn đặc sắc, kết hợp gia vị và sáng tạo, nâng đầu bếp.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="philosophy-card-3d">
+                    <div class="card-3d-inner">
+                        <div class="aspect-[4/3] overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+                            <img src="images/tl1.jpg" 
+                                 alt="Gợi Nhớ Tuổi Thơ" 
+                                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='images/g2.jpg'">
+                        </div>
+                        <div class="p-5 text-center bg-gradient-to-b from-white to-gray-50">
+                            <h3 class="text-lg sm:text-xl font-bold mb-2 text-gray-800 drop-shadow-sm">Gợi Nhớ Tuổi Thơ</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Mỗi món ăn là ký ức tuổi thơ, đầy cảm xúc và sáng tạo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="philosophy-card-3d">
+                    <div class="card-3d-inner">
+                        <div class="aspect-[4/3] overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+                            <img src="images/tl2.jpg" 
+                                 alt="Gắn Liền Với Văn Hóa" 
+                                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='images/g3.jpg'">
+                        </div>
+                        <div class="p-5 text-center bg-gradient-to-b from-white to-gray-50">
+                            <h3 class="text-lg sm:text-xl font-bold mb-2 text-gray-800 drop-shadow-sm">Gắn Liền Với Văn Hóa</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Madame Lam là đại sứ văn hóa Việt, với mỗi món ăn đặc trưng và miền vùng.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="philosophy-card-3d">
+                    <div class="card-3d-inner">
+                        <div class="aspect-[4/3] overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+                            <img src="images/tl3.jpg" 
+                                 alt="Nguồn Liệu Tươi Ngon, Sạch và Chất Lượng" 
+                                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='images/g4.jpg'">
+                        </div>
+                        <div class="p-5 text-center bg-gradient-to-b from-white to-gray-50">
+                            <h3 class="text-lg sm:text-xl font-bold mb-2 text-gray-800 drop-shadow-sm">Nguồn Liệu Tươi Ngon, Sạch và Chất Lượng</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Chọn nguồn liệu tươi ngon, theo triết lý "mùa nào thức ấy".
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="philosophy-card-3d">
+                    <div class="card-3d-inner">
+                        <div class="aspect-[4/3] overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+                            <img src="images/tl4.jpg" 
+                                 alt="Dịch Vụ – Con Người" 
+                                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='images/g5.jpg'">
+                        </div>
+                        <div class="p-5 text-center bg-gradient-to-b from-white to-gray-50">
+                            <h3 class="text-lg sm:text-xl font-bold mb-2 text-gray-800 drop-shadow-sm">Dịch Vụ – Con Người</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Chăm sóc khách hàng như người thân, tạo không gian ấm áp, gần gũi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* 3D Title Effect */
+        .title-3d {
+            text-shadow: 
+                0 1px 0 #7a9b6a,
+                0 2px 0 #6d8e5f,
+                0 3px 0 #608154,
+                0 4px 0 #537449,
+                0 5px 0 #46673e,
+                0 6px 10px rgba(0, 0, 0, 0.4),
+                0 10px 20px rgba(0, 0, 0, 0.3);
+            transform: translateZ(20px);
+        }
+        
+        .shadow-3d {
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 3D Card Effect */
+        .philosophy-card-3d {
+            perspective: 1500px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-3d-inner {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 1px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+        
+        .card-3d-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 20;
+        }
+        
+        .philosophy-card-3d:hover .card-3d-inner {
+            transform: translateY(-15px) rotateX(8deg) rotateY(2deg) scale(1.02);
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 5px 20px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        .philosophy-card-3d:hover .card-3d-inner::before {
+            opacity: 1;
+        }
+        
+        /* Stagger animation on scroll */
+        .philosophy-card-3d:nth-child(1) { animation-delay: 0.1s; }
+        .philosophy-card-3d:nth-child(2) { animation-delay: 0.2s; }
+        .philosophy-card-3d:nth-child(3) { animation-delay: 0.3s; }
+        .philosophy-card-3d:nth-child(4) { animation-delay: 0.4s; }
+        .philosophy-card-3d:nth-child(5) { animation-delay: 0.5s; }
+        
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .title-3d {
+                text-shadow: 
+                    0 1px 0 #7a9b6a,
+                    0 2px 0 #6d8e5f,
+                    0 3px 5px rgba(0, 0, 0, 0.4);
+            }
+            
+            .philosophy-card-3d:hover .card-3d-inner {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+    </style>
 
     <!-- Footer Container -->
     <div id="footer-container"></div>

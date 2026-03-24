@@ -2,14 +2,21 @@
 const API_URL = 'http://localhost:3000/api';
 
 // Load admin info from session
-async function loadAdminInfo() {
+async function loadAdminInfo(retryCount = 0) {
     try {
+        console.log(`🔍 Checking admin session (attempt ${retryCount + 1})...`);
+        
         const response = await fetch(`${API_URL}/admin-auth/check-session`, {
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
         });
 
         const result = await response.json();
+        
+        console.log('📦 Session check result:', result);
 
         if (result.isAuthenticated && result.data) {
             const admin = result.data;
@@ -32,13 +39,27 @@ async function loadAdminInfo() {
 
             return { name: adminName, avatar: adminAvatar, email: adminEmail };
         } else {
-            // Không có session, chuyển về trang đăng nhập
-            console.warn('⚠️ No admin session found');
+            // Retry nếu chưa đến giới hạn (tối đa 3 lần)
+            if (retryCount < 2) {
+                console.log(`⏳ Session not ready, retrying in 500ms...`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return loadAdminInfo(retryCount + 1);
+            }
+            
+            // Không có session sau khi retry, chuyển về trang đăng nhập
+            console.warn('⚠️ No admin session found after retries');
             window.location.href = 'dang-nhap-admin.html?error=unauthorized';
             return null;
         }
     } catch (error) {
         console.error('❌ Error loading admin info:', error);
+        
+        // Retry nếu có lỗi và chưa đến giới hạn
+        if (retryCount < 2) {
+            console.log(`⏳ Error occurred, retrying in 500ms...`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return loadAdminInfo(retryCount + 1);
+        }
 
         // Fallback to default
         const defaultName = 'Admin';
@@ -207,12 +228,12 @@ function setActiveNavLink() {
 function initAdminLayout() {
     console.log('🔧 Initializing admin layout...');
 
-    // Wait a bit for DOM to be fully ready
+    // Wait for session to be ready (tăng delay lên 500ms)
     setTimeout(async () => {
         console.log('📋 Loading admin info...');
         await loadAdminInfo();
         setActiveNavLink();
-    }, 100);
+    }, 500);
 }
 
 // Auto-initialize when DOM is ready

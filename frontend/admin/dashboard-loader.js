@@ -1,18 +1,29 @@
 // Dashboard data loader with proper authentication and error handling
 
 // Load dashboard data with authentication
-async function loadDashboardDataWithAuth() {
+async function loadDashboardDataWithAuth(retryCount = 0) {
     try {
         const API_URL = 'http://localhost:3000/api';
 
         // First check if user is authenticated
-        console.log('1. Checking authentication...');
+        console.log(`1. Checking authentication (attempt ${retryCount + 1})...`);
         const authResponse = await fetch('http://localhost:3000/api/admin-auth/check-session', {
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
         });
 
         if (!authResponse.ok) {
             console.error('Authentication check failed with status:', authResponse.status);
+            
+            // Retry nếu chưa đến giới hạn
+            if (retryCount < 2) {
+                console.log(`⏳ Auth check failed, retrying in 500ms...`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return loadDashboardDataWithAuth(retryCount + 1);
+            }
+            
             window.location.href = '/admin/dang-nhap-admin.html?error=session_expired';
             return;
         }
@@ -21,7 +32,14 @@ async function loadDashboardDataWithAuth() {
         console.log('2. Auth result:', authResult);
 
         if (!authResult.isAuthenticated) {
-            console.error('Not authenticated, redirecting to login...');
+            // Retry nếu chưa đến giới hạn
+            if (retryCount < 2) {
+                console.log(`⏳ Not authenticated yet, retrying in 500ms...`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return loadDashboardDataWithAuth(retryCount + 1);
+            }
+            
+            console.error('Not authenticated after retries, redirecting to login...');
             window.location.href = '/admin/dang-nhap-admin.html?error=session_expired';
             return;
         }
@@ -93,6 +111,14 @@ async function loadDashboardDataWithAuth() {
         }
     } catch (error) {
         console.error('❌ Error loading dashboard:', error);
+        
+        // Retry nếu có lỗi và chưa đến giới hạn
+        if (retryCount < 2) {
+            console.log(`⏳ Error occurred, retrying in 500ms...`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return loadDashboardDataWithAuth(retryCount + 1);
+        }
+        
         // Show user-friendly error
         const errorMsg = 'Không thể tải dữ liệu dashboard. Vui lòng thử đăng nhập lại!';
 
@@ -303,11 +329,11 @@ if (typeof loadDashboardData !== 'undefined') {
 // Auto-load on page ready
 document.addEventListener('DOMContentLoaded', function () {
     console.log('Dashboard loader script initialized');
-    // Call after a short delay to ensure all other scripts are loaded
+    // Tăng delay lên 800ms để đảm bảo session đã sẵn sàng
     setTimeout(() => {
         if (document.getElementById('revenue-today')) {
             console.log('Loading dashboard data...');
             loadDashboardDataWithAuth();
         }
-    }, 500);
+    }, 800);
 });

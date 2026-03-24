@@ -30,16 +30,32 @@
                 <p class="text-gray-600 text-sm sm:text-base">Quản lý thông tin cá nhân và cài đặt tài khoản</p>
             </div>
 
-            <div class="grid lg:grid-cols-4 gap-6">
-                <!-- Mobile Menu Toggle -->
-                <button id="mobile-menu-toggle" class="lg:hidden w-full bg-white rounded-lg shadow-md p-4 flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-bars text-orange-600 text-xl"></i>
-                        <span class="font-semibold text-gray-800">Menu Tài Khoản</span>
-                    </div>
-                    <i class="fas fa-chevron-down text-gray-600 transition-transform" id="menu-chevron"></i>
-                </button>
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-toggle" class="w-full bg-white rounded-lg shadow-md p-4 flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-bars text-orange-600 text-xl"></i>
+                    <span class="font-semibold text-gray-800">Menu Tài Khoản</span>
+                </div>
+                <i class="fas fa-chevron-down text-gray-600 transition-transform" id="menu-chevron"></i>
+            </button>
+            
+            <style>
+                /* Hide mobile menu toggle on desktop */
+                @media (min-width: 1024px) {
+                    #mobile-menu-toggle {
+                        display: none !important;
+                    }
+                }
+                
+                /* Show mobile menu toggle on mobile */
+                @media (max-width: 1023px) {
+                    #mobile-menu-toggle {
+                        display: flex !important;
+                    }
+                }
+            </style>
 
+            <div class="grid lg:grid-cols-4 gap-6">
                 <!-- Sidebar -->
                 <div class="lg:col-span-1">
                     <div id="sidebar-menu" class="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:sticky lg:top-24 hidden lg:block">
