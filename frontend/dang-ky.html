@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng Ký - Nhà hàng Phương Nam Vĩnh Long</title>
+  <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/christmas-theme.css">
+  <style>
+    #avatar-preview {
+      position: relative !important;
+      width: 8rem !important;
+      height: 8rem !important;
+      border: 4px solid #fed7aa !important;
+      border-radius: 9999px !important;
+      overflow: hidden !important;
+      background: #f3f4f6 !important;
+      transition: all 0.3s ease;
+      display: block !important;
+    }
+
+    #avatar-preview:hover {
+      transform: scale(1.05);
+      border-color: #ea580c;
+    }
+
+    #avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9999px;
+      display: block;
+    }
+
+    .input-error {
+      border-color: #ef4444 !important;
+    }
+
+    .input-success {
+      border-color: #10b981 !important;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    label[for="avatar-input"] {
+      transition: all 0.3s ease;
+    }
+
+    label[for="avatar-input"]:hover {
+      transform: scale(1.1);
+    }
+
+  
+    /* --- END FIX --- */
+  </style>
+</head>
+
+<body class="christmas-bg">
+  <div class="christmas-content" style="align-items: flex-start; padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="max-w-md w-full">
+      <div class="text-center mb-6 sm:mb-8">
+        <a href="index.html" class="inline-flex items-center space-x-2 sm:space-x-3">
+          <img src="images/Green Simple Clean Vegan Food Logo.png" alt="Phương Nam Logo"
+            class="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-orange-600 shadow-md object-cover" />
+          <div class="text-left">
+            <h1 class="font-dancing text-2xl sm:text-3xl font-bold text-gray-800">
+              Phương Nam
+            </h1>
+            <p class="text-xs sm:text-sm text-gray-600">Vĩnh Long</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- FIX: Thêm id="registration-card" để áp dụng CSS sửa lỗi -->
+      <div id="registration-card" class="christmas-card bg-white rounded-2xl shadow-xl p-5 sm:p-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center mb-2">Đăng Ký</h2>
+        <p class="text-gray-600 text-center mb-6 sm:mb-8 text-sm sm:text-base">Tạo tài khoản mới</p>
+
+        <!-- Avatar Upload - MOVED OUTSIDE FORM -->
+        <div class="flex flex-col items-center mb-4">
+          <div class="relative">
+            <div id="avatar-preview" class="!w-20 !h-20 sm:!w-32 sm:!h-32">
+              <i
+                class="fas fa-user text-3xl sm:text-5xl text-gray-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+            </div>
+            <label for="avatar-input"
+              class="absolute bottom-0 right-0 bg-orange-600 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-orange-700 transition shadow-lg">
+              <i class="fas fa-camera text-sm sm:text-base"></i>
+            </label>
+            <input type="file" id="avatar-input" accept="image/*" class="hidden" />
+          </div>
+          <p class="text-xs sm:text-sm text-gray-500 mt-2">Ảnh đại diện (tùy chọn)</p>
+          <p class="text-xs text-gray-400">Tối đa 5MB</p>
+          <p id="upload-status" class="text-xs sm:text-sm font-medium mt-2 hidden"></p>
+        </div>
+
+        <form id="register-form" class="space-y-3 sm:space-y-4">
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Họ và tên <span class="text-red-500">*</span></label>
+            <input type="text" id="ten_nguoi_dung" required
+              class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 text-base"
+              placeholder="Nguyễn Văn A" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Email <span class="text-red-500">*</span></label>
+            <input type="email" id="email" required
+              class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 text-base"
+              placeholder="email@example.com" />
+            <span id="email-error" class="error-message hidden"></span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Số điện thoại</label>
+            <input type="tel" id="so_dien_thoai" pattern="[0-9]{10}"
+              class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 text-base"
+              placeholder="0123456789" maxlength="10" />
+            <p class="text-xs text-gray-500 mt-1">Bắt đầu bằng 03, 05, 07, 08, 09 (10 số)</p>
+            <span id="so_dien_thoai-error" class="error-message hidden"></span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Địa chỉ</label>
+            <input type="text" id="dia_chi"
+              class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 text-base"
+              placeholder="123 Đường ABC, Quận 1, TP.HCM" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Giới tính</label>
+            <select id="gioi_tinh"
+              class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 text-base">
+              <option value="khac">Khác</option>
+              <option value="nam">Nam</option>
+              <option value="nu">Nữ</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Mật khẩu <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" id="mat_khau" required minlength="6"
+                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 pr-12 text-base"
+                placeholder="Tối thiểu 6 ký tự, có chữ và số" />
+              <button type="button" onclick="togglePassword('mat_khau')"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-eye" id="mat_khau-icon"></i>
+              </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ và số</p>
+            <span id="mat_khau-error" class="error-message hidden"></span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1.5 sm:mb-2">Xác nhận mật khẩu <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input type="password" id="xac_nhan_mat_khau" required minlength="6"
+                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-orange-600 pr-12 text-base"
+                placeholder="Nhập lại mật khẩu" />
+              <button type="button" onclick="togglePassword('xac_nhan_mat_khau')"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-eye" id="xac_nhan_mat_khau-icon"></i>
+              </button>
+            </div>
+            <span id="xac_nhan_mat_khau-error" class="error-message hidden"></span>
+          </div>
+
+          <label class="flex items-start">
+            <input type="checkbox" required class="w-4 h-4 text-orange-600 rounded mt-1" />
+            <span class="ml-2 text-sm text-gray-600">
+              Tôi đồng ý với
+              <a href="#" class="text-orange-600 hover:text-orange-700">Điều khoản dịch vụ</a>
+              và
+              <a href="#" class="text-orange-600 hover:text-orange-700">Chính sách bảo mật</a>
+            </span>
+          </label>
+
+          <button type="submit"
+            class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-2.5 sm:py-3 rounded-lg font-medium text-base sm:text-lg hover:from-orange-700 hover:to-red-700 transition shadow-lg">
+            <i class="fas fa-user-plus mr-2"></i> Đăng ký
+          </button>
+
+          <!-- Divider -->
+          <div class="relative my-4 sm:my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-white text-gray-500">Hoặc đăng ký với</span>
+            </div>
+          </div>
+
+          <!-- Google Register Button -->
+          <button type="button" id="google-register-btn"
+            class="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-2.5 sm:py-3 rounded-lg font-medium text-base hover:bg-gray-50 hover:border-gray-400 transition shadow-sm">
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span>Đăng ký với Google</span>
+          </button>
+
+          <p class="text-center text-gray-600 mt-4 sm:mt-6 text-sm sm:text-base">
+            Đã có tài khoản?
+            <a href="dang-nhap.html" class="text-orange-600 hover:text-orange-700 font-medium">Đăng nhập</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/loading.js"></script>
+  <script src="js/load-components.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Đảm bảo DOM đã tải xong trước khi gắn sự kiện
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📄 DOM loaded, initializing form handlers...');
+
+      // Kiểm tra form có tồn tại không
+      const registerForm = document.getElementById("register-form");
+      if (!registerForm) {
+        console.error('❌ Register form not found!');
+        return;
+      }
+
+      console.log('✅ Register form found, attaching event listeners...');
+
+      let uploadedAvatarPath = sessionStorage.getItem('tempAvatarPath') || null;
+      let isSubmitting = false;
+      let isUploading = false;
+
+      // Restore preview from sessionStorage on page load
+      if (uploadedAvatarPath && sessionStorage.getItem('tempAvatarPreview')) {
+        const previewDiv = document.getElementById('avatar-preview');
+        if (previewDiv) {
+          previewDiv.innerHTML = sessionStorage.getItem('tempAvatarPreview');
+          const uploadStatus = document.getElementById('upload-status');
+          if (uploadStatus) {
+            uploadStatus.textContent = '✓ Ảnh đã tải (khôi phục)';
+            uploadStatus.className = 'text-sm font-medium mt-2 text-green-600';
+            uploadStatus.classList.remove('hidden');
+          }
+          console.log('🔄 Restored avatar preview from session');
+        }
+      }      // Prevent page unload during upload
+      window.addEventListener('beforeunload', function (e) {
+        if (isUploading) {
+          e.preventDefault();
+          e.returnValue = 'Upload đang diễn ra, bạn có chắc muốn rời khỏi trang?';
+          return e.returnValue;
+        }
+      });
+
+      // Track navigation attempts
+      let navigationAttempts = 0;
+      const originalPushState = history.pushState;
+      const originalReplaceState = history.replaceState;
+
+      history.pushState = function () {
+        console.log('🔄 history.pushState called with:', arguments);
+        navigationAttempts++;
+        return originalPushState.apply(history, arguments);
+      };
+
+      history.replaceState = function () {
+        console.log('🔄 history.replaceState called with:', arguments);
+        navigationAttempts++;
+        return originalReplaceState.apply(history, arguments);
+      };
+
+      // Toggle password visibility
+      function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = document.getElementById(fieldId + '-icon');
+
+        if (field && icon) {
+          if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+          } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+          }
+        }
+      }
+
+      // Show/hide error message
+      function showFieldError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const errorSpan = document.getElementById(fieldId + '-error');
+
+        if (field) field.classList.add('input-error');
+        if (field) field.classList.remove('input-success');
+
+        if (errorSpan) {
+          errorSpan.textContent = message;
+          errorSpan.classList.remove('hidden');
+        }
+      }
+
+      function clearFieldError(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorSpan = document.getElementById(fieldId + '-error');
+
+        if (field) field.classList.remove('input-error');
+        if (field) field.classList.add('input-success');
+
+        if (errorSpan) {
+          errorSpan.classList.add('hidden');
+        }
+      }
+
+      function resetFieldState(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorSpan = document.getElementById(fieldId + '-error');
+
+        if (field) field.classList.remove('input-error', 'input-success');
+
+        if (errorSpan) {
+          errorSpan.classList.add('hidden');
+        }
+      }
+
+      // Real-time validation
+      const emailField = document.getElementById('email');
+      if (emailField) {
+        emailField.addEventListener('blur', function () {
+          const email = this.value.trim();
+          if (email && !validateEmail(email)) {
+            showFieldError('email', 'Email không hợp lệ');
+          } else if (email) {
+            clearFieldError('email');
+          }
+        });
+      }
+
+      const phoneField = document.getElementById('so_dien_thoai');
+      if (phoneField) {
+        phoneField.addEventListener('blur', function () {
+          const phone = this.value.trim();
+          if (phone && !validatePhone(phone)) {
+            showFieldError('so_dien_thoai', 'Số điện thoại phải có 10 số và bắt đầu bằng 03, 05, 07, 08, 09');
+          } else if (phone) {
+            clearFieldError('so_dien_thoai');
+          }
+        });
+      }
+
+      const passwordField = document.getElementById('mat_khau');
+      if (passwordField) {
+        passwordField.addEventListener('blur', function () {
+          const password = this.value;
+          if (password) {
+            const validation = validatePassword(password);
+            if (!validation.valid) {
+              showFieldError('mat_khau', validation.message);
+            } else {
+              clearFieldError('mat_khau');
+            }
+          }
+        });
+      }
+
+      const confirmPasswordField = document.getElementById('xac_nhan_mat_khau');
+      if (confirmPasswordField) {
+        confirmPasswordField.addEventListener('blur', function () {
+          const password = document.getElementById('mat_khau').value;
+          const confirmPassword = this.value;
+
+          if (confirmPassword) {
+            if (password !== confirmPassword) {
+              showFieldError('xac_nhan_mat_khau', 'Mật khẩu xác nhận không khớp');
+            } else {
+              clearFieldError('xac_nhan_mat_khau');
+            }
+          }
+        });
+      }
+
+      // Clear errors on input
+      ['email', 'so_dien_thoai', 'mat_khau', 'xac_nhan_mat_khau'].forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', function () {
+            resetFieldState(fieldId);
+          });
+        }
+      });
+
+      // Detect page reload
+      let uploadInProgress = false;
+      window.addEventListener('beforeunload', function (e) {
+        if (uploadInProgress) {
+          console.error('🚨 PAGE IS RELOADING DURING UPLOAD!');
+          e.preventDefault();
+          e.returnValue = 'Upload đang diễn ra, bạn có chắc muốn rời khỏi trang?';
+          return e.returnValue;
+        }
+      });
+
+      // Watch for unexpected changes to avatar-preview
+      const previewDiv = document.getElementById('avatar-preview');
+      if (previewDiv) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && previewDiv.querySelector('img')) {
+              console.log('🔔 avatar-preview content changed:', mutation);
+            }
+          });
+        });
+        observer.observe(previewDiv, { childList: true, subtree: true });
+      }
+
+      // Xử lý chọn ảnh
+      const avatarInput = document.getElementById("avatar-input");
+      if (avatarInput) {
+        avatarInput.addEventListener("change", async function (e) {
+          console.log('🎯 Avatar input change event triggered');
+          console.log('� Currentl URL before upload:', window.location.href);
+
+          const file = e.target.files[0];
+          if (!file) {
+            console.log('⚠️ No file selected');
+            return;
+          }
+
+          console.log('📁 File selected:', file.name, file.size, file.type);
+
+          // Validate file type
+          if (!file.type.startsWith('image/')) {
+            showNotification('Vui lòng chọn file ảnh', 'error');
+            this.value = '';
+            return;
+          }
+
+          // Validate file size (5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            showNotification('Kích thước ảnh không được vượt quá 5MB', 'error');
+            this.value = '';
+            return;
+          }
+
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const previewDiv = document.getElementById('avatar-preview');
+            if (previewDiv) {
+              previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover rounded-full">`;
+              console.log('👁️ Preview updated with image');
+            }
+          };
+          reader.readAsDataURL(file);
+
+          // Upload to server
+          isUploading = true;
+          uploadInProgress = true;
+          console.log('🚀 Starting upload...');
+          const uploadStatus = document.getElementById('upload-status');
+          if (uploadStatus) {
+            uploadStatus.textContent = 'Đang tải ảnh lên...';
+            uploadStatus.className = 'text-sm font-medium mt-2 text-blue-600';
+            uploadStatus.classList.remove('hidden');
+          }
+
+          const formData = new FormData();
+          formData.append('avatar', file);
+
+          try {
+            console.log('📤 Sending request to server...');
+            console.log('📋 FormData contents:', Array.from(formData.entries()));
+
+            const response = await fetch('http://localhost:3000/api/auth/upload-avatar', {
+              method: 'POST',
+              body: formData
+            });
+
+            console.log('📥 Response received:', response.status, response.statusText);
+            console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('📦 Result:', result);
+
+            if (result.success) {
+              uploadedAvatarPath = result.data.anh_dai_dien;
+
+              // Store in sessionStorage to survive accidental page refresh
+              sessionStorage.setItem('tempAvatarPath', uploadedAvatarPath);
+              const previewDiv = document.getElementById('avatar-preview');
+              if (previewDiv) {
+                sessionStorage.setItem('tempAvatarPreview', previewDiv.innerHTML);
+              }
+
+              if (uploadStatus) {
+                uploadStatus.textContent = '✓ Tải ảnh thành công';
+                uploadStatus.className = 'text-sm font-medium mt-2 text-green-600';
+              }
+              showNotification('Tải ảnh thành công!', 'success');
+              console.log('✅ Upload successful:', uploadedAvatarPath);
+              console.log('🖼️ Preview should still be visible');
+
+              // Verify preview still exists
+              if (previewDiv) {
+                const hasImg = previewDiv.querySelector('img');
+                console.log('🔍 Preview check - Has image:', !!hasImg);
+              }
+
+              // KHÔNG reset preview khi thành công - giữ nguyên ảnh đã chọn
+            } else {
+              throw new Error(result.message || 'Upload thất bại');
+            }
+          } catch (error) {
+            console.error('❌ Lỗi upload:', error);
+            const uploadStatus = document.getElementById('upload-status');
+            if (uploadStatus) {
+              uploadStatus.textContent = '✗ Tải ảnh thất bại';
+              uploadStatus.className = 'text-sm font-medium mt-2 text-red-600';
+            }
+            showNotification('Lỗi tải ảnh: ' + error.message, 'error');
+            uploadedAvatarPath = null;
+
+            // Reset preview only on error
+            const previewDiv = document.getElementById('avatar-preview');
+            if (previewDiv) {
+              previewDiv.innerHTML = '<i class="fas fa-user text-5xl text-gray-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>';
+              console.log('🔄 Preview reset due to error');
+            }
+          } finally {
+            isUploading = false;
+            uploadInProgress = false;
+            console.log('🏁 Upload process finished');
+            console.log('📍 Final URL:', window.location.href);
+
+            // Final check
+            setTimeout(() => {
+              const previewDiv = document.getElementById('avatar-preview');
+              if (previewDiv) {
+                const hasImg = previewDiv.querySelector('img');
+                console.log('⏰ 1 second later - Preview still has image:', !!hasImg);
+              }
+            }, 1000);
+          }
+        });
+      }
+
+      // Validation functions
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+
+      function validatePhone(phone) {
+        if (!phone) return true; // Phone is optional
+        const re = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+        return re.test(phone);
+      }
+
+      function validatePassword(password) {
+        if (password.length < 6) {
+          return { valid: false, message: 'Mật khẩu phải có ít nhất 6 ký tự' };
+        }
+        if (!/[A-Za-z]/.test(password)) {
+          return { valid: false, message: 'Mật khẩu phải chứa ít nhất 1 chữ cái' };
+        }
+        if (!/[0-9]/.test(password)) {
+          return { valid: false, message: 'Mật khẩu phải chứa ít nhất 1 chữ số' };
+        }
+        return { valid: true };
+      }
+      registerForm.addEventListener("submit", async function(e) {
+        console.log('🎯 Form submit event triggered');
+        e.preventDefault(); // Ngăn form submit mặc định
+        e.stopPropagation(); // Ngăn sự kiện lan truyền
+
+        console.log('✅ Form submission prevented');
+
+        if (isSubmitting) {
+          console.log('⚠️ Already submitting, ignoring...');
+          return false;
+        }
+
+        if (isUploading) {
+          showNotification('Vui lòng đợi ảnh tải xong', 'error');
+          return false;
+        }
+
+        const submitBtn = registerForm.querySelector('button[type="submit"]');
+        const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+
+        // Get form data
+        const ten_nguoi_dung = document.getElementById("ten_nguoi_dung").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const so_dien_thoai = document.getElementById("so_dien_thoai").value.trim();
+        const dia_chi = document.getElementById("dia_chi").value.trim();
+        const gioi_tinh = document.getElementById("gioi_tinh").value;
+        const mat_khau = document.getElementById("mat_khau").value;
+        const xac_nhan_mat_khau = document.getElementById("xac_nhan_mat_khau").value;
+
+        // Client-side validation
+        if (!ten_nguoi_dung || ten_nguoi_dung.length < 2) {
+          showNotification('Tên phải có ít nhất 2 ký tự', 'error');
+          return false;
+        }
+
+        if (!validateEmail(email)) {
+          showNotification('Email không hợp lệ', 'error');
+          return false;
+        }
+
+        if (so_dien_thoai && !validatePhone(so_dien_thoai)) {
+          showNotification('Số điện thoại không hợp lệ (phải có 10 số và bắt đầu bằng 03, 05, 07, 08, 09)', 'error');
+          return false;
+        }
+
+        const passwordValidation = validatePassword(mat_khau);
+        if (!passwordValidation.valid) {
+          showNotification(passwordValidation.message, 'error');
+          return false;
+        }
+
+        if (mat_khau !== xac_nhan_mat_khau) {
+          showNotification('Mật khẩu xác nhận không khớp', 'error');
+          return false;
+        }
+
+        isSubmitting = true;
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...`;
+        }
+
+        const formData = {
+          ten_nguoi_dung,
+          email,
+          so_dien_thoai: so_dien_thoai || null,
+          dia_chi: dia_chi || null,
+          gioi_tinh,
+          mat_khau,
+          anh_dai_dien: uploadedAvatarPath,
+        };
+
+        try {
+          console.log('📤 Sending registration request...');
+          const response = await fetch("http://localhost:3000/api/auth/send-verification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+
+          console.log('📥 Registration response received:', response.status);
+          const result = await response.json();
+          console.log('📦 Registration result:', result);
+
+          if (result.success) {
+            // Clear temporary avatar storage after successful registration
+            sessionStorage.removeItem('tempAvatarPath');
+            sessionStorage.removeItem('tempAvatarPreview');
+
+            showNotification('Mã xác thực đã được gửi đến email của bạn!', 'success');
+            console.log('✅ Registration successful, redirecting...');
+
+            setTimeout(() => {
+              window.location.href = `xac-thuc-email.html?email=${encodeURIComponent(formData.email)}`;
+            }, 1500);
+          } else {
+            console.error('❌ Registration failed:', result.message);
+            showNotification(result.message || 'Đăng ký thất bại', 'error');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalBtnHTML;
+            }
+            isSubmitting = false;
+          }
+        } catch (error) {
+          console.error("❌ Registration error:", error);
+          showNotification('Không thể kết nối đến server. Vui lòng thử lại sau.', 'error');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+          }
+          isSubmitting = false;
+        }
+
+        return false; // Đảm bảo không submit form
+      });
+
+      console.log('✅ Form event listeners attached successfully');
+
+      // Xử lý click nút đăng ký Google
+      const googleRegisterBtn = document.getElementById('google-register-btn');
+      if (googleRegisterBtn) {
+        googleRegisterBtn.addEventListener('click', function() {
+          // Redirect đến endpoint Google OAuth (dùng chung với đăng nhập)
+          window.location.href = 'http://localhost:3000/api/auth/google';
+        });
+      }
+    }); // Đóng DOMContentLoaded
+  </script>
+  
+  <!-- Christmas Snow Effect -->
+  <script src="js/snow-effect.js"></script>
+  
+  <!-- Cherry Blossom Effect -->
+  <script src="js/cherry-blossom-effect.js"></script>
+  
+  <!-- Responsive Helper -->
+  <script src="js/responsive-helper.js"></script>
+</body>
+
+</html>

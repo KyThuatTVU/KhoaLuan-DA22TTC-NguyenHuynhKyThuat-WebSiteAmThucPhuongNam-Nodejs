@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực Email - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .code-input {
+            width: 45px;
+            height: 55px;
+            font-size: 22px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .code-input:focus {
+            border-color: #ea580c;
+            outline: none;
+            transform: scale(1.05);
+        }
+        
+        .code-input.filled {
+            border-color: #ea580c;
+            background-color: #fff5f0;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <a href="index.html" class="inline-flex items-center space-x-3">
+                    <img src="images/Green Simple Clean Vegan Food Logo.png" alt="Phương Nam Logo" class="w-14 h-14 rounded-full border-2 border-orange-600 shadow-md object-cover">
+                    <div class="text-left">
+                        <h1 class="font-dancing text-3xl font-bold text-gray-800">Phương Nam</h1>
+                        <p class="text-sm text-gray-600">Vĩnh Long</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Verification Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                        <i class="fas fa-envelope-open-text text-3xl text-orange-600"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2">Xác thực Email</h2>
+                    <p class="text-gray-600">Chúng tôi đã gửi mã xác thực đến</p>
+                    <p class="text-orange-600 font-medium" id="display-email"></p>
+                </div>
+
+                <form id="verification-form" class="space-y-6">
+                    <!-- Code Input -->
+                    <div>
+                        <label class="block text-sm font-medium mb-3 text-center">Nhập mã xác thực 6 số</label>
+                        <div class="flex justify-center space-x-2">
+                            <input type="text" maxlength="1" class="code-input" id="code-1" autocomplete="off">
+                            <input type="text" maxlength="1" class="code-input" id="code-2" autocomplete="off">
+                            <input type="text" maxlength="1" class="code-input" id="code-3" autocomplete="off">
+                            <input type="text" maxlength="1" class="code-input" id="code-4" autocomplete="off">
+                            <input type="text" maxlength="1" class="code-input" id="code-5" autocomplete="off">
+                            <input type="text" maxlength="1" class="code-input" id="code-6" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Timer -->
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600">
+                            Mã sẽ hết hạn sau: <span id="timer" class="font-bold text-orange-600">10:00</span>
+                        </p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full auth-bg text-white py-3 rounded-lg font-medium text-lg hover:opacity-90 transition">
+                        <i class="fas fa-check-circle mr-2"></i> Xác thực
+                    </button>
+
+                    <!-- Resend -->
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600">
+                            Không nhận được mã? 
+                            <button type="button" id="resend-btn" class="text-orange-600 hover:text-orange-700 font-medium disabled:text-gray-400 disabled:cursor-not-allowed">
+                                Gửi lại
+                            </button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Back Link -->
+            <div class="text-center mt-6">
+                <a href="dang-ky.html" class="text-gray-600 hover:text-gray-800 transition">
+                    <i class="fas fa-arrow-left mr-2"></i> Quay lại đăng ký
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Get email from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+
+        if (!email) {
+            window.location.href = 'dang-ky.html';
+        }
+
+        document.getElementById('display-email').textContent = email;
+
+        // Auto-focus and move to next input
+        const codeInputs = document.querySelectorAll('.code-input');
+        
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                if (this.value.length === 1) {
+                    this.classList.add('filled');
+                    if (index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                pastedData.split('').forEach((char, i) => {
+                    if (codeInputs[i]) {
+                        codeInputs[i].value = char;
+                        codeInputs[i].classList.add('filled');
+                    }
+                });
+                if (pastedData.length === 6) {
+                    codeInputs[5].focus();
+                }
+            });
+        });
+
+        // Focus first input
+        codeInputs[0].focus();
+
+        // Timer countdown
+        let timeLeft = 600; // 10 minutes in seconds
+        const timerElement = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                showNotification('Mã xác thực đã hết hạn. Vui lòng gửi lại mã mới.', 'error');
+            }
+        }, 1000);
+
+        // Form submit
+        document.getElementById('verification-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonHTML = submitButton.innerHTML;
+            
+            // Get verification code
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            
+            if (code.length !== 6) {
+                showNotification('Vui lòng nhập đầy đủ 6 số', 'error');
+                return;
+            }
+            
+            // Set loading state
+            setLoadingButton(submitButton, true);
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/verify-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, ma_code: code })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    clearInterval(countdown);
+                    saveUserData(result.data);
+                    showNotification('Xác thực thành công! Đang chuyển hướng...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showNotification(result.message || 'Mã xác thực không đúng', 'error');
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonHTML;
+                }
+            } catch (error) {
+                console.error('Lỗi xác thực:', error);
+                showNotification('Không thể kết nối đến server', 'error');
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonHTML;
+            }
+        });
+
+        // Resend code
+        let resendCooldown = 0;
+        const resendBtn = document.getElementById('resend-btn');
+        
+        document.getElementById('resend-btn').addEventListener('click', async function() {
+            if (resendCooldown > 0) return;
+            
+            this.disabled = true;
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/resend-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Mã xác thực mới đã được gửi!', 'success');
+                    
+                    // Reset timer
+                    timeLeft = 600;
+                    
+                    // Cooldown 60 seconds
+                    resendCooldown = 60;
+                    const cooldownInterval = setInterval(() => {
+                        resendCooldown--;
+                        resendBtn.textContent = `Gửi lại (${resendCooldown}s)`;
+                        if (resendCooldown <= 0) {
+                            clearInterval(cooldownInterval);
+                            resendBtn.textContent = 'Gửi lại';
+                            resendBtn.disabled = false;
+                        }
+                    }, 1000);
+                } else {
+                    showNotification(result.message || 'Không thể gửi lại mã', 'error');
+                    this.disabled = false;
+                }
+            } catch (error) {
+                console.error('Lỗi gửi lại mã:', error);
+                showNotification('Không thể kết nối đến server', 'error');
+                this.disabled = false;
+            }
+        });
+    </script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+</html>

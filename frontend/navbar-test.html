@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Alignment Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        /* Visual alignment guides */
+        .alignment-guide {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: red;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .test-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Alignment Guide Lines -->
+    <div class="alignment-guide" style="top: 32px;"></div>
+    <div class="alignment-guide" style="top: 64px;"></div>
+    
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+    
+    <!-- Test Content -->
+    <div class="container mx-auto px-4 py-8" style="margin-top: 80px;">
+        <div class="bg-white rounded-lg p-6 shadow-lg">
+            <h1 class="text-3xl font-bold mb-4 text-orange-600">
+                <i class="fas fa-check-circle mr-2"></i>
+                Navbar Alignment Test
+            </h1>
+            
+            <div class="space-y-4">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h2 class="font-bold text-green-800 mb-2">✅ Đã sửa:</h2>
+                    <ul class="list-disc list-inside space-y-1 text-green-700">
+                        <li>Tất cả nút có kích thước cố định: 44x44px</li>
+                        <li>Sử dụng <code>flex items-center justify-center</code></li>
+                        <li>Icon size nhất quán: 1.25rem (20px)</li>
+                        <li>Gap giữa các nút: 0.5rem (8px)</li>
+                        <li>Badge position: top: 2px, right: 2px</li>
+                        <li>Vertical alignment: Perfect center</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h2 class="font-bold text-blue-800 mb-2">📱 Kiểm tra:</h2>
+                    <ul class="list-disc list-inside space-y-1 text-blue-700">
+                        <li>Mở DevTools (F12)</li>
+                        <li>Chuyển sang chế độ mobile (Ctrl+Shift+M)</li>
+                        <li>Chọn iPhone 12 Pro hoặc Galaxy S20</li>
+                        <li>Kiểm tra 3 nút bên phải có thẳng hàng không</li>
+                        <li>Zoom in/out để test ở các kích thước khác</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h2 class="font-bold text-yellow-800 mb-2">🎯 Các nút phải:</h2>
+                    <ul class="list-disc list-inside space-y-1 text-yellow-700">
+                        <li>Cùng chiều cao (44px)</li>
+                        <li>Cùng chiều rộng (44px)</li>
+                        <li>Icon căn giữa hoàn hảo</li>
+                        <li>Khoảng cách đều nhau</li>
+                        <li>Thẳng hàng với logo</li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Test -->
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <h2 class="font-bold text-purple-800 mb-4">🔍 Visual Test:</h2>
+                    <div class="flex items-center gap-2 bg-white p-4 rounded-lg border-2 border-purple-300">
+                        <div class="w-11 h-11 bg-orange-500 rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bold">Logo</div>
+                            <div class="text-xs text-gray-500">44x44px</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="w-11 h-11 bg-gray-700 rounded-lg flex items-center justify-center text-white relative">
+                                <i class="fas fa-bell"></i>
+                                <span class="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center">2</span>
+                            </button>
+                            <button class="w-11 h-11 bg-gray-700 rounded-lg flex items-center justify-center text-white relative">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="absolute top-0.5 right-0.5 w-4 h-4 bg-orange-500 rounded-full text-xs flex items-center justify-center">3</span>
+                            </button>
+                            <button class="w-11 h-11 bg-gray-700 rounded-lg flex items-center justify-center text-white">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-purple-600 mt-2">
+                        ☝️ Đây là cách các nút PHẢI trông như thế nào - tất cả thẳng hàng hoàn hảo!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Info -->
+    <div class="test-info">
+        <div class="font-bold mb-2">📊 Device Info:</div>
+        <div>Screen: <span id="screen-width"></span>px</div>
+        <div>Viewport: <span id="viewport-width"></span>px</div>
+        <div>Navbar Height: <span id="navbar-height"></span>px</div>
+    </div>
+    
+    <script src="js/load-components.js"></script>
+    <script>
+        function updateInfo() {
+            document.getElementById('screen-width').textContent = screen.width;
+            document.getElementById('viewport-width').textContent = window.innerWidth;
+            
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                document.getElementById('navbar-height').textContent = navbar.offsetHeight;
+            }
+        }
+        
+        updateInfo();
+        window.addEventListener('resize', updateInfo);
+        
+        // Wait for navbar to load
+        setTimeout(() => {
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                // Add visual indicators
+                const buttons = navbar.querySelectorAll('.lg\\:hidden button, .lg\\:hidden a');
+                buttons.forEach((btn, index) => {
+                    btn.style.outline = '2px solid rgba(255, 0, 0, 0.3)';
+                    btn.title = `Button ${index + 1}: ${btn.offsetWidth}x${btn.offsetHeight}px`;
+                });
+                
+                console.log('✅ Navbar loaded');
+                console.log('📏 Button sizes:');
+                buttons.forEach((btn, index) => {
+                    console.log(`  Button ${index + 1}: ${btn.offsetWidth}x${btn.offsetHeight}px`);
+                });
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

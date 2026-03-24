@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đơn hàng - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Đơn hàng</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Theo dõi và xử lý đơn hàng</p></div>
+                </div>
+                <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 mb-4 sm:mb-6">
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Chờ xác nhận</p><p id="stat-pending" class="text-xl sm:text-2xl font-bold text-amber-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-xl flex items-center justify-center"><i class="fas fa-clock text-amber-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Đang xử lý</p><p id="stat-processing" class="text-xl sm:text-2xl font-bold text-blue-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-spinner text-blue-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Đang giao</p><p id="stat-delivering" class="text-xl sm:text-2xl font-bold text-purple-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-xl flex items-center justify-center"><i class="fas fa-shipping-fast text-purple-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Hoàn thành</p><p id="stat-delivered" class="text-xl sm:text-2xl font-bold text-emerald-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fas fa-check-circle text-emerald-600 text-base sm:text-xl"></i></div></div></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <input type="text" id="search" placeholder="Tìm mã đơn, khách hàng..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="status-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="pending">Chờ xác nhận</option>
+                            <option value="preparing">Đang chuẩn bị</option>
+                            <option value="delivered">Hoàn thành</option>
+                            <option value="cancelled">Đã hủy</option>
+                        </select>
+                        <select id="payment-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Thanh toán</option>
+                            <option value="pending">Chưa thanh toán</option>
+                            <option value="success">Đã thanh toán</option>
+                        </select>
+                        <input type="date" id="date-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <button onclick="applyFilters()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl hover:bg-slate-900"><i class="fas fa-filter mr-2"></i>Lọc</button>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="content-card overflow-hidden p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Mã đơn</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Khách hàng</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Ngày đặt</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Tổng tiền</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Thanh toán</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Trạng thái</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody" class="divide-y divide-slate-100">
+                                <tr><td colspan="7" class="px-6 py-12 text-center text-slate-500"><i class="fas fa-spinner fa-spin text-3xl mb-2"></i><p>Đang tải...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="order-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Chi tiết đơn hàng</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="order-detail" class="p-6"></div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+
+    <script>
+        // API_URL đã được khai báo trong admin-layout.js
+        let orders = [];
+
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${API_URL}/orders/all`, { credentials: 'include' });
+                const data = await response.json();
+                if (data.success) { orders = data.data || []; renderOrders(orders); updateStats(orders); }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('orders-tbody').innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-red-500"><i class="fas fa-exclamation-circle text-3xl mb-2"></i><p>Không thể tải dữ liệu</p></td></tr>`;
+            }
+        }
+
+        function updateStats(ordersList) {
+            const stats = { pending: 0, processing: 0, preparing: 0, delivered: 0 };
+            ordersList.forEach(o => {
+                if (o.trang_thai === 'pending') stats.pending++;
+                else if (o.trang_thai === 'confirmed') stats.processing++;
+                else if (o.trang_thai === 'preparing') stats.preparing++;
+                else if (o.trang_thai === 'delivered') stats.delivered++;
+            });
+            document.getElementById('stat-pending').textContent = stats.pending;
+            document.getElementById('stat-processing').textContent = stats.processing;
+            document.getElementById('stat-delivering').textContent = stats.preparing;
+            document.getElementById('stat-delivered').textContent = stats.delivered;
+        }
+
+        function renderOrders(items) {
+            const tbody = document.getElementById('orders-tbody');
+            if (items.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-500">Chưa có đơn hàng</td></tr>`; return; }
+            tbody.innerHTML = items.map(order => {
+                const tenKhach = order.ten_khach_hang || order.ten_khach_vang_lai || 'Khách hàng';
+                const trangThaiTT = order.trang_thai_thanh_toan || 'pending';
+                const trangThaiDH = order.trang_thai || 'pending';
+                const statusColors = { pending: 'bg-amber-100 text-amber-700', confirmed: 'bg-blue-100 text-blue-700', preparing: 'bg-purple-100 text-purple-700', delivered: 'bg-emerald-100 text-emerald-700', cancelled: 'bg-red-100 text-red-700' };
+                const statusText = { pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', preparing: 'Đang chuẩn bị', delivered: 'Hoàn thành', cancelled: 'Đã hủy' };
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4 text-sm font-semibold text-slate-800">#DH${String(order.ma_don_hang).padStart(6, '0')}</td>
+                        <td class="px-6 py-4 text-sm text-slate-700">${tenKhach}</td>
+                        <td class="px-6 py-4 text-sm text-slate-500">${formatDate(order.thoi_gian_tao)}</td>
+                        <td class="px-6 py-4 text-sm font-semibold text-blue-600">${formatPrice(order.tong_tien || 0)}</td>
+                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium ${trangThaiTT === 'success' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${trangThaiTT === 'success' ? 'Đã TT' : 'Chưa TT'}</span></td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-wrap gap-1">
+                                <button onclick="updateOrderStatus(${order.ma_don_hang}, 'pending')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${trangThaiDH === 'pending' ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}" 
+                                    title="Chờ xác nhận">
+                                    <i class="fas fa-clock"></i>
+                                </button>
+                                <button onclick="updateOrderStatus(${order.ma_don_hang}, 'confirmed')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${trangThaiDH === 'confirmed' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}" 
+                                    title="Đã xác nhận">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button onclick="updateOrderStatus(${order.ma_don_hang}, 'preparing')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${trangThaiDH === 'preparing' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'}" 
+                                    title="Đang chuẩn bị">
+                                    <i class="fas fa-utensils"></i>
+                                </button>
+                                <button onclick="updateOrderStatus(${order.ma_don_hang}, 'delivered')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${trangThaiDH === 'delivered' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}" 
+                                    title="Hoàn thành">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                                <button onclick="updateOrderStatus(${order.ma_don_hang}, 'cancelled')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${trangThaiDH === 'cancelled' ? 'bg-red-500 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'}" 
+                                    title="Đã hủy">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4"><button onclick="viewOrder(${order.ma_don_hang})" class="text-blue-600 hover:text-blue-800 p-2"><i class="fas fa-eye"></i></button></td>
+                    </tr>`;
+            }).join('');
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const response = await fetch(`${API_URL}/orders/${orderId}/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ trang_thai_don_hang: newStatus }) });
+                const result = await response.json();
+                if (result.success) { 
+                    loadOrders(); 
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra'); }
+        }
+
+        function viewOrder(orderId) {
+            const order = orders.find(o => o.ma_don_hang === orderId);
+            if (!order) return;
+            document.getElementById('order-detail').innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><p class="text-sm text-slate-500">Mã đơn hàng</p><p class="font-semibold">#DH${String(order.ma_don_hang).padStart(6, '0')}</p></div>
+                        <div><p class="text-sm text-slate-500">Ngày đặt</p><p class="font-semibold">${formatDate(order.thoi_gian_tao)}</p></div>
+                        <div><p class="text-sm text-slate-500">Khách hàng</p><p class="font-semibold">${order.ten_khach_hang || order.ten_khach_vang_lai || 'Khách hàng'}</p></div>
+                        <div><p class="text-sm text-slate-500">Số điện thoại</p><p class="font-semibold">${order.so_dt_khach || 'N/A'}</p></div>
+                        <div class="col-span-2"><p class="text-sm text-slate-500">Địa chỉ</p><p class="font-semibold">${order.dia_chi_giao || 'N/A'}</p></div>
+                    </div>
+                    <div class="border-t pt-4"><p class="font-semibold mb-3">Chi tiết đơn hàng</p>
+                        ${order.items && order.items.length > 0 ? order.items.map(item => `<div class="flex justify-between py-2 border-b border-slate-100"><div><p class="font-medium">${item.ten_mon}</p><p class="text-xs text-slate-400">SL: ${item.so_luong} x ${formatPrice(item.gia_tai_thoi_diem || item.gia)}</p></div><p class="font-semibold">${formatPrice(item.so_luong * (item.gia_tai_thoi_diem || item.gia))}</p></div>`).join('') : '<p class="text-slate-500">Không có chi tiết</p>'}
+                    </div>
+                    <div class="border-t pt-4 flex justify-between text-lg font-bold"><span>Tổng thanh toán:</span><span class="text-blue-600">${formatPrice(order.tong_tien || 0)}</span></div>
+                </div>`;
+            document.getElementById('order-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('order-modal').classList.add('hidden'); }
+        function formatPrice(price) { return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price); }
+        function formatDate(date) { return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            const payment = document.getElementById('payment-filter').value;
+            let filtered = orders.filter(o => {
+                const matchSearch = o.ma_don_hang.toString().includes(search) || (o.ten_khach_hang || '').toLowerCase().includes(search);
+                const matchStatus = !status || o.trang_thai === status;
+                const matchPayment = !payment || o.trang_thai_thanh_toan === payment;
+                return matchSearch && matchStatus && matchPayment;
+            });
+            renderOrders(filtered);
+        }
+        
+        // Kiểm tra nếu có order ID trong URL thì mở modal chi tiết
+        function checkUrlForOrderId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+            console.log('🔍 Checking URL for order ID:', orderId);
+            if (orderId) {
+                const orderIdNum = parseInt(orderId);
+                // Tìm đơn hàng trong danh sách đã load
+                const order = orders.find(o => o.ma_don_hang === orderIdNum);
+                if (order) {
+                    console.log('✅ Found order:', order);
+                    viewOrder(orderIdNum);
+                } else {
+                    console.log('⚠️ Order not found in list, trying to fetch directly...');
+                    // Nếu không tìm thấy, có thể đơn hàng mới - thử load lại
+                    loadOrders().then(() => {
+                        const retryOrder = orders.find(o => o.ma_don_hang === orderIdNum);
+                        if (retryOrder) {
+                            viewOrder(orderIdNum);
+                        } else {
+                            alert('Không tìm thấy đơn hàng #' + orderId);
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Load orders trước, sau đó check URL
+        loadOrders().then(() => {
+            checkUrlForOrderId();
+        });
+    </script>
+</body>
+</html>

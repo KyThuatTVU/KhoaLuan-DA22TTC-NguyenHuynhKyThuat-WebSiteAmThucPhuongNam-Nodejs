@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực Đơn - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <!-- Tailwind CSS - Development CDN (Warning is expected in dev environment) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        .cart-badge {
+            top: -8px;
+            right: -8px;
+            min-width: 20px;
+            height: 20px;
+        }
+
+        .filter-active {
+            background: #ea580c;
+            color: white;
+        }
+
+        /* Card hover effects */
+        .dish-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Image container */
+        .dish-image-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+        }
+
+        .dish-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .dish-card:hover .dish-image {
+            transform: scale(1.1);
+        }
+
+        /* Image overlay */
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dish-card:hover .image-overlay {
+            opacity: 1;
+        }
+
+        /* Badge styles */
+        .badge-discount {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .badge-status {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Price animation */
+        .price-tag {
+            font-weight: 700;
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Button effects */
+        .add-to-cart-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+        }
+
+        .add-to-cart-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+        }
+
+        .favorite-btn {
+            transition: all 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.2);
+            color: #ef4444;
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Category badge */
+        .category-badge {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(234, 88, 12, 0.2);
+        }
+
+        /* Mobile Filter Overlay */
+        #filter-sidebar.mobile-open {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Filter Backdrop */
+        .filter-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            #filter-sidebar {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dish-image-container {
+                height: 220px;
+            }
+
+            .dish-card {
+                margin-bottom: 1rem;
+            }
+
+            .price-tag {
+                font-size: 1.25rem;
+            }
+
+            .add-to-cart-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            /* Optimize mobile grid */
+            #menu-products {
+                gap: 1rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .dish-image-container {
+                height: 180px;
+            }
+
+            .dish-card {
+                font-size: 0.9rem;
+            }
+
+            .price-tag {
+                font-size: 1.1rem;
+            }
+
+            .add-to-cart-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Line clamp utility */
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50" style="padding-top: 80px;">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+    <!-- Page Header -->
+    <section
+        class="relative w-full text-white overflow-hidden h-[140px] sm:h-[160px] md:h-[180px] lg:h-[200px] flex items-center justify-center text-center bg-[#d1b6a1]">
+        <!-- Background Image -->
+        <div class="absolute inset-0 opacity-70" style="background-image: url('images/cau-long-bien.jpg');
+              background-size: cover;
+              background-position: center;
+              filter: sepia(90%) brightness(90%) contrast(85%);">
+        </div>
+
+        <!-- Nền nâu nhẹ phủ -->
+        <div class="absolute inset-0 bg-[#c9a988]/50"></div>
+
+        <!-- Nội dung chữ -->
+        <div class="relative z-10 px-4">
+            <h1
+                class="font-dancing text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 drop-shadow-lg text-[#4b2c16]">
+                Thực đơn
+            </h1>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-[#5b3a1e]">
+                Hương vị từ miền sông nước
+            </p>
+        </div>
+    </section>
+
+
+    <!-- Menu Section -->
+    <section class="py-6 sm:py-8 md:py-12">
+        <div class="container mx-auto px-4">
+            <!-- Search Bar -->
+            <div class="mb-4 sm:mb-6">
+                <div class="bg-white rounded-xl p-3 sm:p-4 shadow-sm">
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Tìm kiếm món ăn..."
+                            class="w-full px-4 sm:px-5 py-2 sm:py-3 pl-10 sm:pl-12 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition">
+                        <i
+                            class="fas fa-search absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base"></i>
+                        <button id="clear-search"
+                            class="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition hidden">
+                            <i class="fas fa-times text-sm sm:text-base"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Mobile Filter Toggle Button -->
+                <button id="mobile-filter-toggle"
+                    class="lg:hidden w-full bg-white rounded-xl p-4 shadow-sm flex items-center justify-between mb-4">
+                    <span class="font-semibold text-gray-800">
+                        <i class="fas fa-filter mr-2"></i>Bộ lọc & Sắp xếp
+                    </span>
+                    <i class="fas fa-chevron-down transition-transform" id="filter-icon"></i>
+                </button>
+
+                <!-- Sidebar Filters -->
+                <div class="lg:w-1/4">
+                    <div id="filter-sidebar"
+                        class="bg-white rounded-xl p-6 shadow-sm lg:sticky lg:top-24 hidden lg:block">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-xl">Bộ lọc</h3>
+                            <button id="mobile-filter-close" class="lg:hidden text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Danh mục</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="all" class="w-4 h-4 text-orange-600" checked>
+                                    <span class="ml-2 text-gray-700">Tất cả</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="canh-sup" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Canh & Súp</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="hai-san" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Hải sản</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="thit" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Thịt</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="rau" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Rau</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="com" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Cơm</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="category" value="do-uong" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Đồ uống</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Khoảng giá</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="price" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Dưới 100.000đ</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="price" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">100.000đ - 200.000đ</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="price" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">200.000đ - 500.000đ</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="price" class="w-4 h-4 text-orange-600">
+                                    <span class="ml-2 text-gray-700">Trên 500.000đ</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Đánh giá</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-orange-600 rounded">
+                                    <span class="ml-2 text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-orange-600 rounded">
+                                    <span class="ml-2 text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button
+                                class="flex-1 bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition"
+                                id="apply-filter">
+                                Áp dụng
+                            </button>
+                            <button
+                                class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition"
+                                id="reset-filter">
+                                Đặt lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="lg:w-3/4">
+                    <!-- Sort Bar -->
+                    <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
+                        <!-- Desktop Sort -->
+                        <div class="hidden md:flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-gray-700">Sắp xếp:</span>
+                                <button
+                                    class="px-4 py-2 rounded-lg border hover:border-orange-600 hover:text-orange-600 transition"
+                                    data-sort="popular">
+                                    Phổ biến
+                                </button>
+                                <button
+                                    class="px-4 py-2 rounded-lg border hover:border-orange-600 hover:text-orange-600 transition"
+                                    data-sort="newest">
+                                    Mới nhất
+                                </button>
+                                <button
+                                    class="px-4 py-2 rounded-lg border hover:border-orange-600 hover:text-orange-600 transition"
+                                    data-sort="price-asc">
+                                    Giá tăng
+                                </button>
+                                <button
+                                    class="px-4 py-2 rounded-lg border hover:border-orange-600 hover:text-orange-600 transition"
+                                    data-sort="price-desc">
+                                    Giá giảm
+                                </button>
+                            </div>
+                            <span class="text-gray-600">Tìm thấy <strong id="product-count">0</strong> món ăn</span>
+                        </div>
+
+                        <!-- Mobile Sort -->
+                        <div class="md:hidden">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-gray-700 font-medium">Sắp xếp theo:</span>
+                                <span class="text-gray-600 text-sm">Tìm thấy <strong
+                                        id="product-count-mobile">0</strong> món</span>
+                            </div>
+                            <select id="mobile-sort"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500">
+                                <option value="default">Mặc định</option>
+                                <option value="popular">Phổ biến nhất</option>
+                                <option value="newest">Mới nhất</option>
+                                <option value="price-asc">Giá: Thấp đến cao</option>
+                                <option value="price-desc">Giá: Cao đến thấp</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
+                        id="menu-products">
+                        <!-- Product items will be rendered here by JavaScript -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex justify-center mt-8 space-x-1 sm:space-x-2" id="pagination-container">
+                        <!-- Pagination will be rendered by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container"></div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" 
+        class="fixed bottom-32 right-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
+        style="z-index: 99999 !important;"
+        aria-label="Scroll to top">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <style>
+        @media (max-width: 640px) {
+            #scroll-to-top {
+                bottom: 8rem !important;
+                right: 1rem !important;
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+            
+            #scroll-to-top i {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Scroll to Top functionality
+        (function() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            
+            if (!scrollBtn) {
+                console.error('Scroll button not found!');
+                return;
+            }
+            
+            console.log('Scroll to top button initialized');
+            
+            // Show/hide button based on scroll position
+            function checkScroll() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.style.opacity = '1';
+                    scrollBtn.style.visibility = 'visible';
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.visibility = 'hidden';
+                }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll();
+            
+            // Smooth scroll to top when clicked
+            scrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Scroll to top clicked!');
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        })();
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/loading.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/recommendation.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/load-components.js"></script>
+    <script src="js/cart-test.js"></script>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+  
+   
+</body>
+
+</html>

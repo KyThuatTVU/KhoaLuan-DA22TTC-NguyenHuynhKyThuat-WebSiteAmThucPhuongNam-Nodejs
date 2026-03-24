@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Khuyến mãi - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm font-medium">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Khuyến mãi</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Tạo và quản lý mã giảm giá</p></div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Notification Bell -->
+                    <div id="admin-notification-container" class="relative">
+                        <button id="admin-notification-btn" class="relative text-white hover:text-blue-200 transition cursor-pointer">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span id="admin-notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                        </button>
+                        <div id="admin-notification-dropdown" class="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-100 hidden" style="z-index: 9999;">
+                            <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                                <h3 class="font-semibold text-gray-800">Thông báo quản trị</h3>
+                                <button id="admin-mark-all-read-btn" class="text-xs text-orange-600 hover:text-orange-700 cursor-pointer">Đánh dấu đã đọc</button>
+                            </div>
+                            <div id="admin-notification-list" class="max-h-96 overflow-y-auto">
+                                <div class="text-center py-8 text-gray-400">
+                                    <i class="fas fa-bell-slash text-3xl mb-2"></i>
+                                    <p class="text-sm">Chưa có thông báo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openModal()" class="bg-white text-slate-800 px-4 py-2 rounded-xl hover:bg-slate-100 font-medium text-sm">
+                        <i class="fas fa-plus mr-2"></i>Thêm mã
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 mb-4 sm:mb-6">
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Tổng mã</p><p id="stat-total" class="text-xl sm:text-2xl font-bold text-slate-800">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fas fa-ticket-alt text-slate-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Đang hoạt động</p><p id="stat-active" class="text-xl sm:text-2xl font-bold text-green-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-xl flex items-center justify-center"><i class="fas fa-check-circle text-green-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Đã hết hạn</p><p id="stat-expired" class="text-xl sm:text-2xl font-bold text-red-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-xl flex items-center justify-center"><i class="fas fa-times-circle text-red-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Lượt sử dụng</p><p id="stat-used" class="text-xl sm:text-2xl font-bold text-blue-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-chart-line text-blue-600 text-base sm:text-xl"></i></div></div></div>
+                </div>
+
+                <!-- Table -->
+                <div class="content-card">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Mã</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Mô tả</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Giảm giá</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Đơn tối thiểu</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Thời gian</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Sử dụng</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-slate-600">Trạng thái</th>
+                                    <th class="text-center py-3 px-4 font-semibold text-slate-600">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="promotions-table">
+                                <tr><td colspan="8" class="text-center py-8 text-slate-500"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tải...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="promo-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold" id="modal-title">Thêm mã khuyến mãi</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="promo-form" class="p-6 space-y-4">
+                <input type="hidden" id="promo-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Mã code *</label>
+                        <input type="text" id="ma_code" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl uppercase" placeholder="VD: GIAM10">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Loại giảm *</label>
+                        <select id="loai_giam_gia" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                            <option value="percentage">Phần trăm (%)</option>
+                            <option value="fixed_amount">Số tiền cố định</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Giá trị giảm *</label>
+                        <input type="number" id="gia_tri" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl" placeholder="10">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Đơn tối thiểu</label>
+                        <input type="number" id="don_hang_toi_thieu" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl" placeholder="100000">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Ngày bắt đầu *</label>
+                        <input type="datetime-local" id="ngay_bat_dau" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Ngày kết thúc *</label>
+                        <input type="datetime-local" id="ngay_ket_thuc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Giới hạn sử dụng</label>
+                    <input type="number" id="so_luong_gioi_han" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl" placeholder="Để trống = không giới hạn">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Mô tả</label>
+                    <textarea id="mo_ta" rows="2" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl" placeholder="Mô tả khuyến mãi..."></textarea>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="trang_thai" checked class="w-4 h-4 text-blue-600 rounded">
+                    <label for="trang_thai" class="ml-2 text-sm text-slate-700">Kích hoạt</label>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+    <script>
+        let promotions = [];
+        
+        async function loadPromotions() {
+            try {
+                const response = await fetch(`${API_URL}/promotions`, { credentials: 'include' });
+                const data = await response.json();
+                promotions = data.data || [];
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        function updateStats() {
+            const now = new Date();
+            document.getElementById('stat-total').textContent = promotions.length;
+            document.getElementById('stat-active').textContent = promotions.filter(p => p.trang_thai === 1 && new Date(p.ngay_ket_thuc) >= now).length;
+            document.getElementById('stat-expired').textContent = promotions.filter(p => new Date(p.ngay_ket_thuc) < now).length;
+            document.getElementById('stat-used').textContent = promotions.reduce((sum, p) => sum + (p.so_luong_da_dung || 0), 0);
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('promotions-table');
+            if (promotions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-500">Chưa có mã khuyến mãi</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = promotions.map(p => {
+                const now = new Date();
+                const isExpired = new Date(p.ngay_ket_thuc) < now;
+                const isActive = p.trang_thai === 1 && !isExpired;
+                const discount = p.loai_giam_gia === 'percentage' ? `${p.gia_tri}%` : formatCurrency(p.gia_tri);
+                
+                return `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="py-3 px-4"><span class="font-mono font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded">${p.ma_code}</span></td>
+                        <td class="py-3 px-4 text-sm text-slate-600 max-w-xs truncate">${p.mo_ta || '-'}</td>
+                        <td class="py-3 px-4 font-semibold text-green-600">${discount}</td>
+                        <td class="py-3 px-4 text-sm">${p.don_hang_toi_thieu > 0 ? formatCurrency(p.don_hang_toi_thieu) : '-'}</td>
+                        <td class="py-3 px-4 text-xs text-slate-500">
+                            ${formatDate(p.ngay_bat_dau)}<br>→ ${formatDate(p.ngay_ket_thuc)}
+                        </td>
+                        <td class="py-3 px-4 text-sm">${p.so_luong_da_dung || 0}${p.so_luong_gioi_han ? '/' + p.so_luong_gioi_han : ''}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${isActive ? 'bg-green-100 text-green-700' : isExpired ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}">
+                                ${isActive ? 'Hoạt động' : isExpired ? 'Hết hạn' : 'Tắt'}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="editPromo(${p.ma_khuyen_mai})" class="text-blue-500 hover:text-blue-700 mx-1"><i class="fas fa-edit"></i></button>
+                            <button onclick="deletePromo(${p.ma_khuyen_mai})" class="text-red-500 hover:text-red-700 mx-1"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        }
+        
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('vi-VN');
+        }
+        
+        function openModal() {
+            document.getElementById('modal-title').textContent = 'Thêm mã khuyến mãi';
+            document.getElementById('promo-form').reset();
+            document.getElementById('promo-id').value = '';
+            document.getElementById('trang_thai').checked = true;
+            document.getElementById('promo-modal').classList.remove('hidden');
+        }
+        
+        function closeModal() {
+            document.getElementById('promo-modal').classList.add('hidden');
+        }
+        
+        function editPromo(id) {
+            const p = promotions.find(x => x.ma_khuyen_mai === id);
+            if (!p) return;
+            
+            document.getElementById('modal-title').textContent = 'Sửa mã khuyến mãi';
+            document.getElementById('promo-id').value = p.ma_khuyen_mai;
+            document.getElementById('ma_code').value = p.ma_code;
+            document.getElementById('loai_giam_gia').value = p.loai_giam_gia;
+            document.getElementById('gia_tri').value = p.gia_tri;
+            document.getElementById('don_hang_toi_thieu').value = p.don_hang_toi_thieu || '';
+            document.getElementById('ngay_bat_dau').value = p.ngay_bat_dau.slice(0, 16);
+            document.getElementById('ngay_ket_thuc').value = p.ngay_ket_thuc.slice(0, 16);
+            document.getElementById('so_luong_gioi_han').value = p.so_luong_gioi_han || '';
+            document.getElementById('mo_ta').value = p.mo_ta || '';
+            document.getElementById('trang_thai').checked = p.trang_thai === 1;
+            document.getElementById('promo-modal').classList.remove('hidden');
+        }
+        
+        async function deletePromo(id) {
+            if (!confirm('Xóa mã khuyến mãi này?')) return;
+            try {
+                await fetch(`${API_URL}/promotions/${id}`, { method: 'DELETE', credentials: 'include' });
+                loadPromotions();
+            } catch (error) {
+                alert('Lỗi xóa');
+            }
+        }
+        
+        document.getElementById('promo-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('promo-id').value;
+            const data = {
+                ma_code: document.getElementById('ma_code').value,
+                loai_giam_gia: document.getElementById('loai_giam_gia').value,
+                gia_tri: parseFloat(document.getElementById('gia_tri').value),
+                don_hang_toi_thieu: parseFloat(document.getElementById('don_hang_toi_thieu').value) || 0,
+                ngay_bat_dau: document.getElementById('ngay_bat_dau').value,
+                ngay_ket_thuc: document.getElementById('ngay_ket_thuc').value,
+                so_luong_gioi_han: parseInt(document.getElementById('so_luong_gioi_han').value) || null,
+                mo_ta: document.getElementById('mo_ta').value,
+                trang_thai: document.getElementById('trang_thai').checked ? 1 : 0
+            };
+            
+            try {
+                const url = id ? `${API_URL}/promotions/${id}` : `${API_URL}/promotions`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    closeModal();
+                    loadPromotions();
+                } else {
+                    alert(result.message || 'Lỗi');
+                }
+            } catch (error) {
+                alert('Lỗi lưu');
+            }
+        });
+        
+        loadPromotions();
+    </script>
+    
+    <!-- Admin Notification Script -->
+    <script src="js/admin-notifications.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof AdminNotificationManager !== 'undefined') {
+                    AdminNotificationManager.init();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin Tức - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+
+            /* Add padding bottom to prevent chatbot overlap */
+            body {
+                padding-bottom: 80px;
+            }
+
+            /* Ensure chatbot doesn't cover content */
+            #chatbot-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 9999;
+            }
+
+            /* Line clamp utilities */
+            .line-clamp-2 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .line-clamp-3 {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Page Header -->
+    <section
+        class="relative w-full text-white overflow-hidden h-[250px] sm:h-[320px] md:h-[380px] lg:h-[420px] flex items-center justify-center text-center bg-[#d1b6a1]">
+        <!-- Background Image -->
+        <div class="absolute inset-0 opacity-70" style="background-image: url('images/cau-long-bien.jpg');
+              background-size: cover;
+              background-position: center;
+              filter: sepia(90%) brightness(90%) contrast(85%);">
+        </div>
+
+        <!-- Nền nâu nhẹ phủ -->
+        <div class="absolute inset-0 bg-[#c9a988]/50"></div>
+
+        <!-- Nội dung chữ -->
+        <div class="relative z-10 px-4">
+            <h1
+                class="font-dancing text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 drop-shadow-lg text-[#4b2c16]">
+                Tin Tức & Sự Kiện
+            </h1>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-[#5b3a1e]">
+                Cập nhật tin tức mới nhất từ nhà hàng
+            </p>
+        </div>
+    </section>
+    <!-- Advertisement Banner Section -->
+    <section class="py-6 sm:py-8 md:py-10 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <!-- Large Banner Ad with Video -->
+            <div class="relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+                <!-- Banner Video - Ultra High Quality Settings -->
+                <img src="images/thietkehaithanh-banner1.jpg" alt="Ảnh banner quảng cáo"
+                    class="w-full h-auto rounded-lg object-cover" />
+
+
+                <!-- Optional: Ad Label -->
+                <div class="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded z-10">
+                    Quảng cáo
+                </div>
+
+                <!-- Optional: Click overlay to make video clickable -->
+                <a href="#" target="_blank" class="absolute inset-0 z-20"></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="py-8 sm:py-10 md:py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6 sm:space-y-8">
+                    <!-- Featured Post - Load từ API -->
+                    <div id="featured-news"></div>
+
+                    <!-- Regular Posts Grid - Load từ API -->
+                    <div id="news-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+                    <!-- Pagination - Load từ API -->
+                    <div id="pagination" class="mt-8"></div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="space-y-6 sm:space-y-8">
+                    <!-- Search -->
+                    <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-3 sm:mb-4">Tìm kiếm</h3>
+                        <form id="search-form" class="flex">
+                            <input type="text" id="search-input" placeholder="Tìm kiếm tin tức..."
+                                class="flex-1 border rounded-l-lg px-3 sm:px-4 py-2 text-sm sm:text-base focus:outline-none focus:border-orange-600">
+                            <button type="submit"
+                                class="bg-orange-600 text-white px-4 sm:px-6 rounded-r-lg hover:bg-orange-700 transition">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-3 sm:mb-4">Danh mục</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#"
+                                    class="flex items-center justify-between text-gray-600 hover:text-orange-600 transition">
+                                    <span>Sự kiện</span>
+                                    <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">12</span>
+                                </a></li>
+                            <li><a href="#"
+                                    class="flex items-center justify-between text-gray-600 hover:text-orange-600 transition">
+                                    <span>Món mới</span>
+                                    <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">8</span>
+                                </a></li>
+                            <li><a href="#"
+                                    class="flex items-center justify-between text-gray-600 hover:text-orange-600 transition">
+                                    <span>Khuyến mãi</span>
+                                    <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">15</span>
+                                </a></li>
+                            <li><a href="#"
+                                    class="flex items-center justify-between text-gray-600 hover:text-orange-600 transition">
+                                    <span>Tin tức</span>
+                                    <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">20</span>
+                                </a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Popular Posts -->
+                    <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-3 sm:mb-4">Bài viết phổ biến</h3>
+                        <div id="popular-news" class="space-y-3 sm:space-y-4">
+                            <div class="flex space-x-3">
+                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=100" alt="Post"
+                                    class="w-16 sm:w-20 h-16 sm:h-20 rounded-lg object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <a href="tin-tuc-chi-tiet.html"
+                                        class="text-sm sm:text-base font-medium hover:text-orange-600 line-clamp-2">Món
+                                        ăn mới cho mùa thu</a>
+                                    <p class="text-xs sm:text-sm text-gray-500 mt-1">8 Oct 2025</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100" alt="Post"
+                                    class="w-16 sm:w-20 h-16 sm:h-20 rounded-lg object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <a href="tin-tuc-chi-tiet.html"
+                                        class="text-sm sm:text-base font-medium hover:text-orange-600 line-clamp-2">Khuyến
+                                        mãi cuối tuần</a>
+                                    <p class="text-xs sm:text-sm text-gray-500 mt-1">5 Oct 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="bg-orange-600 text-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-bold text-xl mb-4">Đăng ký nhận tin</h3>
+                        <p class="mb-4">Nhận thông tin về các món ăn mới và ưu đãi đặc biệt</p>
+                        <input type="email" placeholder="Email của bạn"
+                            class="w-full px-4 py-3 rounded-lg mb-3 text-gray-800">
+                        <button
+                            class="w-full bg-white text-orange-600 py-3 rounded-lg font-medium hover:bg-gray-100 transition">
+                            Đăng ký ngay
+                        </button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container"></div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" 
+        class="fixed bottom-32 right-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
+        style="z-index: 99999 !important;"
+        aria-label="Scroll to top">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <style>
+        @media (max-width: 640px) {
+            #scroll-to-top {
+                bottom: 8rem !important;
+                right: 1rem !important;
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+            
+            #scroll-to-top i {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Scroll to Top functionality
+        (function() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            if (!scrollBtn) return;
+            
+            function checkScroll() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.style.opacity = '1';
+                    scrollBtn.style.visibility = 'visible';
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.visibility = 'hidden';
+                }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll();
+            
+            scrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/loading.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/load-components.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/news.js"></script>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/gsap-tin-tuc.js"></script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu - Nhà hàng Phương Nam Vĩnh Long</title>
+     <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+</head>
+
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section với ảnh nền -->
+    <section class="hero-section relative w-full overflow-hidden bg-black">
+        <!-- Background Image Container -->
+        <div class="relative w-full hero-container">
+            <img src="images/gt2.jpg" alt="Về chúng tôi" class="absolute inset-0 w-full h-full object-cover hero-img"
+                style="object-position: center;">
+
+            <!-- Overlay gradient -->
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60"></div>
+
+            <!-- Content -->
+            <div class="absolute inset-0 flex items-center justify-center text-white px-4">
+                <div class="text-center max-w-5xl mx-auto w-full">
+                    <h1 class="font-bold mb-2 sm:mb-3 md:mb-4 leading-tight" style="font-family: 'Montserrat', sans-serif;
+                   font-size: clamp(1.75rem, 5vw, 4.5rem);
+                   letter-spacing: 0.08em;
+                   text-shadow: 2px 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5);">
+                        VỀ CHÚNG TÔI
+                    </h1>
+
+                    <p class="font-light tracking-wide" style="font-size: clamp(0.875rem, 2.5vw, 1.875rem);
+                  text-shadow: 1px 1px 6px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.5);">
+                        Nhà hàng Phương Nam
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS điều chỉnh hiển thị ảnh -->
+        <style>
+            /* Mặc định: mobile hiển thị toàn bộ ảnh (contain) */
+            .hero-container {
+                padding-bottom: 70%;
+                /* chiều cao khung, có thể chỉnh 65-80% tùy ảnh */
+            }
+
+            .hero-img {
+                object-fit: contain !important;
+                background-color: black;
+                /* tránh viền xám */
+            }
+
+            /* Tablet trở lên: chuyển về cover */
+            @media (min-width: 768px) {
+                .hero-container {
+                    padding-bottom: 56.25%;
+                    /* tỉ lệ 16:9 */
+                }
+
+                .hero-img {
+                    object-fit: cover !important;
+                    object-position: center !important;
+                }
+            }
+
+            /* Desktop: thu nhỏ banner */
+            @media (min-width: 1024px) {
+                .hero-container {
+                    padding-bottom: 40%;
+                    /* banner nhỏ gọn hơn */
+                }
+            }
+        </style>
+    </section>
+
+
+    <!-- Our Story Section -->
+    <section class="story-section relative py-0 overflow-hidden"
+        style="background: linear-gradient(to bottom, #f5e6d3 0%, #e8d4ba 100%);">
+
+        <!-- Background image mờ -->
+        <div class="absolute inset-0 opacity-15"
+            style="background-image: url('images/cau-long-bien.jpg'); background-size: cover; background-position: center;">
+        </div>
+
+        <div class="relative grid grid-cols-1 lg:grid-cols-2">
+
+            <!-- Left Content -->
+            <div
+                class="py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-12 lg:px-16 flex items-center order-2 lg:order-1">
+                <div class="max-w-2xl">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight"
+                        style="font-family: 'Montserrat', sans-serif; color: #8B4513; letter-spacing: 0.05em;">
+                        PHƯƠNG NAM – NGON NHƯ MẸ NẤU
+                    </h2>
+
+                    <h3 class="text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-4 sm:mb-6 uppercase tracking-wide"
+                        style="color: #6B4423;">
+                        Nhà hàng cơm Việt, quán cơm gia đình ngon tại Vĩnh Long
+                    </h3>
+
+                    <div class="space-y-3 sm:space-y-4 leading-relaxed text-sm sm:text-base" style="color: #4A4A4A;">
+                        <p>
+                            Tại <span class="font-bold" style="color: #8B4513;">Phương Nam</span>, triết lý của chúng
+                            tôi
+                            rất đơn giản:
+                            chia sẻ hương vị và văn hóa thưởng thức cơm Việt tới tất cả mọi người.
+                            Chúng tôi làm điều này bằng việc sử dụng nguồn nguyên liệu tươi sạch nhất,
+                            và chế biến chúng qua đôi tay của những người đầu bếp tận tâm.
+                        </p>
+
+                        <p>
+                            Không gian tại nhà hàng cơm <span class="font-bold" style="color: #8B4513;">Phương
+                                Nam</span>
+                            được
+                            lấy cảm hứng từ những giá trị truyền thống của Việt Nam kết hợp với những yếu tố hiện
+                            đại
+                            để tạo nên một cảm giác xưa cũ mà vẫn đầy mới mẻ.
+                        </p>
+
+                        <p>
+                            Với chủ đạo là gỗ, cây xanh và ánh sáng tự nhiên, chúng tôi mang lại một không gian ấm
+                            cúng,
+                            gần gũi – nơi mỗi bữa ăn đều là một trải nghiệm đáng nhớ, trọn vị và đậm tình quê hương.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image -->
+            <div class="flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 md:px-8 lg:px-6 order-1 lg:order-2">
+                <div class="relative max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl w-full">
+                    <!-- Shadow/Border effect -->
+                    <div
+                        class="absolute -top-2 -left-2 sm:-top-3 sm:-left-3 w-full h-full bg-white/30 rounded-2xl transform rotate-2">
+                    </div>
+
+                    <!-- Main image container -->
+                    <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl">
+                        <img src="images/TruyenThong.jpg" alt="Không gian nhà hàng Vị Ân" class="w-full h-auto object-cover">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Values -->
+    <section class="values-section py-10 sm:py-12 md:py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="font-dancing text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-10 md:mb-12">Giá
+                Trị Cốt Lõi</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <!-- Chất Lượng -->
+                <div class="bg-white rounded-xl p-6 sm:p-8 text-center shadow-sm hover:shadow-lg transition">
+                    <div
+                        class="bg-orange-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-heart text-3xl sm:text-4xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Chất Lượng</h3>
+                    <p class="text-sm sm:text-base text-gray-600">Cam kết sử dụng nguyên liệu tươi ngon, đảm bảo chất
+                        lượng món ăn tốt nhất
+                    </p>
+                </div>
+
+                <!-- Tận Tâm -->
+                <div class="bg-white rounded-xl p-6 sm:p-8 text-center shadow-sm hover:shadow-lg transition">
+                    <div
+                        class="bg-orange-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-users text-3xl sm:text-4xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Tận Tâm</h3>
+                    <p class="text-sm sm:text-base text-gray-600">Phục vụ khách hàng với thái độ nhiệt tình, chu đáo và
+                        chuyên nghiệp</p>
+                </div>
+
+                <!-- Truyền Thống -->
+                <div class="bg-white rounded-xl p-6 sm:p-8 text-center shadow-sm hover:shadow-lg transition">
+                    <div
+                        class="bg-orange-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-leaf text-3xl sm:text-4xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Truyền Thống</h3>
+                    <p class="text-sm sm:text-base text-gray-600">Giữ gìn và phát huy hương vị ẩm thực truyền thống miền
+                        Tây</p>
+                </div>
+
+                <!-- Sáng Tạo -->
+                <div class="bg-white rounded-xl p-6 sm:p-8 text-center shadow-sm hover:shadow-lg transition">
+                    <div
+                        class="bg-orange-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <i class="fas fa-lightbulb text-3xl sm:text-4xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Sáng Tạo</h3>
+                    <p class="text-sm sm:text-base text-gray-600">Không ngừng đổi mới thực đơn, mang đến trải nghiệm ẩm
+                        thực độc đáo</p>
+                </div>
+            </div>
+
+            <!-- Images Section Below Values - Marquee Effect -->
+            <div class="relative overflow-hidden mt-8 sm:mt-10 md:mt-12">
+                <div class="marquee-container">
+                    <div class="marquee-content">
+                        <!-- Image 1 - Chất Lượng -->
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tintuc.jpg" alt="Chất lượng nguyên liệu"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <!-- Image 2 - Tận Tâm -->
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tt1.jpg" alt="Phục vụ tận tâm"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <!-- Image 3 - Truyền Thống -->
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tt2.1.jpg" alt="Ẩm thực truyền thống"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <!-- Image 4 - Sáng Tạo -->
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tt3.jpg" alt="Món ăn sáng tạo"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <!-- Duplicate for seamless loop -->
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tintuc.jpg" alt="Chất lượng nguyên liệu"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tt1.jpg" alt="Phục vụ tận tâm"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tt2.1.jpg" alt="Ẩm thực truyền thống"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+
+                        <div class="marquee-item overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <img src="images/tt3.jpg" alt="Món ăn sáng tạo"
+                                class="w-full h-48 sm:h-56 md:h-64 object-cover hover:scale-110 transition-transform duration-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .marquee-container {
+                    position: relative;
+                    overflow: hidden;
+                    padding: 10px 0;
+                }
+
+                .marquee-content {
+                    display: flex;
+                    gap: 1.5rem;
+                    animation: marquee-scroll 30s linear infinite;
+                    width: max-content;
+                }
+
+                .marquee-item {
+                    flex-shrink: 0;
+                    width: 280px;
+                }
+
+                @keyframes marquee-scroll {
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(-50%);
+                    }
+                }
+
+                /* Pause on hover */
+                .marquee-container:hover .marquee-content {
+                    animation-play-state: paused;
+                }
+
+                /* Responsive adjustments */
+                @media (max-width: 640px) {
+                    .marquee-item {
+                        width: 220px;
+                    }
+                    
+                    .marquee-content {
+                        gap: 1rem;
+                    }
+                }
+
+                @media (min-width: 641px) and (max-width: 1024px) {
+                    .marquee-item {
+                        width: 250px;
+                    }
+                }
+            </style>
+        </div>
+    </section>
+
+    <!-- Gallery Section - Nhà hàng Phương Nam -->
+    <section class="gallery-section relative py-10 sm:py-12 md:py-16 overflow-hidden"
+        style="background: linear-gradient(to bottom, #f5e6d3 0%, #e8d4ba 100%);">
+        <!-- Background image mờ -->
+        <div class="absolute inset-0 opacity-10"
+            style="background-image: url('images/Banner-Com-ngon-scaled.jpg'); background-size: cover; background-position: center;">
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Title -->
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-3 sm:mb-4"
+                style="font-family: 'Montserrat', sans-serif; color: #8B4513; letter-spacing: 0.05em;">
+                Ở ĐÂY CÓ BÌNH YÊN
+            </h2>
+            <p class="text-center text-gray-700 mb-8 sm:mb-10 md:mb-12 text-sm sm:text-base">
+                Không gian ấm cúng, món ăn đậm đà hương vị quê nhà
+            </p>
+
+            <!-- Gallery Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 max-w-6xl mx-auto">
+                <!-- Large Image 1 -->
+                <div class="col-span-1 row-span-2 overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="0">
+                    <img src="images/g1.jpg" alt="Logo Nhà hàng"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 2 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="1">
+                    <img src="images/g2.jpg" alt="Không gian nhà hàng"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 3 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="2">
+                    <img src="images/g3.jpg" alt="Khu vực phục vụ"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Large Image 4 -->
+                <div class="col-span-1 row-span-2 overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="3">
+                    <img src="images/g10.jpg" alt="Không gian bên trong"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 5 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="4">
+                    <img src="images/g5.jpg" alt="Món ăn đặc sản"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 6 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="5">
+                    <img src="images/g6.jpg" alt="Bàn ăn"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 7 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="6">
+                    <img src="images/g7.jpg" alt="Khu vực tiếp khách"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 8 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="7">
+                    <img src="images/g8.jpg" alt="Món ăn"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 9 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="8">
+                    <img src="images/g9.jpg" alt="Không gian xanh"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 10 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="9">
+                    <img src="images/g4.jpg" alt="Góc nhà hàng"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+
+                <!-- Image 11 -->
+                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 gallery-item"
+                    data-index="10">
+                    <img src="images/g11.jpg" alt="Món ăn đặc biệt"
+                        class="w-full h-full object-cover hover:scale-110 transition-transform duration-500 cursor-pointer">
+                </div>
+            </div>
+
+            <!-- Caption -->
+            <p class="text-center text-gray-700 text-xs sm:text-sm mt-6 sm:mt-8 italic">
+                Quý khách vui lòng Click Ảnh để xem rõ chi tiết hơn
+            </p>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-95 z-50 hidden items-center justify-center">
+        <!-- Close Button -->
+        <button id="lightbox-close" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 z-50">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Previous Button -->
+        <button id="lightbox-prev"
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 z-50">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Next Button -->
+        <button id="lightbox-next"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 z-50">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <!-- Main Image Container -->
+        <div class="w-full h-full flex items-center justify-center p-4">
+            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-full object-contain">
+        </div>
+
+        <!-- Counter -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white text-lg">
+            <span id="lightbox-counter"></span>
+        </div>
+
+        <!-- Thumbnail Strip -->
+        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-80 p-4 overflow-x-auto">
+            <div id="lightbox-thumbnails" class="flex gap-2 justify-center"></div>
+        </div>
+    </div>
+
+    <script>
+        // Lightbox Gallery Script
+        const galleryImages = [
+            { src: 'images/g1.jpg', alt: 'Logo Nhà hàng' },
+            { src: 'images/g2.jpg', alt: 'Không gian nhà hàng' },
+            { src: 'images/g3.jpg', alt: 'Khu vực phục vụ' },
+            { src: 'images/g10.jpg', alt: 'Không gian bên trong' },
+            { src: 'images/g5.jpg', alt: 'Món ăn đặc sản' },
+            { src: 'images/g6.jpg', alt: 'Bàn ăn' },
+            { src: 'images/g7.jpg', alt: 'Khu vực tiếp khách' },
+            { src: 'images/g8.jpg', alt: 'Món ăn' },
+            { src: 'images/g9.jpg', alt: 'Không gian xanh' },
+            { src: 'images/g4.jpg', alt: 'Góc nhà hàng' },
+            { src: 'images/g11.jpg', alt: 'Món ăn đặc biệt' }
+        ];
+
+        let currentIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCounter = document.getElementById('lightbox-counter');
+        const lightboxThumbnails = document.getElementById('lightbox-thumbnails');
+
+        // Open lightbox
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', function () {
+                currentIndex = parseInt(this.dataset.index);
+                showLightbox();
+            });
+        });
+
+        // Close lightbox
+        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', function (e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        // Navigation
+        document.getElementById('lightbox-prev').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateLightbox();
+        });
+
+        document.getElementById('lightbox-next').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % galleryImages.length;
+            updateLightbox();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            if (!lightbox.classList.contains('hidden')) {
+                if (e.key === 'ArrowLeft') document.getElementById('lightbox-prev').click();
+                if (e.key === 'ArrowRight') document.getElementById('lightbox-next').click();
+                if (e.key === 'Escape') closeLightbox();
+            }
+        });
+
+        function showLightbox() {
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            updateLightbox();
+            createThumbnails();
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function updateLightbox() {
+            lightboxImg.src = galleryImages[currentIndex].src;
+            lightboxImg.alt = galleryImages[currentIndex].alt;
+            lightboxCounter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+            updateThumbnailActive();
+        }
+
+        function createThumbnails() {
+            if (lightboxThumbnails.children.length > 0) return;
+
+            galleryImages.forEach((img, index) => {
+                const thumb = document.createElement('img');
+                thumb.src = img.src;
+                thumb.alt = img.alt;
+                thumb.className = 'w-16 h-16 object-cover cursor-pointer border-2 border-transparent hover:border-orange-500 transition-all';
+                thumb.dataset.index = index;
+                thumb.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateLightbox();
+                });
+                lightboxThumbnails.appendChild(thumb);
+            });
+        }
+
+        function updateThumbnailActive() {
+            const thumbs = lightboxThumbnails.querySelectorAll('img');
+            thumbs.forEach((thumb, index) => {
+                if (index === currentIndex) {
+                    thumb.classList.add('border-orange-500');
+                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    thumb.classList.remove('border-orange-500');
+                }
+            });
+        }
+    </script>
+
+
+    <!-- Team -->
+    <section class="team-section py-10 sm:py-12 md:py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="font-dancing text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-10 md:mb-12">Đội
+                Ngũ Của Chúng Tôi</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+                <div class="text-center">
+                    <img src="images/truong.jpg" alt="Chef"
+                        class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-3 sm:mb-4">
+                    <h3 class="font-bold text-base sm:text-lg md:text-xl mb-1">Nguyễn Nhật Trường</h3>
+                    <p class="text-orange-600 mb-1 sm:mb-2 text-sm sm:text-base">Bếp trưởng</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">20 năm kinh nghiệm</p>
+                </div>
+                <div class="text-center">
+                    <img src="images/T.VY.jpg" alt="Manager"
+                        class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-3 sm:mb-4">
+                    <h3 class="font-bold text-base sm:text-lg md:text-xl mb-1">Hứa Thị Thảo Vy</h3>
+                    <p class="text-orange-600 mb-1 sm:mb-2 text-sm sm:text-base">Quản lý</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">8 năm kinh nghiệm</p>
+                </div>
+                <div class="text-center">
+                    <img src="images/K.Thuat.jpg" alt="Chef"
+                        class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-3 sm:mb-4">
+                    <h3 class="font-bold text-base sm:text-lg md:text-xl mb-1">Nguyễn Huỳnh Kỹ Thuật</h3>
+                    <p class="text-orange-600 mb-1 sm:mb-2 text-sm sm:text-base">Phó bếp trưởng</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">12 năm kinh nghiệm</p>
+                </div>
+                <div class="text-center">
+                    <img src="images/HTL.png" alt="Staff"
+                        class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-3 sm:mb-4">
+                    <h3 class="font-bold text-base sm:text-lg md:text-xl mb-1">Hoàng Thục Linh</h3>
+                    <p class="text-orange-600 mb-1 sm:mb-2 text-sm sm:text-base">Chủ nhà hàng</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">10 năm kinh nghiệm</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Video Review Section -->
+    <section class="video-section relative py-10 sm:py-12 md:py-16 overflow-hidden"
+        style="background: linear-gradient(135deg, #fff5e6 0%, #ffe4cc 25%, #ffd4b3 50%, #ffc299 75%, #ffb380 100%);">
+        <!-- Decorative Pattern Overlay -->
+        <div class="absolute inset-0 opacity-5"
+            style="background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(139, 69, 19, 0.1) 35px, rgba(139, 69, 19, 0.1) 70px);">
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-8 sm:mb-10 md:mb-12">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4"
+                    style="font-family: 'Montserrat', sans-serif; color: #8B4513; letter-spacing: 0.05em;">
+                    VIDEO ĐƯỢC CÁC TIKTOKER REVIEW
+                </h2>
+            </div>
+
+            <!-- Video Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-7xl mx-auto">
+                <!-- Video 1 -->
+                <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="relative" style="padding-bottom: 177.78%; background: #000;">
+                        <video controls class="absolute inset-0 w-full h-full object-contain">
+                            <source src="images/clip1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm text-gray-600">Tiktoker Nguyễn Thị Mộng Nghi review, ngày 18/8/2023.</p>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="relative" style="padding-bottom: 177.78%; background: #000;">
+                        <video controls class="absolute inset-0 w-full h-full object-contain">
+                            <source src="images/clip2.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm text-gray-600">Tiktoker Nguyễn Thị Mộng Nghi review, ngày 28/2/2024.</p>
+                    </div>
+                </div>
+
+                <!-- Video 3 -->
+                <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="relative" style="padding-bottom: 177.78%; background: #000;">
+                        <video controls class="absolute inset-0 w-full h-full object-contain">
+                            <source src="images/clip3.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm text-gray-600">Tiktoker Nguyễn Thị Mộng Nghi review, ngày 28/2/2024.</p>
+                    </div>
+                </div>
+
+                <!-- Video 4 -->
+                <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="relative" style="padding-bottom: 177.78%; background: #000;">
+                        <video controls class="absolute inset-0 w-full h-full object-contain">
+                            <source src="images/clip4.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm text-gray-600">Tiktoker Ghiền review, ngày 12/1/2024.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section py-10 sm:py-12 md:py-16 bg-gradient-to-r from-orange-600 to-red-600 text-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
+                <div>
+                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">20+</p>
+                    <p class="text-sm sm:text-base md:text-xl">Năm kinh nghiệm</p>
+                </div>
+                <div>
+                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">100+</p>
+                    <p class="text-sm sm:text-base md:text-xl">Món ăn đa dạng</p>
+                </div>
+                <div>
+                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">50K+</p>
+                    <p class="text-sm sm:text-base md:text-xl">Khách hàng hài lòng</p>
+                </div>
+                <div>
+                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2">30+</p>
+                    <p class="text-sm sm:text-base md:text-xl">Nhân viên chuyên nghiệp</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container"></div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" 
+        class="fixed bottom-32 right-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
+        style="z-index: 99999 !important;"
+        aria-label="Scroll to top">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <style>
+        @media (max-width: 640px) {
+            #scroll-to-top {
+                bottom: 8rem !important;
+                right: 1rem !important;
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+            
+            #scroll-to-top i {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Scroll to Top functionality
+        (function() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            
+            if (!scrollBtn) {
+                console.error('Scroll button not found!');
+                return;
+            }
+            
+            console.log('Scroll to top button initialized');
+            
+            // Show/hide button based on scroll position
+            function checkScroll() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.style.opacity = '1';
+                    scrollBtn.style.visibility = 'visible';
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.visibility = 'hidden';
+                    scrollBtn.classList.remove('show');
+                }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            
+            // Check on load
+            checkScroll();
+            
+            // Smooth scroll to top when clicked
+            scrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Scroll to top clicked!');
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        })();
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/load-components.js"></script>
+    <script src="js/cart.js"></script>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/gsap-gioi-thieu.js"></script>
+
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+
+</body>
+
+</html>

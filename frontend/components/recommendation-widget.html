@@ -1,0 +1,237 @@
+<!-- ML Recommendation Widget Component -->
+<style>
+    .recommendation-section {
+        background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+        border-radius: 16px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .recommendation-card {
+        transition: all 0.3s ease;
+    }
+    
+    .recommendation-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .recommendation-scroll {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        scroll-snap-type: x mandatory;
+    }
+    
+    .recommendation-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .recommendation-scroll::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .recommendation-scroll::-webkit-scrollbar-thumb {
+        background: #f97316;
+        border-radius: 3px;
+    }
+    
+    .recommendation-item {
+        flex-shrink: 0;
+        width: 180px;
+        scroll-snap-align: start;
+    }
+    
+    @media (max-width: 640px) {
+        .recommendation-item {
+            width: 150px;
+        }
+    }
+</style>
+
+<!-- Widget cho trang giỏ hàng / thanh toán -->
+<div id="cart-recommendations" class="recommendation-section hidden">
+    <div class="flex items-center justify-between mb-4">
+        <div>
+            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <span class="text-2xl">🍽️</span> Gợi ý thêm cho bạn
+            </h3>
+            <p class="text-sm text-gray-500">Kết hợp hoàn hảo với món bạn đã chọn</p>
+        </div>
+        <button onclick="refreshCartRecommendations()" class="text-orange-600 hover:text-orange-700 text-sm">
+            <i class="fas fa-sync-alt mr-1"></i> Làm mới
+        </button>
+    </div>
+    
+    <div id="cart-recommendations-list" class="recommendation-scroll">
+        <!-- Loading skeleton -->
+        <div class="recommendation-item animate-pulse">
+            <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+                <div class="bg-gray-200 h-28"></div>
+                <div class="p-3">
+                    <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Widget cho trang thực đơn -->
+<div id="menu-recommendations" class="hidden">
+    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span class="text-2xl">✨</span> Gợi ý dành riêng cho bạn
+                </h3>
+                <p class="text-sm text-gray-500 mt-1">Dựa trên sở thích và lịch sử của bạn</p>
+            </div>
+        </div>
+        
+        <div id="menu-recommendations-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <!-- Recommendations will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Load gợi ý cho giỏ hàng
+async function loadCartRecommendations() {
+    const container = document.getElementById('cart-recommendations');
+    const list = document.getElementById('cart-recommendations-list');
+    
+    if (!container || !list) return;
+    
+    // Lấy danh sách món trong giỏ hàng
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const dishIds = cart.map(item => item.id).filter(Boolean);
+    
+    if (dishIds.length === 0) {
+        container.classList.add('hidden');
+        return;
+    }
+    
+    try {
+        if (typeof RecommendationSystem === 'undefined') {
+            console.warn('RecommendationSystem not loaded');
+            return;
+        }
+        
+        const recommendations = await RecommendationSystem.getPairingRecommendations(dishIds);
+        
+        if (recommendations.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        
+        list.innerHTML = recommendations.map(dish => {
+            let imagePath = dish.anh_mon || 'default-food.jpg';
+            if (!imagePath.startsWith('http') && !imagePath.startsWith('/images/')) {
+                imagePath = '/images/' + imagePath.replace(/^\/+/, '');
+            }
+            const imageUrl = imagePath.startsWith('http') ? imagePath : `http://localhost:3000${imagePath}`;
+            const price = new Intl.NumberFormat('vi-VN').format(dish.gia_tien);
+            
+            return `
+                <div class="recommendation-item">
+                    <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all">
+                        <a href="chitietmonan.html?id=${dish.ma_mon}" class="block">
+                            <div class="relative">
+                                <img src="${imageUrl}" alt="${dish.ten_mon}" 
+                                     class="w-full h-28 object-cover"
+                                     onerror="this.src='images/default-food.jpg'">
+                                <span class="absolute top-2 left-2 bg-orange-500 text-white px-2 py-0.5 rounded-full text-xs">
+                                    ${dish.recommendation_type === 'pairing' ? '🍽️ Kết hợp' : '🔥 Hot'}
+                                </span>
+                            </div>
+                        </a>
+                        <div class="p-3">
+                            <h4 class="font-medium text-sm text-gray-800 line-clamp-1 mb-1">${dish.ten_mon}</h4>
+                            <p class="text-xs text-gray-500 line-clamp-1 mb-2">${dish.reason || ''}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-orange-600 font-bold text-sm">${price}đ</span>
+                                <button onclick="addToCartFromRecommendation(${dish.ma_mon}, '${dish.ten_mon.replace(/'/g, "\\'")}', ${dish.gia_tien}, '${imageUrl}')"
+                                        class="bg-orange-500 text-white w-7 h-7 rounded-full hover:bg-orange-600 transition text-xs">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error('Error loading cart recommendations:', error);
+        container.classList.add('hidden');
+    }
+}
+
+// Refresh cart recommendations
+window.refreshCartRecommendations = function() {
+    const list = document.getElementById('cart-recommendations-list');
+    if (list) {
+        list.innerHTML = `
+            <div class="recommendation-item animate-pulse">
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-200 h-28"></div>
+                    <div class="p-3">
+                        <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    loadCartRecommendations();
+};
+
+// Load gợi ý cho trang thực đơn
+async function loadMenuRecommendations() {
+    const container = document.getElementById('menu-recommendations');
+    const grid = document.getElementById('menu-recommendations-grid');
+    
+    if (!container || !grid) return;
+    
+    try {
+        if (typeof RecommendationSystem === 'undefined') {
+            console.warn('RecommendationSystem not loaded');
+            return;
+        }
+        
+        const recommendations = await RecommendationSystem.getRecommendations(8);
+        
+        if (recommendations.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        RecommendationSystem.renderList(recommendations, 'menu-recommendations-grid');
+        
+    } catch (error) {
+        console.error('Error loading menu recommendations:', error);
+        container.classList.add('hidden');
+    }
+}
+
+// Auto-load based on page
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    // Load cart recommendations on cart/checkout pages
+    if (currentPage === 'gio-hang.html' || currentPage === 'thanh-toan.html') {
+        setTimeout(loadCartRecommendations, 500);
+    }
+    
+    // Load menu recommendations on menu page
+    if (currentPage === 'thuc-don.html') {
+        setTimeout(loadMenuRecommendations, 500);
+    }
+});
+</script>

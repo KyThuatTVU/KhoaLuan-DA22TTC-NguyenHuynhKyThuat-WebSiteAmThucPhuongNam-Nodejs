@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà hàng Ẩm thực Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/christmas-intro.css">
+    <link rel="stylesheet" href="css/tet-intro.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920') center/cover;
+            min-height: 600px;
+        }
+
+        .badge-discount {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ff6a00 0%, #ee0979 100%);
+        }
+
+        .cart-badge {
+            top: -8px;
+            right: -8px;
+            min-width: 20px;
+            height: 20px;
+        }
+
+        /* ===== Hero Banner Style ===== */
+        .banner {
+            height: 90vh;
+            background-image: url('images/nen2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Hiệu ứng overlay tối nhẹ */
+        .banner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 0;
+        }
+
+        .banner>.container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Animation nhẹ nhàng */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .animate-fade-in-down {
+            animation: fadeInDown 1s ease forwards;
+        }
+
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 640px) {
+            .swiper-slide img {
+                max-height: 60vh !important;
+                object-position: center;
+            }
+
+            .swiper-pagination {
+                bottom: 10px !important;
+            }
+
+            .hero-content-mobile {
+                padding-top: 80px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .swiper-slide img {
+                max-height: 70vh !important;
+            }
+        }
+
+        /* Ensure text is readable on mobile */
+        @media (max-width: 640px) {
+            .hero-title-mobile {
+                font-size: 1.75rem !important;
+                line-height: 2rem !important;
+            }
+
+            .hero-description-mobile {
+                font-size: 0.875rem !important;
+                line-height: 1.5rem !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Thêm vào <head> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Hero Banner Slider -->
+    <section class="relative w-full overflow-hidden bg-gray-900">
+        <!-- Swiper Container -->
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <!-- Slide 1 -->
+                <div class="swiper-slide relative w-full bg-black">
+                    <!-- Ảnh nền full, giữ tỉ lệ -->
+                    <img src="images/nen2.jpg" class="w-full h-auto max-h-[100vh] min-h-[400px] object-cover"
+                        alt="Ảnh Banner 1" />
+
+                    <!-- Lớp phủ tối -->
+                    <div class="absolute inset-0 bg-black/50"></div>
+
+                    <div
+    class="hero-content-mobile absolute inset-0 flex items-center justify-center text-center px-4 sm:px-8 md:px-16">
+    
+    <div class="max-w-2xl">
+        <!-- Title -->
+        <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl
+            font-sans font-extrabold tracking-wide 
+            text-white
+            drop-shadow-[0_6px_12px_rgba(0,0,0,0.8)]
+            transition-all duration-300 hover:scale-105
+            mb-6 sm:mb-8"
+            style="text-shadow: 
+                3px 3px 6px rgba(0,0,0,0.9),
+                6px 6px 12px rgba(0,0,0,0.6),
+                0 0 30px rgba(255,255,255,0.3);">
+            Hương Vị <br> Miền Quê
+        </h1>
+        <!-- Description -->
+        <p class="hero-description-mobile text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-8 sm:mb-10
+            text-white font-sans leading-relaxed
+            drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]
+            animate-fade-in-up"
+            style="text-shadow: 3px 3px 8px rgba(0,0,0,0.9);">
+            Đắm chìm trong không gian ẩm thực truyền thống Nam Bộ với những món ăn độc đáo,
+            hương vị đậm đà không thể nào quên.
+        </p>
+
+        <!-- Button -->
+        <a href="dat-ban.html"
+            class="inline-block bg-red-600 hover:bg-red-700 text-white font-sans py-4 sm:py-5 px-10 sm:px-12 rounded-lg
+            transition-all transform hover:scale-110 shadow-2xl text-lg sm:text-xl font-semibold">
+            <i class="fas fa-calendar-check mr-2"></i>Đặt Bàn Ngay
+        </a>
+    </div>
+</div>
+                </div>
+
+            </div>
+
+            <!-- Navigation buttons - Ẩn trên mobile -->
+            <div class="swiper-button-prev text-white hidden md:flex"></div>
+            <div class="swiper-button-next text-white hidden md:flex"></div>
+
+            <!-- Pagination dots -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const swiper = new Swiper(".mySwiper", {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            effect: "fade",
+            fadeEffect: { crossFade: true },
+            speed: 1000,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    </script>
+
+    <!-- Advertisement Banner Section -->
+    <section class="py-6 sm:py-8 md:py-10 bg-gradient-to-br from-amber-100 via-orange-50 to-red-50">
+        <div class="container mx-auto px-4">
+            <!-- Banner Auto Scroll - CSS Animation -->
+            <div class="relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-white">
+                <div class="banner-scroll-container h-32 sm:h-40 md:h-48 lg:h-56 flex items-center overflow-hidden">
+                    <div class="banner-scroll-content flex gap-3 sm:gap-4">
+                        <!-- Banner 1 -->
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner.webp" alt="Banner quảng cáo 1" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <!-- Banner 2 -->
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner2.jpg" alt="Banner quảng cáo 2" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <!-- Banner 3 -->
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner3.jpg" alt="Banner quảng cáo 3" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <!-- Banner 4 -->
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner4.webp" alt="Banner quảng cáo 4" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <!-- Duplicate for seamless loop -->
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner.webp" alt="Banner quảng cáo 1" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner2.jpg" alt="Banner quảng cáo 2" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner3.jpg" alt="Banner quảng cáo 3" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                        
+                        <a href="#" target="_blank" class="flex-shrink-0">
+                            <img src="images/banner4.webp" alt="Banner quảng cáo 4" 
+                                class="h-24 sm:h-36 md:h-44 lg:h-52 w-auto object-contain" />
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Ad Label -->
+                <div class="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded z-10">
+                    Quảng cáo
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .banner-scroll-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-scroll-content {
+            animation: scroll-left 30s linear infinite;
+            width: max-content;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Pause on hover */
+        .banner-scroll-container:hover .banner-scroll-content {
+            animation-play-state: paused;
+        }
+    </style>
+
+    <style>
+        /* Ultra High Quality Video Rendering */
+        .ad-video-hq {
+            /* Prevent any image smoothing/anti-aliasing */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            -ms-interpolation-mode: nearest-neighbor;
+
+            /* Hardware acceleration */
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translateZ(0) scale(1.0);
+            transform: translateZ(0) scale(1.0);
+            -webkit-perspective: 1000;
+            perspective: 1000;
+
+            /* Prevent blur */
+            -webkit-filter: none;
+            filter: none;
+            -webkit-font-smoothing: subpixel-antialiased;
+
+            /* Force GPU rendering */
+            will-change: transform;
+            transform-style: preserve-3d;
+
+            /* Prevent compression */
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+
+
+    <!-- About Section -->
+    <section class="relative py-10 sm:py-16 md:py-20 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 overflow-hidden">
+        <div class="container mx-auto px-4 sm:px-6 md:px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <!-- Nội dung bên trái -->
+                <div class="order-2 lg:order-1">
+                    <h2 class="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl 
+font-bold text-gray-800 mb-4 sm:mb-6 text-center">
+    Về Chúng Tôi
+</h2>
+
+                    <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-orange-700 mb-2 sm:mb-3">
+                        Ẩm thực Phương Nam – Ngon như mẹ nấu
+                    </h3>
+
+                    <p class="text-sm sm:text-base md:text-lg font-semibold text-gray-700 uppercase tracking-wide mb-4 sm:mb-6 md:mb-8">
+                        Nhà hàng cơm Việt, quán cơm gia đình ngon tại Vĩnh Long
+                    </p>
+
+                    <div class="text-gray-700 leading-relaxed space-y-3 sm:space-y-4 text-sm sm:text-base">
+                        <p>
+                            Tại <span class="font-semibold text-orange-700">Phương Nam</span>, triết lý của chúng tôi rất đơn giản:
+                            chia sẻ hương vị và văn hóa thưởng thức cơm Việt tới tất cả mọi người.
+                            Chúng tôi làm điều này bằng việc sử dụng nguồn nguyên liệu tươi sạch nhất,
+                            và chế biến chúng qua đôi tay của những người đầu bếp tận tâm.
+                        </p>
+
+                        <p>
+                            Không gian tại nhà hàng cơm <span class="font-semibold text-orange-700">Phương Nam</span> được lấy
+                            cảm hứng từ những giá trị truyền thống của Việt Nam, kết hợp với những yếu tố hiện đại để tạo nên
+                            một cảm giác xưa cũ mà vẫn đầy mới mẻ.
+                        </p>
+
+                        <p>
+                            Với chủ đạo là gỗ, cây xanh và ánh sáng tự nhiên, chúng tôi mang lại một không gian ấm cúng,
+                            gần gũi – nơi mỗi bữa ăn đều là một trải nghiệm đáng nhớ, trọn vị và đậm tình quê hương.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ảnh 3D bên phải với viền cắt góc -->
+                <div class="order-1 lg:order-2 perspective-container">
+                    <div class="vintage-frame-wrapper">
+                        <!-- Viền ngoài (shadow layer) -->
+                        <div class="vintage-frame-shadow"></div>
+                        
+                        <!-- Viền chính với hiệu ứng cắt góc -->
+                        <div class="vintage-frame">
+                            <img src="images/tt3.jpg" alt="Nhà hàng Phương Nam" 
+                                class="vintage-image"
+                                onerror="this.src='images/gt2.jpg'">
+                            
+                            <!-- Các góc cắt trang trí -->
+                            <div class="corner-cut corner-top-left"></div>
+                            <div class="corner-cut corner-top-right"></div>
+                            <div class="corner-cut corner-bottom-left"></div>
+                            <div class="corner-cut corner-bottom-right"></div>
+                            
+                            <!-- Viền vàng kim bên trong -->
+                            <div class="inner-border"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* 3D Perspective Container */
+        .perspective-container {
+            perspective: 1500px;
+            padding: 20px;
+        }
+
+        /* Vintage Frame Wrapper */
+        .vintage-frame-wrapper {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .vintage-frame-wrapper:hover {
+            transform: rotateY(8deg) rotateX(-5deg) scale(1.03);
+        }
+
+        /* Shadow Layer (3D depth) */
+        .vintage-frame-shadow {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: -15px;
+            bottom: -15px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.3), rgba(101, 67, 33, 0.4));
+            clip-path: polygon(
+                8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%, 0% 8%
+            );
+            filter: blur(8px);
+            transform: translateZ(-30px);
+        }
+
+        /* Main Vintage Frame */
+        .vintage-frame {
+            position: relative;
+            background: linear-gradient(145deg, #8B4513, #654321, #8B4513);
+            padding: 12px;
+            clip-path: polygon(
+                8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%, 0% 8%
+            );
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.4);
+            transform: translateZ(20px);
+        }
+
+        /* Image inside frame */
+        .vintage-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            clip-path: polygon(
+                6% 0%, 94% 0%, 100% 6%, 100% 94%, 94% 100%, 6% 100%, 0% 94%, 0% 6%
+            );
+            transform: translateZ(10px);
+        }
+
+        /* Corner Cuts Decoration */
+        .corner-cut {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #D4AF37;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), transparent);
+        }
+
+        .corner-top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+
+        .corner-top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            clip-path: polygon(100% 0, 100% 100%, 0 0);
+        }
+
+        .corner-bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            clip-path: polygon(0 0, 100% 100%, 0 100%);
+        }
+
+        .corner-bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        /* Inner Golden Border */
+        .inner-border {
+            position: absolute;
+            inset: 8px;
+            border: 2px solid #D4AF37;
+            clip-path: polygon(
+                7% 0%, 93% 0%, 100% 7%, 100% 93%, 93% 100%, 7% 100%, 0% 93%, 0% 7%
+            );
+            pointer-events: none;
+            box-shadow: 
+                0 0 10px rgba(212, 175, 55, 0.5),
+                inset 0 0 10px rgba(212, 175, 55, 0.3);
+            transform: translateZ(30px);
+        }
+
+        /* Float Animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotateZ(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotateZ(1deg);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .vintage-frame-wrapper:hover {
+                transform: scale(1.02);
+            }
+            
+            .perspective-container {
+                padding: 10px;
+            }
+            
+            .corner-cut {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .vintage-frame {
+                padding: 8px;
+            }
+            
+            .corner-cut {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+
+    <!-- Featured Dishes -->
+    <section class="py-8 sm:py-12 md:py-16 bg-gradient-to-br from-red-50 via-orange-50 to-amber-100">
+        <div class="container mx-auto px-4">
+
+            <!-- Tiêu đề trung tâm có nền nhẹ -->
+            <div class="text-center mb-6 sm:mb-8 md:mb-12">
+                <h2
+                    class="inline-block bg-gradient-to-r from-orange-200 via-orange-100 to-orange-200 text-orange-700 px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-dancing text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold shadow-sm">
+                    Top Món Ăn Được Bán Chạy Nhất Ở Nhà Hàng
+                </h2>
+                <div class="mt-3 sm:mt-4">
+                    <a href="thuc-don.html"
+                        class="text-orange-600 hover:text-orange-700 font-medium inline-flex items-center transition text-sm sm:text-base">
+                        Xem tất cả <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Danh sách món ăn - Load động từ API -->
+            <div id="featured-dishes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+                <!-- Loading skeleton -->
+                <div class="animate-pulse bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-200 h-48 sm:h-56 md:h-64"></div>
+                    <div class="p-3 sm:p-4">
+                        <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+                <div class="animate-pulse bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-200 h-48 sm:h-56 md:h-64"></div>
+                    <div class="p-3 sm:p-4">
+                        <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+                <div class="animate-pulse bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-200 h-48 sm:h-56 md:h-64"></div>
+                    <div class="p-3 sm:p-4">
+                        <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+                <div class="animate-pulse bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-200 h-48 sm:h-56 md:h-64"></div>
+                    <div class="p-3 sm:p-4">
+                        <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Render stars based on rating
+        function renderStarsHome(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else if (i - 0.5 <= rating) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            return stars;
+        }
+
+        // Load top selling dishes from API
+        async function loadFeaturedDishes() {
+            const container = document.getElementById('featured-dishes-container');
+            try {
+                const response = await fetch('http://localhost:3000/api/menu/top-selling?limit=4');
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    // Debug: Log rating data
+                    console.log('📊 Top selling dishes with ratings:');
+                    result.data.forEach(d => {
+                        console.log(`  - ${d.ten_mon}: avg_rating=${d.avg_rating} (type: ${typeof d.avg_rating}), total_reviews=${d.total_reviews}`);
+                    });
+                    
+                    container.innerHTML = result.data.map(dish => {
+                        let imagePath = dish.anh_mon || 'default-food.jpg';
+                        if (!imagePath.startsWith('http') && !imagePath.startsWith('/images/')) {
+                            imagePath = '/images/' + imagePath.replace(/^\/+/, '');
+                        }
+                        const imageUrl = imagePath.startsWith('http') ? imagePath : `http://localhost:3000${imagePath}`;
+                        const price = new Intl.NumberFormat('vi-VN').format(dish.gia_tien);
+                        
+                        return `
+                            <div class="card-hover bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                                <a href="chitietmonan.html?id=${dish.ma_mon}" class="block">
+                                    <div class="relative bg-gray-50">
+                                        <img src="${imageUrl}" alt="${dish.ten_mon}"
+                                            class="w-full h-48 sm:h-56 md:h-64 object-cover"
+                                            onerror="this.src='images/default-food.jpg'">
+                                        <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-500 text-white px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium">
+                                            <i class="fas fa-fire mr-1"></i>Bán chạy
+                                        </span>
+                                        <button onclick="event.preventDefault(); event.stopPropagation();"
+                                            class="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition">
+                                            <i class="far fa-heart text-sm sm:text-base"></i>
+                                        </button>
+                                    </div>
+                                </a>
+                                <div class="p-3 sm:p-4">
+                                    <a href="chitietmonan.html?id=${dish.ma_mon}">
+                                        <h3 class="font-medium text-base sm:text-lg mb-2 text-gray-800 hover:text-orange-600 transition">${dish.ten_mon}</h3>
+                                    </a>
+                                    <div class="flex items-center mb-2">
+                                        <div class="text-yellow-400 text-xs sm:text-sm">
+                                            ${renderStarsHome(Number(dish.avg_rating) || 0)}
+                                        </div>
+                                        <span class="text-gray-500 text-xs sm:text-sm ml-2">(${Number(dish.total_reviews) || 0} đánh giá)</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="text-orange-600 font-bold text-lg sm:text-xl">${price}đ</span>
+                                        </div>
+                                        <button onclick="addToCartFromFeatured(${dish.ma_mon}, '${dish.ten_mon.replace(/'/g, "\\'")}', ${dish.gia_tien}, '${imageUrl}')"
+                                            class="bg-orange-500 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-orange-600 transition">
+                                            <i class="fas fa-plus text-sm sm:text-base"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="col-span-4 text-center text-gray-500 py-8">Chưa có dữ liệu món ăn bán chạy</p>';
+                }
+            } catch (error) {
+                console.error('Error loading featured dishes:', error);
+                container.innerHTML = '<p class="col-span-4 text-center text-gray-500 py-8">Không thể tải dữ liệu. Vui lòng thử lại sau.</p>';
+            }
+        }
+
+        // Add to cart from featured section
+        function addToCartFromFeatured(id, name, price, image) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, name, price, image, quantity: 1 });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartBadge();
+            showNotification('Đã thêm vào giỏ hàng!', 'success');
+        }
+
+        // Load on page ready
+        document.addEventListener('DOMContentLoaded', loadFeaturedDishes);
+    </script>
+
+
+
+    <section class="py-16 md:py-20 
+relative overflow-hidden">
+
+    <!-- Ảnh nền với lớp phủ màu da người và trắng -->
+    <div class="absolute inset-0 z-0">
+        <img src="images/cau-long-bien.jpg" alt="Background" class="w-full h-full object-cover opacity-30" />
+        <div class="absolute inset-0 bg-white/70"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-[#f5d5c0]/40 via-[#f0c9b0]/30 to-[#e8b89a]/40"></div>
+    </div>
+
+    <!-- Hiệu ứng ánh sáng 3D -->
+    <div class="absolute inset-0 pointer-events-none z-[1]">
+        <div class="absolute top-[-80px] left-[-80px] w-[350px] h-[350px] 
+        bg-white/30 blur-3xl rounded-full"></div>
+
+        <div class="absolute bottom-[-80px] right-[-80px] w-[350px] h-[350px] 
+        bg-orange-200/20 blur-3xl rounded-full"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+
+        <!-- Tiêu đề -->
+        <div class="text-center mb-12">
+            <h2 class="font-sans text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold 
+            text-[#6b3e1d] uppercase tracking-wide
+            transform transition-all duration-300 hover:scale-105"
+            style="text-shadow: 
+                4px 4px 0px rgba(139, 69, 19, 0.3),
+                8px 8px 0px rgba(139, 69, 19, 0.2),
+                12px 12px 0px rgba(139, 69, 19, 0.1),
+                16px 16px 20px rgba(0, 0, 0, 0.2);">
+                Ẩm Thực
+            </h2>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+
+            <!-- CARD ITEM -->
+            <div class="flex flex-col items-center group">
+
+                <div class="relative w-full max-w-[280px] mb-6 
+                transform transition-all duration-300 
+                group-hover:-translate-y-3 group-hover:scale-105">
+
+                    <div class="relative bg-gradient-to-br from-[#8B4513] to-[#654321] p-3 
+                    [clip-path:polygon(12%_0%,88%_0%,100%_12%,100%_88%,88%_100%,12%_100%,0%_88%,0%_12%)]
+                    shadow-[0_15px_40px_rgba(0,0,0,0.4)]">
+
+                        <img src="images/mon3.jpg"
+                            class="w-full aspect-[3/4] object-cover 
+                            [clip-path:polygon(10%_0%,90%_0%,100%_10%,100%_90%,90%_100%,10%_100%,0%_90%,0%_10%)]">
+
+                        <div class="absolute inset-2 border-2 border-[#D4AF37] 
+                        [clip-path:polygon(9%_0%,91%_0%,100%_9%,100%_91%,91%_100%,9%_100%,0%_91%,0%_9%)]
+                        pointer-events-none"></div>
+                    </div>
+                </div>
+
+                <div class="text-center px-2">
+                    <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#8B4513] uppercase mb-3">
+                        Khai vị 4 mùa
+                    </h3>
+                    <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                        Sự kết hợp hài hòa của nhiều hương vị đặc trưng, mang đến trải nghiệm 
+                        phong phú và hấp dẫn ngay từ những món đầu tiên.
+                    </p>
+                </div>
+
+            </div>
+
+
+                <!-- Món 2: Cà nướng Tây Bắc -->
+                <div class="flex flex-col items-center group">
+                    <div class="relative w-full max-w-[280px] mb-6 
+                    transform transition-all duration-300 
+                    group-hover:-translate-y-3 group-hover:scale-105">
+                        <div class="relative bg-gradient-to-br from-[#8B4513] to-[#654321] p-3 
+                                    [clip-path:polygon(12%_0%,88%_0%,100%_12%,100%_88%,88%_100%,12%_100%,0%_88%,0%_12%)]
+                                    shadow-[0_15px_40px_rgba(0,0,0,0.4)]">
+                            <img src="images/mau2.jpg" alt="Cà nướng Tây Bắc" 
+                                 class="w-full aspect-[3/4] object-cover 
+                                        [clip-path:polygon(10%_0%,90%_0%,100%_10%,100%_90%,90%_100%,10%_100%,0%_90%,0%_10%)]"
+                                 onerror="this.src='images/gt2.jpg'">
+                            <div class="absolute inset-2 border-2 border-[#D4AF37] 
+                                        [clip-path:polygon(9%_0%,91%_0%,100%_9%,100%_91%,91%_100%,9%_100%,0%_91%,0%_9%)]
+                                        pointer-events-none"></div>
+                        </div>
+                    </div>
+                    <div class="text-center px-2">
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#8B4513] uppercase mb-3">Cà nướng Tây Bắc</h3>
+                        <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                            Cà tím nướng Tây Bắc được nướng trực tiếp trên than hồng đến khi lớp vỏ cháy xém nhẹ, 
+    dậy mùi thơm đặc trưng. Phần ruột bên trong mềm mịn, ngọt tự nhiên, hòa quyện cùng 
+    gia vị mắc khén, hạt dổi và mỡ hành béo ngậy. Ăn kèm rau sống và muối chẩm chéo, 
+    mang đến hương vị dân dã nhưng đầy cuốn hút.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Món 3: Tôm càng sông sốt chanh dây -->
+                <div class="flex flex-col items-center group">
+                    <div class="relative w-full max-w-[280px] mb-6 
+                    transform transition-all duration-300 
+                    group-hover:-translate-y-3 group-hover:scale-105">
+                        <div class="relative bg-gradient-to-br from-[#8B4513] to-[#654321] p-3 
+                                    [clip-path:polygon(12%_0%,88%_0%,100%_12%,100%_88%,88%_100%,12%_100%,0%_88%,0%_12%)]
+                                    shadow-[0_15px_40px_rgba(0,0,0,0.4)]">
+                            <img src="images/mon1.jpg" alt="Tôm càng sông sốt chanh dây" 
+                                 class="w-full aspect-[3/4] object-cover 
+                                        [clip-path:polygon(10%_0%,90%_0%,100%_10%,100%_90%,90%_100%,10%_100%,0%_90%,0%_10%)]"
+                                 onerror="this.src='images/g3.jpg'">
+                            <div class="absolute inset-2 border-2 border-[#D4AF37] 
+                                        [clip-path:polygon(9%_0%,91%_0%,100%_9%,100%_91%,91%_100%,9%_100%,0%_91%,0%_9%)]
+                                        pointer-events-none"></div>
+                        </div>
+                    </div>
+                    <div class="text-center px-2">
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#8B4513] uppercase mb-3">Tôm càng sông sốt chanh dây</h3>
+                        <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                            Tôm càng tươi sống được sơ chế kỹ, giữ trọn độ ngọt tự nhiên và độ giòn đặc trưng. 
+    Kết hợp cùng sốt chanh dây chua thanh, dịu nhẹ, hòa quyện vị ngọt của tôm và hương thơm trái cây tươi mát. 
+    Món ăn mang đến trải nghiệm tinh tế, cân bằng giữa vị chua – ngọt, đầy mới lạ và cuốn hút.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Món 4: Lẩu thái đại dương -->
+                <div class="flex flex-col items-center group">
+                    <div class="relative w-full max-w-[280px] mb-6 
+                    transform transition-all duration-300 
+                    group-hover:-translate-y-3 group-hover:scale-105">
+                        <div class="relative bg-gradient-to-br from-[#8B4513] to-[#654321] p-3 
+                                    [clip-path:polygon(12%_0%,88%_0%,100%_12%,100%_88%,88%_100%,12%_100%,0%_88%,0%_12%)]
+                                    shadow-[0_15px_40px_rgba(0,0,0,0.4)]">
+                            <img src="images/gt1.jpg" alt="Lẩu thái đại dương" 
+                                 class="w-full aspect-[3/4] object-cover 
+                                        [clip-path:polygon(10%_0%,90%_0%,100%_10%,100%_90%,90%_100%,10%_100%,0%_90%,0%_10%)]"
+                                 onerror="this.src='images/g4.jpg'">
+                            <div class="absolute inset-2 border-2 border-[#D4AF37] 
+                                        [clip-path:polygon(9%_0%,91%_0%,100%_9%,100%_91%,91%_100%,9%_100%,0%_91%,0%_9%)]
+                                        pointer-events-none"></div>
+                        </div>
+                    </div>
+                    <div class="text-center px-2">
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#8B4513] uppercase mb-3">lẩu thái đại dương</h3>
+                        <p class="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                          Lẩu Thái hải sản đại dương nổi bật với nước dùng chua cay đậm đà, 
+    hòa quyện giữa vị sả, ớt và lá chanh đặc trưng. Kết hợp cùng các loại 
+    hải sản tươi ngon như tôm, mực, nghêu, cá, tạo nên vị ngọt tự nhiên 
+    hấp dẫn. Ăn kèm rau tươi và bún, mang đến trải nghiệm ẩm thực tròn vị, 
+    ấm áp và đầy cuốn hút.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section> 
+
+  
+    <!-- Đội Ngũ Nhân Viên Section -->
+    <section class="py-10 sm:py-12 md:py-16 bg-gradient-to-br from-orange-50 via-red-50 to-amber-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-start max-w-6xl mx-auto">
+                <!-- Ảnh dọc bên trái (chiếm 2 cột) -->
+                <div class="lg:col-span-2 order-2 lg:order-1 space-y-6">
+                    <!-- Ảnh 1 -->
+                    <div class="relative max-w-sm mx-auto lg:mx-0">
+                        <div class="absolute -top-3 -left-3 w-full h-full bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl"></div>
+                        <img src="images/nv.jpg" alt="Đội ngũ nhà hàng Phương Nam" 
+                            class="relative w-full aspect-[3/4] object-cover rounded-2xl shadow-xl"
+                            onerror="this.src='images/gt1.jpg'">
+                        <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg">
+                            <p class="text-center text-sm font-medium text-gray-800">Giàn nhân viên trai xinh gái đẹp nhà Linh ạ</p>
+                        </div>
+                    </div>
+
+                    <!-- Ảnh 2 -->
+                    <div class="relative max-w-sm mx-auto lg:mx-0">
+                        <div class="absolute -top-3 -left-3 w-full h-full bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl"></div>
+                        <img src="images/nv2.jpg" alt="Đội ngũ nhà hàng Phương Nam 2" 
+                            class="relative w-full aspect-[3/4] object-cover rounded-2xl shadow-xl"
+                            onerror="this.src='images/gt2.jpg'">
+                        <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg">
+                            <p class="text-center text-sm font-medium text-gray-800">Đội ngũ chuyên nghiệp và nhiệt tình</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Nội dung bên phải (chiếm 3 cột) -->
+                <div class="lg:col-span-3 order-1 lg:order-2">
+                    <h2 class="font-dancing text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-6 sm:mb-8">
+                        Đội Ngũ Tận Tâm & Chuyên Nghiệp
+                    </h2>
+                    
+                    <div class="space-y-5 sm:space-y-6 text-gray-600 text-base sm:text-lg md:text-xl leading-relaxed mb-8">
+                        <p>
+                            Tại <span class="font-semibold text-orange-600">Nhà hàng Phương Nam</span>, chúng tôi tự hào sở hữu đội ngũ nhân viên 
+                            giàu kinh nghiệm, tận tâm và luôn đặt sự hài lòng của khách hàng lên hàng đầu. Mỗi thành viên 
+                            đều được tuyển chọn kỹ lưỡng và đào tạo bài bản về kỹ năng phục vụ cũng như văn hóa ẩm thực miền Tây.
+                        </p>
+                        <p>
+                            Với hơn <span class="font-semibold">50 năm kinh nghiệm tích lũy</span> từ toàn bộ đội ngũ, chúng tôi không chỉ 
+                            mang đến những món ăn ngon mà còn tạo nên không gian ấm cúng, thân thiện như chính ngôi nhà của bạn.
+                        </p>
+                    </div>
+                    
+                    <!-- Thông tin chi tiết đội ngũ -->
+                    <div class="space-y-5 sm:space-y-6">
+                        <div class="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+                            <img src="images/HTL.png" alt="Hoàng Thục Linh" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-orange-300 flex-shrink-0" onerror="this.src='https://ui-avatars.com/api/?name=HTL&background=ea580c&color=fff'">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-lg sm:text-xl">Hoàng Thục Linh</h4>
+                                <p class="text-base sm:text-lg text-orange-600 font-medium">Chủ nhà hàng • 10 năm kinh nghiệm</p>
+                                <p class="text-sm sm:text-base text-gray-500 mt-2">Người sáng lập và điều hành, mang đến tầm nhìn phát triển ẩm thực miền Tây đến mọi người.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+                            <img src="images/truong.jpg" alt="Nguyễn Nhật Trường" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-orange-300 flex-shrink-0" onerror="this.src='https://ui-avatars.com/api/?name=NNT&background=ea580c&color=fff'">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-lg sm:text-xl">Nguyễn Nhật Trường</h4>
+                                <p class="text-base sm:text-lg text-orange-600 font-medium">Bếp trưởng • 20 năm kinh nghiệm</p>
+                                <p class="text-sm sm:text-base text-gray-500 mt-2">Đầu bếp tài hoa với bí quyết gia truyền, tạo nên hương vị đặc trưng không thể nhầm lẫn.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+                            <img src="images/K.Thuat.jpg" alt="Nguyễn Huỳnh Kỹ Thuật" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-orange-300 flex-shrink-0" onerror="this.src='https://ui-avatars.com/api/?name=NHKT&background=ea580c&color=fff'">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-lg sm:text-xl">Nguyễn Huỳnh Kỹ Thuật</h4>
+                                <p class="text-base sm:text-lg text-orange-600 font-medium">Phó bếp trưởng • 12 năm kinh nghiệm</p>
+                                <p class="text-sm sm:text-base text-gray-500 mt-2">Hỗ trợ đắc lực cho bếp trưởng, chuyên gia về các món đặc sản vùng sông nước.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+                            <img src="images/T.VY.jpg" alt="Hứa Thị Thảo Vy" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-orange-300 flex-shrink-0" onerror="this.src='https://ui-avatars.com/api/?name=HTTV&background=ea580c&color=fff'">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-lg sm:text-xl">Hứa Thị Thảo Vy</h4>
+                                <p class="text-base sm:text-lg text-orange-600 font-medium">Quản lý • 8 năm kinh nghiệm</p>
+                                <p class="text-sm sm:text-base text-gray-500 mt-2">Điều phối hoạt động nhà hàng, đảm bảo mọi khách hàng đều có trải nghiệm tuyệt vời.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="gioi-thieu.html" class="inline-flex items-center mt-8 bg-orange-600 text-white px-8 py-4 rounded-full hover:bg-orange-700 font-medium transition shadow-lg hover:shadow-xl text-base sm:text-lg">
+                        Tìm hiểu thêm về chúng tôi <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Review Section - Đài Truyền Hình Trà Vinh -->
+    <section class="py-10 sm:py-12 md:py-16 relative overflow-hidden">
+        
+        <!-- Ảnh nền với lớp phủ màu da người và trắng -->
+        <div class="absolute inset-0 z-0">
+            <img src="images/cau-long-bien.jpg" alt="Background" class="w-full h-full object-cover opacity-30" />
+            <div class="absolute inset-0 bg-white/70"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#f5d5c0]/40 via-[#f0c9b0]/30 to-[#e8b89a]/40"></div>
+        </div>
+
+        <!-- Hiệu ứng ánh sáng 3D -->
+        <div class="absolute inset-0 pointer-events-none z-[1]">
+            <div class="absolute top-[-80px] left-[-80px] w-[350px] h-[350px] 
+            bg-white/30 blur-3xl rounded-full"></div>
+
+            <div class="absolute bottom-[-80px] right-[-80px] w-[350px] h-[350px] 
+            bg-orange-200/20 blur-3xl rounded-full"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Tiêu đề Section -->
+            <div class="text-center mb-8 sm:mb-10 md:mb-12">
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <img src="images/thtv.jpg" alt="Logo Đài Truyền Hình Trà Vinh" 
+                        class="w-12 h-12 rounded-full object-cover border-2 border-orange-400 shadow-lg"
+                        onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=THTV&background=ea580c&color=fff&size=48';">
+                    <span class="text-orange-600 font-medium text-sm uppercase tracking-wider">Truyền Hình Trà Vinh Review</span>
+                </div>
+                <h2 class="font-dancing text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-3">
+                    Đài Truyền Hình Trà Vinh
+                </h2>
+                <p class="text-orange-600 text-lg sm:text-xl md:text-2xl font-medium">Review Ẩm Thực Phương Nam</p>
+            </div>
+            
+            <!-- Video Container - Full Width -->
+            <div class="max-w-5xl mx-auto mb-8">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl group">
+                    <!-- Video Thumbnail với nút Play -->
+                    <div id="video-thumbnail" class="relative cursor-pointer" onclick="playYoutubeVideo()">
+                        <img src="https://img.youtube.com/vi/LTm48CxHhJM/maxresdefault.jpg" alt="Đài Truyền Hình Trà Vinh Review" 
+                            class="w-full aspect-video object-cover"
+                            onerror="this.src='https://img.youtube.com/vi/LTm48CxHhJM/hqdefault.jpg'">
+                        <!-- Overlay gradient -->
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300"></div>
+                        <!-- Play Button - Lớn hơn -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-orange-600 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-orange-500 transition-all duration-300 border-4 border-white/30">
+                                <i class="fas fa-play text-white text-3xl sm:text-4xl md:text-5xl ml-2"></i>
+                            </div>
+                        </div>
+                        <!-- Badge -->
+                        <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg">
+                            <i class="fab fa-youtube text-lg"></i> YouTube
+                        </div>
+                        <!-- Duration Badge -->
+                        <div class="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-lg text-sm font-medium">
+                            <i class="fas fa-clock mr-1"></i> Xem ngay
+                        </div>
+                    </div>
+                    <!-- YouTube Iframe (ẩn ban đầu) -->
+                    <div id="video-iframe" class="hidden">
+            <!-- Mô tả bên dưới video -->
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="space-y-4 text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed mb-8">
+                    <p>
+                        Nhà hàng <span class="font-semibold text-orange-600">Ẩm Thực Phương Nam</span> vinh dự được 
+                        <span class="font-semibold text-gray-800">Đài Truyền Hình Trà Vinh</span> đến thăm và giới thiệu 
+                        trong chương trình khám phá ẩm thực địa phương.
+                    </p>
+                    <p>
+                        Video ghi lại không gian ấm cúng của nhà hàng, quy trình chế biến món ăn tỉ mỉ và những 
+                        chia sẻ chân thành từ đội ngũ đầu bếp về bí quyết tạo nên hương vị đặc trưng miền Tây Nam Bộ.
+                    </p>
+                </div>
+                
+                <!-- Highlights - 4 cột đẹp -->
+                <div class="grid grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
+                    <div class="flex flex-col items-center gap-2 bg-white/60 rounded-xl p-3 sm:p-4 hover:bg-white/80 transition text-center">
+                        <i class="fas fa-utensils text-orange-600 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-gray-800 font-semibold">Đặc sản</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 bg-white/60 rounded-xl p-3 sm:p-4 hover:bg-white/80 transition text-center">
+                        <i class="fas fa-home text-orange-600 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-gray-800 font-semibold">Ấm cúng</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 bg-white/60 rounded-xl p-3 sm:p-4 hover:bg-white/80 transition text-center">
+                        <i class="fas fa-heart text-orange-600 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-gray-800 font-semibold">Tận tâm</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 bg-white/60 rounded-xl p-3 sm:p-4 hover:bg-white/80 transition text-center">
+                        <i class="fas fa-star text-orange-600 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-gray-800 font-semibold">Chất lượng</span>
+                    </div>pan class="text-xs sm:text-sm text-white">Đặc sản</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 bg-white/10 rounded-xl p-3 sm:p-4 hover:bg-white/20 transition text-center">
+                        <i class="fas fa-home text-orange-400 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-white">Ấm cúng</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 bg-white/10 rounded-xl p-3 sm:p-4 hover:bg-white/20 transition text-center">
+                        <i class="fas fa-heart text-orange-400 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-white">Tận tâm</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 bg-white/10 rounded-xl p-3 sm:p-4 hover:bg-white/20 transition text-center">
+                        <i class="fas fa-star text-orange-400 text-xl sm:text-2xl"></i>
+                        <span class="text-xs sm:text-sm text-white">Chất lượng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Function để play video YouTube
+        function playYoutubeVideo() {
+            const thumbnail = document.getElementById('video-thumbnail');
+            const iframeContainer = document.getElementById('video-iframe');
+            const iframe = iframeContainer.querySelector('iframe');
+            
+            // Ẩn thumbnail, hiện iframe
+            thumbnail.classList.add('hidden');
+            iframeContainer.classList.remove('hidden');
+            
+            // Load video
+            iframe.src = iframe.dataset.src;
+        }
+    </script>
+
+    
+          
+
+    <!-- Không Gian Nhà Hàng Section -->
+    <section class="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+        style="background: linear-gradient(to bottom, #f5e6d3 0%, #e8d4ba 100%);">
+        <!-- Decorative Elements -->
+        <div
+            class="absolute top-0 left-0 w-64 h-64 bg-orange-200 rounded-full filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 w-96 h-96 bg-red-200 rounded-full filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2">
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Title -->
+            <div class="text-center mb-10 sm:mb-12 md:mb-16">
+                <h2 class="font-dancing text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4"
+                    style="color: #8B4513; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                    KHÔNG GIAN NHÀ HÀNG
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-orange-600 to-transparent mx-auto"></div>
+            </div>
+
+            <!-- Image Gallery Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 max-w-7xl mx-auto mb-10 sm:mb-12">
+
+                <!-- Image 1 -->
+                <div class="group relative">
+                    <div
+                        class="absolute -inset-2 bg-gradient-to-br from-orange-400 to-red-400 rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                    </div>
+                    <div class="relative bg-white rounded-3xl overflow-hidden shadow-2xl transform group-hover:scale-105 transition-all duration-300"
+                        style="border: 8px solid #8B4513; border-style: double;">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="images/kg1.jpg" alt="Không gian nhà hàng 1"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image 2 -->
+                <div class="group relative">
+                    <div
+                        class="absolute -inset-2 bg-gradient-to-br from-orange-400 to-red-400 rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                    </div>
+                    <div class="relative bg-white rounded-3xl overflow-hidden shadow-2xl transform group-hover:scale-105 transition-all duration-300"
+                        style="border: 8px solid #8B4513; border-style: double;">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="images/kg2.jpg" alt="Không gian nhà hàng 2"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image 3 -->
+                <div class="group relative">
+                    <div
+                        class="absolute -inset-2 bg-gradient-to-br from-orange-400 to-red-400 rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                    </div>
+                    <div class="relative bg-white rounded-3xl overflow-hidden shadow-2xl transform group-hover:scale-105 transition-all duration-300"
+                        style="border: 8px solid #8B4513; border-style: double;">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="images/kg3.jpg" alt="Không gian nhà hàng 3"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- View More Button -->
+            <div class="text-center">
+                <a href="album.html"
+                    class="inline-flex items-center px-8 py-3 sm:px-10 sm:py-4 bg-gradient-to-r from-orange-700 to-orange-600 text-white font-bold text-base sm:text-lg rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                    style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 3px solid #8B4513;">
+                    <i class="fas fa-images mr-2"></i>
+                    XEM THÊM
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Truyền Thông Section -->
+    <section class="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-amber-50 via-orange-100 to-red-50">
+        <div class="container mx-auto px-4">
+            <!-- Title -->
+            <div class="text-center mb-10 sm:mb-12 md:mb-16">
+                <h2 class="font-dancing text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4"
+                    style="color: #8B4513; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                    TRUYỀN THÔNG
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-orange-600 to-transparent mx-auto"></div>
+            </div>
+
+            <!-- Video Card -->
+            <div class="max-w-4xl mx-auto">
+                <div class="relative group">
+                    <!-- Decorative background -->
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-br from-orange-200 to-red-200 rounded-3xl opacity-30 group-hover:opacity-40 transition-opacity duration-300">
+                    </div>
+
+                    <!-- Main Card -->
+                    <div
+                        class="relative bg-gradient-to-br from-orange-100 to-amber-100 rounded-2xl overflow-hidden shadow-2xl">
+                        <!-- VIAN Badge -->
+                        <div class="absolute top-0 left-0 z-20">
+                            <div class="relative">
+                                <svg width="120" height="120" viewBox="0 0 120 120" class="drop-shadow-lg">
+                                    <path d="M 0 0 L 120 0 L 0 120 Z" fill="#8B4513" />
+                                </svg>
+                                <div class="absolute top-4 left-4 text-white font-bold text-lg transform -rotate-45"
+                                    style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                                    COMVIET
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video Container -->
+                        <div class="relative aspect-video bg-gray-900">
+                            <img src="images/TruyenThong.jpg" alt="Phụ nữ Việt yêu cơm Việt"
+                                class="w-full h-full object-cover">
+
+                            <!-- Play Button Overlay -->
+                            <div
+                                class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors duration-300">
+                                <button
+                                    class="w-20 h-20 sm:w-24 sm:h-24 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-2xl">
+                                    <i class="fas fa-play text-orange-600 text-2xl sm:text-3xl ml-1"></i>
+                                </button>
+                            </div>
+
+                            <!-- Video Info Overlay -->
+                            <div
+                                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                                <h3 class="text-white font-dancing text-2xl sm:text-3xl md:text-4xl font-bold mb-2"
+                                    style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                                    Ngon như Mẹ nấu
+                                </h3>
+                                <p class="text-white/90 text-sm sm:text-base"
+                                    style="text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
+                                    📅 14.10-20.10.2023
+                                </p>
+                                <p class="text-white/80 text-xs sm:text-sm mt-1"
+                                    style="text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
+                                    VINHLONG Food Review
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Info Bar -->
+                        <div class="bg-white/80 backdrop-blur-sm px-6 py-4 flex items-center justify-between">
+                            <div class="flex items-center gap-4 text-gray-700">
+                                <span class="flex items-center gap-2">
+                                    <i class="fas fa-eye text-orange-600"></i>
+                                    <span class="text-sm font-medium">12.5K lượt xem</span>
+                                </span>
+                                <span class="flex items-center gap-2">
+                                    <i class="fas fa-heart text-red-500"></i>
+                                    <span class="text-sm font-medium">2.3K</span>
+                                </span>
+                            </div>
+                            <a href="#"
+                                class="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center gap-2 transition-colors">
+                                Xem chi tiết
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="text-center mt-8">
+                    <p class="text-gray-600 text-sm sm:text-base mb-4">
+                        Được đánh giá cao bởi các chuyên trang ẩm thực hàng đầu
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 items-center">
+                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-sm font-medium text-gray-700">
+                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                            Hanoi Food Review
+                        </span>
+                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-sm font-medium text-gray-700">
+                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                            Foody.vn
+                        </span>
+                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-sm font-medium text-gray-700">
+                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                            VnExpress
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cảm Nhận Khách Hàng Section -->
+    <section class="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+        style="background: linear-gradient(to bottom, #f5e6d3 0%, #e8d4ba 100%);">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 opacity-10"
+            style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920'); background-size: cover; background-position: center;">
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Title -->
+            <div class="text-center mb-10 sm:mb-12 md:mb-16">
+                <h2 class="font-dancing text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4"
+                    style="color: #8B4513; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                    CẢM NHẬN KHÁCH HÀNG
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-orange-600 to-transparent mx-auto"></div>
+            </div>
+
+            <!-- Testimonials Slider -->
+            <div class="max-w-4xl mx-auto">
+                <div class="swiper testimonialSwiper">
+                    <div class="swiper-wrapper">
+
+                        <!-- Testimonial 1 -->
+                        <div class="swiper-slide">
+                            <div
+                                class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 sm:p-10 md:p-12 shadow-2xl text-center">
+                                <!-- Avatar -->
+                                <div class="mb-6">
+                                    <img src="https://ui-avatars.com/api/?name=Chi+Trang&size=120&background=ea580c&color=fff&bold=true"
+                                        alt="Chi Trang"
+                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto border-4 border-orange-200 shadow-lg">
+                                </div>
+
+                                <!-- Quote Icon -->
+                                <div class="text-orange-300 text-4xl sm:text-5xl mb-4">
+                                    <i class="fas fa-quote-left"></i>
+                                </div>
+
+                                <!-- Review Text -->
+                                <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6 italic">
+                                    "Quán cơm mà không gian view hồ cũ phải gọi là xịn. Đồ ăn ngon, nên trải nghiệm sốt
+                                    trùng menu nhé"
+                                </p>
+
+                                <!-- Customer Name -->
+                                <h4 class="font-bold text-lg sm:text-xl mb-2"
+                                    style="color: #8B4513; letter-spacing: 2px;">
+                                    CHI TRANG
+                                </h4>
+
+                                <!-- Stars -->
+                                <div class="text-yellow-500 text-lg">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 2 -->
+                        <div class="swiper-slide">
+                            <div
+                                class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 sm:p-10 md:p-12 shadow-2xl text-center">
+                                <div class="mb-6">
+                                    <img src="https://ui-avatars.com/api/?name=Minh+Anh&size=120&background=ea580c&color=fff&bold=true"
+                                        alt="Minh Anh"
+                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto border-4 border-orange-200 shadow-lg">
+                                </div>
+                                <div class="text-orange-300 text-4xl sm:text-5xl mb-4">
+                                    <i class="fas fa-quote-left"></i>
+                                </div>
+                                <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6 italic">
+                                    "Món ăn rất ngon, đậm đà hương vị truyền thống. Không gian ấm cúng, phục vụ nhiệt
+                                    tình. Sẽ quay lại nhiều lần nữa!"
+                                </p>
+                                <h4 class="font-bold text-lg sm:text-xl mb-2"
+                                    style="color: #8B4513; letter-spacing: 2px;">
+                                    MINH ANH
+                                </h4>
+                                <div class="text-yellow-500 text-lg">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 3 -->
+                        <div class="swiper-slide">
+                            <div
+                                class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 sm:p-10 md:p-12 shadow-2xl text-center">
+                                <div class="mb-6">
+                                    <img src="https://ui-avatars.com/api/?name=Hoang+Nam&size=120&background=ea580c&color=fff&bold=true"
+                                        alt="Hoàng Nam"
+                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto border-4 border-orange-200 shadow-lg">
+                                </div>
+                                <div class="text-orange-300 text-4xl sm:text-5xl mb-4">
+                                    <i class="fas fa-quote-left"></i>
+                                </div>
+                                <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6 italic">
+                                    "Chất lượng món ăn tuyệt vời, giá cả hợp lý. Đặc biệt là các món đặc sản miền Tây
+                                    rất đúng vị. Highly recommended!"
+                                </p>
+                                <h4 class="font-bold text-lg sm:text-xl mb-2"
+                                    style="color: #8B4513; letter-spacing: 2px;">
+                                    HOÀNG NAM
+                                </h4>
+                                <div class="text-yellow-500 text-lg">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Pagination Dots -->
+                    <div class="swiper-pagination !relative !bottom-0 mt-8"></div>
+                </div>
+
+                <!-- Navigation Arrows (Hidden on mobile) -->
+                <div class="hidden md:block">
+                    <div
+                        class="swiper-button-prev-testimonial absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-orange-600 hover:text-white transition-all z-10">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div
+                        class="swiper-button-next-testimonial absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-orange-600 hover:text-white transition-all z-10">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto mt-12 sm:mt-16">
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color: #8B4513;">
+                        500+
+                    </div>
+                    <p class="text-gray-700 text-xs sm:text-sm md:text-base font-medium">Đánh giá 5 sao</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color: #8B4513;">
+                        98%
+                    </div>
+                    <p class="text-gray-700 text-xs sm:text-sm md:text-base font-medium">Khách hài lòng</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color: #8B4513;">
+                        10K+
+                    </div>
+                    <p class="text-gray-700 text-xs sm:text-sm md:text-base font-medium">Lượt đánh giá</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Swiper Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const testimonialSwiper = new Swiper(".testimonialSwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                effect: "fade",
+                fadeEffect: { crossFade: true },
+                speed: 800,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next-testimonial',
+                    prevEl: '.swiper-button-prev-testimonial',
+                },
+            });
+        });
+    </script>
+
+    <!-- Đối Tác Section -->
+    <section class="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+        <div class="container mx-auto px-4">
+            <!-- Tiêu đề -->
+            <div class="mb-8 sm:mb-10 md:mb-12">
+                <h2 class="font-sans text-2xl sm:text-3xl md:text-4xl font-bold text-green-700 mb-2 sm:mb-3">
+                    ĐỐI TÁC CỦA CHÚNG TÔI
+                </h2>
+                <p class="font-sans text-sm sm:text-base text-gray-600">
+                    Những thương hiệu đồ tin tưởng và đồng hành cùng nhà hàng trong suốt thời gian qua.
+                </p>
+            </div>
+
+            <!-- Logo Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 mb-10 sm:mb-12">
+                <!-- Partner 1: Grab Food -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-center justify-center hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/partner1.jpg" alt="Grab Food" class="w-full h-auto max-h-16 sm:max-h-20 object-contain" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none;" class="text-center">
+                        <i class="fas fa-utensils text-4xl sm:text-5xl text-green-600 mb-2"></i>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-700">Grab Food</p>
+                    </div>
+                </div>
+
+                <!-- Partner 2: ShopeeFood -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-center justify-center hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/partner2.jpg" alt="ShopeeFood" class="w-full h-auto max-h-16 sm:max-h-20 object-contain" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none;" class="text-center">
+                        <i class="fas fa-motorcycle text-4xl sm:text-5xl text-orange-600 mb-2"></i>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-700">ShopeeFood</p>
+                    </div>
+                </div>
+
+                <!-- Partner 3: Gojek -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-center justify-center hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/partner3.jpg" alt="Gojek" class="w-full h-auto max-h-16 sm:max-h-20 object-contain" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none;" class="text-center">
+                        <i class="fas fa-shipping-fast text-4xl sm:text-5xl text-green-700 mb-2"></i>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-700">Gojek</p>
+                    </div>
+                </div>
+
+                <!-- Partner 4: Emart -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-center justify-center hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/partner4.jpg" alt="Emart" class="w-full h-auto max-h-16 sm:max-h-20 object-contain" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none;" class="text-center">
+                        <i class="fas fa-store text-4xl sm:text-5xl text-yellow-600 mb-2"></i>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-700">Emart</p>
+                    </div>
+                </div>
+
+                <!-- Partner 5: MoMo -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-center justify-center hover:shadow-lg transition-shadow duration-300">
+                    <img src="images/partner5.png" alt="MoMo" class="w-full h-auto max-h-16 sm:max-h-20 object-contain" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none;" class="text-center">
+                        <i class="fas fa-wallet text-4xl sm:text-5xl text-pink-600 mb-2"></i>
+                        <p class="text-xs sm:text-sm font-semibold text-gray-700">MoMo</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Service 1 -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-start gap-3 sm:gap-4 hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-sm sm:text-base text-gray-800 mb-1">Vận chuyển miễn phí</h3>
+                        <p class="font-sans text-xs sm:text-sm text-gray-600">Hóa đơn trên 5 triệu</p>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-start gap-3 sm:gap-4 hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-sm sm:text-base text-gray-800 mb-1">Đổi trả miễn phí</h3>
+                        <p class="font-sans text-xs sm:text-sm text-gray-600">Trong vòng 7 ngày</p>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-start gap-3 sm:gap-4 hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-sm sm:text-base text-gray-800 mb-1">100% Hoàn tiền</h3>
+                        <p class="font-sans text-xs sm:text-sm text-gray-600">Nếu thực phẩm có vấn đề</p>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-white rounded-lg p-4 sm:p-6 flex items-start gap-3 sm:gap-4 hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-sm sm:text-base text-gray-800 mb-1">Hotline: 1900 636 099</h3>
+                        <p class="font-sans text-xs sm:text-sm text-gray-600">Hỗ trợ bạn từ 8h00-22h00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/loading.js"></script>
+    <script src="js/main.js"></script>
+    <!-- Component Containers -->
+    <div id="chatbot-container"></div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" 
+        class="fixed bottom-32 right-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
+        style="z-index: 99999 !important;"
+        aria-label="Scroll to top">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <style>
+        @media (max-width: 640px) {
+            #scroll-to-top {
+                bottom: 8rem !important;
+                right: 1rem !important;
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+            
+            #scroll-to-top i {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Scroll to Top functionality
+        (function() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            
+            if (!scrollBtn) {
+                console.error('Scroll button not found!');
+                return;
+            }
+            
+            console.log('Scroll to top button initialized');
+            
+            // Show/hide button based on scroll position
+            function checkScroll() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.style.opacity = '1';
+                    scrollBtn.style.visibility = 'visible';
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.visibility = 'hidden';
+                    scrollBtn.classList.remove('show');
+                }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            
+            // Check on load
+            checkScroll();
+            
+            // Smooth scroll to top when clicked
+            scrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Scroll to top clicked!');
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        })();
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/cart.js"></script>
+    <script src="js/recommendation.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/load-components.js"></script>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+    
+    <!-- Christmas Intro Animation -->
+    <script src="js/christmas-intro.js"></script>
+    
+    <!-- Tet Intro Animation -->
+    <script src="js/tet-intro.js"></script>
+</body>
+
+</html>

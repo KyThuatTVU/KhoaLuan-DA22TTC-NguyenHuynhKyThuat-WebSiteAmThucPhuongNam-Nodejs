@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Album ảnh - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm font-medium">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Album ảnh</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Quản lý hình ảnh nhà hàng</p></div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="openUploadModal()" class="bg-white text-slate-800 px-4 py-2 rounded-xl hover:bg-slate-100 font-medium text-sm"><i class="fas fa-plus mr-2"></i>Thêm ảnh</button>
+                    <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-6">
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Tổng ảnh</p><p id="stat-total" class="text-2xl font-bold text-slate-800">0</p></div><div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fas fa-images text-slate-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Món ăn</p><p id="stat-food" class="text-2xl font-bold text-amber-600">0</p></div><div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><i class="fas fa-utensils text-amber-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Không gian</p><p id="stat-space" class="text-2xl font-bold text-blue-600">0</p></div><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-store text-blue-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Sự kiện</p><p id="stat-event" class="text-2xl font-bold text-emerald-600">0</p></div><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fas fa-calendar-alt text-emerald-600 text-xl"></i></div></div></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="search-filter" placeholder="Tìm theo mô tả..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="type-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả loại ảnh</option>
+                            <option value="mon_an">Món ăn</option>
+                            <option value="khong_gian">Không gian</option>
+                            <option value="su_kien">Sự kiện</option>
+                            <option value="khac">Khác</option>
+                        </select>
+                        <input type="date" id="date-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <button onclick="applyFilters()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl hover:bg-slate-900"><i class="fas fa-filter mr-2"></i>Lọc</button>
+                    </div>
+                </div>
+
+                <!-- Albums Grid -->
+                <div id="albums-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div class="col-span-full text-center py-12"><i class="fas fa-spinner fa-spin text-4xl text-slate-400 mb-4"></i><p class="text-slate-500">Đang tải...</p></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Tải ảnh lên</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="upload-form" class="p-6 space-y-4">
+                <div><label class="block text-sm font-medium text-slate-700 mb-2">Chọn ảnh *</label><input type="file" id="images" accept="image/*" multiple required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl"><p class="text-xs text-slate-500 mt-1">Có thể chọn nhiều ảnh</p></div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-2">Loại ảnh *</label><select id="loai_anh" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"><option value="">Chọn loại ảnh</option><option value="mon_an">Món ăn</option><option value="khong_gian">Không gian</option><option value="su_kien">Sự kiện</option><option value="khac">Khác</option></select></div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-2">Mô tả</label><textarea id="mo_ta" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></textarea></div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                    <button type="submit" class="btn-primary">Tải lên</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="preview-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full">
+            <div class="flex justify-end mb-4"><button onclick="closePreview()" class="text-white hover:text-slate-300"><i class="fas fa-times text-3xl"></i></button></div>
+            <img id="preview-image" src="" alt="" class="w-full h-auto rounded-2xl">
+            <div id="preview-info" class="mt-4 text-white text-center"></div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Chỉnh sửa ảnh</h3>
+                <button onclick="closeEditModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="edit-form" class="p-6 space-y-4" enctype="multipart/form-data">
+                <input type="hidden" id="edit-id">
+                <div class="text-center mb-4">
+                    <img id="edit-preview" src="" alt="" class="w-48 h-48 object-cover rounded-xl mx-auto border-2 border-slate-200">
+                    <label class="mt-3 inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-xl cursor-pointer hover:bg-blue-100 transition">
+                        <i class="fas fa-camera mr-2"></i>
+                        <span>Thay đổi ảnh</span>
+                        <input type="file" id="edit-image" accept="image/*" class="hidden" onchange="previewEditImage(this)">
+                    </label>
+                    <p class="text-xs text-slate-400 mt-1">Để trống nếu không muốn thay đổi ảnh</p>
+                </div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-2">Loại ảnh *</label><select id="edit-loai_anh" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"><option value="mon_an">Món ăn</option><option value="khong_gian">Không gian</option><option value="su_kien">Sự kiện</option><option value="khac">Khác</option></select></div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-2">Mô tả</label><textarea id="edit-mo_ta" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></textarea></div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeEditModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+
+    <script>
+        // API_URL đã được khai báo trong admin-layout.js
+        let albums = [];
+
+        // Format ngày tháng từ server (đã đúng timezone VN)
+        function formatDateVN(dateString) {
+            if (!dateString) return 'N/A';
+            const parts = dateString.split(' ')[0].split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateString;
+        }
+
+        async function loadAlbums() {
+            try {
+                const response = await fetch(`${API_URL}/albums?limit=100`, { credentials: 'include' });
+                const data = await response.json();
+                albums = data.data || [];
+                updateStats();
+                renderAlbums(albums);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('albums-container').innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-exclamation-circle text-4xl text-red-400 mb-4"></i><p class="text-slate-500">Không thể tải dữ liệu</p></div>`;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = albums.length;
+            document.getElementById('stat-food').textContent = albums.filter(a => a.loai_anh === 'mon_an').length;
+            document.getElementById('stat-space').textContent = albums.filter(a => a.loai_anh === 'khong_gian').length;
+            document.getElementById('stat-event').textContent = albums.filter(a => a.loai_anh === 'su_kien').length;
+        }
+
+        function getImageUrl(path) {
+            if (!path) return 'https://via.placeholder.com/300?text=No+Image';
+            // Nếu đã là URL đầy đủ
+            if (path.startsWith('http')) return path;
+            // Nếu đã có /images/ hoặc images/
+            if (path.startsWith('/images/') || path.startsWith('images/')) {
+                return `${API_URL.replace('/api', '')}/${path.replace(/^\//, '')}`;
+            }
+            // Chỉ có tên file
+            return `${API_URL.replace('/api', '')}/images/${path}`;
+        }
+
+        function renderAlbums(items) {
+            const container = document.getElementById('albums-container');
+            if (items.length === 0) { container.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-images text-4xl text-slate-300 mb-4"></i><p class="text-slate-500">Chưa có ảnh nào</p></div>`; return; }
+            const typeClass = { 'mon_an': 'bg-amber-100 text-amber-700', 'khong_gian': 'bg-blue-100 text-blue-700', 'su_kien': 'bg-emerald-100 text-emerald-700', 'khac': 'bg-slate-100 text-slate-700' };
+            const typeName = { 'mon_an': 'Món ăn', 'khong_gian': 'Không gian', 'su_kien': 'Sự kiện', 'khac': 'Khác' };
+            container.innerHTML = items.map(album => {
+                const imgUrl = getImageUrl(album.duong_dan_anh);
+                return `
+                <div class="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                    <div class="aspect-square">
+                        <img src="${imgUrl}" alt="${album.mo_ta || 'Album'}" class="w-full h-full object-cover cursor-pointer" onclick="previewImage(${album.ma_album})" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                    </div>
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div class="flex space-x-2">
+                            <button onclick="previewImage(${album.ma_album})" class="bg-white text-slate-800 px-3 py-2 rounded-xl hover:bg-slate-100" title="Xem"><i class="fas fa-eye"></i></button>
+                            <button onclick="editAlbum(${album.ma_album})" class="bg-blue-500 text-white px-3 py-2 rounded-xl hover:bg-blue-600" title="Sửa"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteAlbum(${album.ma_album})" class="bg-red-500 text-white px-3 py-2 rounded-xl hover:bg-red-600" title="Xóa"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <span class="inline-block px-2 py-1 text-xs rounded-lg font-medium ${typeClass[album.loai_anh] || typeClass['khac']}">${typeName[album.loai_anh] || 'Khác'}</span>
+                        ${album.mo_ta ? `<p class="text-xs text-slate-500 mt-1 truncate">${album.mo_ta}</p>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function openUploadModal() { 
+            document.getElementById('upload-form').reset();
+            document.getElementById('upload-modal').classList.remove('hidden'); 
+        }
+        function closeModal() { document.getElementById('upload-modal').classList.add('hidden'); }
+        
+        function previewImage(id) { 
+            const album = albums.find(a => a.ma_album === id);
+            if (!album) return;
+            const imgUrl = getImageUrl(album.duong_dan_anh);
+            document.getElementById('preview-image').src = imgUrl;
+            const typeName = { 'mon_an': 'Món ăn', 'khong_gian': 'Không gian', 'su_kien': 'Sự kiện', 'khac': 'Khác' };
+            document.getElementById('preview-info').innerHTML = `
+                <p class="text-lg font-semibold">${typeName[album.loai_anh] || 'Khác'}</p>
+                ${album.mo_ta ? `<p class="text-sm opacity-80">${album.mo_ta}</p>` : ''}
+                <p class="text-xs opacity-60 mt-2">Ngày tạo: ${formatDateVN(album.ngay_tao)}</p>
+            `;
+            document.getElementById('preview-modal').classList.remove('hidden'); 
+        }
+        function closePreview() { document.getElementById('preview-modal').classList.add('hidden'); }
+
+        function editAlbum(id) {
+            const album = albums.find(a => a.ma_album === id);
+            if (!album) return;
+            document.getElementById('edit-id').value = album.ma_album;
+            document.getElementById('edit-loai_anh').value = album.loai_anh || 'khac';
+            document.getElementById('edit-mo_ta').value = album.mo_ta || '';
+            document.getElementById('edit-preview').src = getImageUrl(album.duong_dan_anh);
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+        function closeEditModal() { 
+            document.getElementById('edit-modal').classList.add('hidden'); 
+            document.getElementById('edit-image').value = ''; // Reset file input
+        }
+
+        function previewEditImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('edit-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function deleteAlbum(id) {
+            if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
+            try {
+                const response = await fetch(`${API_URL}/albums/${id}`, { method: 'DELETE', credentials: 'include' });
+                const result = await response.json();
+                if (result.success) { alert('Xóa thành công!'); loadAlbums(); } 
+                else { alert(result.message || 'Có lỗi xảy ra!'); }
+            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+        }
+
+        // Upload form
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const files = document.getElementById('images').files;
+            if (files.length === 0) { alert('Vui lòng chọn ít nhất 1 ảnh!'); return; }
+            for (let file of files) formData.append('images', file);
+            formData.append('loai_anh', document.getElementById('loai_anh').value);
+            formData.append('mo_ta', document.getElementById('mo_ta').value);
+            try {
+                const response = await fetch(`${API_URL}/albums`, { method: 'POST', body: formData, credentials: 'include' });
+                const result = await response.json();
+                if (result.success) { alert(result.message || 'Tải ảnh thành công!'); closeModal(); loadAlbums(); } 
+                else { alert(result.message || 'Có lỗi xảy ra!'); }
+            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+        });
+
+        // Edit form - hỗ trợ upload ảnh mới
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const fileInput = document.getElementById('edit-image');
+            
+            try {
+                let response;
+                
+                if (fileInput.files && fileInput.files[0]) {
+                    // Có ảnh mới - dùng FormData
+                    const formData = new FormData();
+                    formData.append('image', fileInput.files[0]);
+                    formData.append('loai_anh', document.getElementById('edit-loai_anh').value);
+                    formData.append('mo_ta', document.getElementById('edit-mo_ta').value);
+                    
+                    response = await fetch(`${API_URL}/albums/${id}`, { 
+                        method: 'PUT', 
+                        body: formData,
+                        credentials: 'include' 
+                    });
+                } else {
+                    // Không có ảnh mới - dùng JSON
+                    response = await fetch(`${API_URL}/albums/${id}`, { 
+                        method: 'PUT', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            loai_anh: document.getElementById('edit-loai_anh').value,
+                            mo_ta: document.getElementById('edit-mo_ta').value
+                        }),
+                        credentials: 'include' 
+                    });
+                }
+                
+                const result = await response.json();
+                if (result.success) { alert('Cập nhật thành công!'); closeEditModal(); loadAlbums(); } 
+                else { alert(result.message || 'Có lỗi xảy ra!'); }
+            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+        });
+
+        function applyFilters() {
+            const search = document.getElementById('search-filter').value.toLowerCase();
+            const type = document.getElementById('type-filter').value;
+            const date = document.getElementById('date-filter').value;
+            
+            let filtered = albums.filter(a => {
+                const matchSearch = !search || (a.mo_ta && a.mo_ta.toLowerCase().includes(search));
+                const matchType = !type || a.loai_anh === type;
+                const matchDate = !date || (a.ngay_tao && a.ngay_tao.startsWith(date));
+                return matchSearch && matchType && matchDate;
+            });
+            renderAlbums(filtered);
+        }
+
+        loadAlbums();
+    </script>
+</body>
+</html>

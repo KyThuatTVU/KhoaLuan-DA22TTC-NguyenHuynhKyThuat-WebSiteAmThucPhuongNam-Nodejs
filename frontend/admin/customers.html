@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Khách hàng - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm font-medium">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Khách hàng</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Danh sách khách hàng đã đăng ký</p></div>
+                </div>
+                <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-6">
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Tổng khách hàng</p><p id="total-customers" class="text-2xl font-bold text-slate-800">0</p></div><div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fas fa-users text-slate-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Mới tháng này</p><p id="new-customers" class="text-2xl font-bold text-emerald-600">0</p></div><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fas fa-user-plus text-emerald-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Đang hoạt động</p><p id="active-customers" class="text-2xl font-bold text-blue-600">0</p></div><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-user-check text-blue-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Đã khóa</p><p id="locked-customers" class="text-2xl font-bold text-red-600">0</p></div><div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><i class="fas fa-user-lock text-red-600 text-xl"></i></div></div></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="search" placeholder="Tìm tên, email, SĐT..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="status-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="1">Đang hoạt động</option>
+                            <option value="0">Đã khóa</option>
+                        </select>
+                        <select id="gender-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả giới tính</option>
+                            <option value="nam">Nam</option>
+                            <option value="nu">Nữ</option>
+                        </select>
+                        <button onclick="applyFilters()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl hover:bg-slate-900"><i class="fas fa-filter mr-2"></i>Lọc</button>
+                    </div>
+                </div>
+
+                <!-- Customers Table -->
+                <div class="content-card overflow-hidden p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Khách hàng</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Email</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Số điện thoại</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Giới tính</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Ngày đăng ký</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Trạng thái</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-tbody" class="divide-y divide-slate-100">
+                                <tr><td colspan="7" class="px-6 py-12 text-center text-slate-500"><i class="fas fa-spinner fa-spin text-3xl mb-2"></i><p>Đang tải...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+
+    <script>
+        // API_URL đã được khai báo trong admin-layout.js
+        let customers = [];
+
+        async function loadCustomers() {
+            try {
+                const response = await fetch(`${API_URL}/customers`, { credentials: 'include' });
+                const result = await response.json();
+                if (result.success) { customers = result.data || []; updateStats(); renderCustomers(customers); }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('customers-tbody').innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-red-500"><i class="fas fa-exclamation-circle text-2xl mb-2"></i><br>Không thể tải dữ liệu</td></tr>`;
+            }
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            document.getElementById('total-customers').textContent = customers.length;
+            document.getElementById('new-customers').textContent = customers.filter(c => new Date(c.ngay_tao) >= startOfMonth).length;
+            document.getElementById('active-customers').textContent = customers.filter(c => c.trang_thai === 1).length;
+            document.getElementById('locked-customers').textContent = customers.filter(c => c.trang_thai === 0).length;
+        }
+
+        function renderCustomers(items) {
+            const tbody = document.getElementById('customers-tbody');
+            if (items.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-500">Chưa có khách hàng</td></tr>`; return; }
+            tbody.innerHTML = items.map(c => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <img src="${c.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.ten_nguoi_dung)}&background=3b82f6&color=fff`}" alt="${c.ten_nguoi_dung}" class="w-10 h-10 rounded-full">
+                            <div><p class="font-medium text-slate-800">${c.ten_nguoi_dung}</p><p class="text-xs text-slate-500">#${c.ma_nguoi_dung}</p></div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-700">${c.email}</td>
+                    <td class="px-6 py-4 text-sm text-slate-700">${c.so_dien_thoai || 'N/A'}</td>
+                    <td class="px-6 py-4 text-sm text-slate-700">${c.gioi_tinh === 'nam' ? 'Nam' : c.gioi_tinh === 'nu' ? 'Nữ' : 'Khác'}</td>
+                    <td class="px-6 py-4 text-sm text-slate-500">${new Date(c.ngay_tao).toLocaleDateString('vi-VN')}</td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium ${c.trang_thai === 1 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${c.trang_thai === 1 ? 'Hoạt động' : 'Đã khóa'}</span></td>
+                    <td class="px-6 py-4">
+                        <button onclick="toggleStatus(${c.ma_nguoi_dung})" class="p-2 rounded-lg ${c.trang_thai === 1 ? 'text-red-600 hover:bg-red-50' : 'text-emerald-600 hover:bg-emerald-50'}"><i class="fas fa-${c.trang_thai === 1 ? 'lock' : 'unlock'}"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function toggleStatus(customerId) {
+            const customer = customers.find(c => c.ma_nguoi_dung === customerId);
+            if (!customer) return;
+            const action = customer.trang_thai === 1 ? 'khóa' : 'mở khóa';
+            if (!confirm(`Bạn có chắc muốn ${action} tài khoản này?`)) return;
+            try {
+                const newStatus = customer.trang_thai === 1 ? 0 : 1;
+                const response = await fetch(`${API_URL}/customers/${customerId}/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ trang_thai: newStatus }), credentials: 'include' });
+                if ((await response.json()).success) { customer.trang_thai = newStatus; updateStats(); renderCustomers(customers); alert(`${action.charAt(0).toUpperCase() + action.slice(1)} thành công!`); }
+            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            const gender = document.getElementById('gender-filter').value;
+            let filtered = customers.filter(c => {
+                const matchSearch = c.ten_nguoi_dung.toLowerCase().includes(search) || c.email.toLowerCase().includes(search) || (c.so_dien_thoai && c.so_dien_thoai.includes(search));
+                const matchStatus = !status || c.trang_thai == status;
+                const matchGender = !gender || c.gioi_tinh === gender;
+                return matchSearch && matchStatus && matchGender;
+            });
+            renderCustomers(filtered);
+        }
+
+        loadCustomers();
+    </script>
+</body>
+</html>

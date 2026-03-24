@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Ảnh - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        .gallery-item {
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* Mobile gallery improvements */
+        @media (max-width: 639px) {
+            .gallery-item {
+                border-radius: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+    <section class="relative bg-cover bg-center text-white py-20" style="background-image: url('images/HAN00086.jpg');">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h1 class="font-dancing text-5xl font-bold mb-4">Album Ảnh</h1>
+            <p class="text-xl">Khám phá không gian và món ăn của chúng tôi</p>
+        </div>
+    </section>
+
+    <!-- Filter Tabs -->
+    <section class="py-8 bg-white shadow-sm sticky top-16 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-4">
+                <button class="filter-btn active px-6 py-2 rounded-full font-medium transition" data-filter="all">
+                    Tất cả
+                </button>
+                <button class="filter-btn px-6 py-2 rounded-full font-medium transition" data-filter="dishes">
+                    Món ăn
+                </button>
+                <button class="filter-btn px-6 py-2 rounded-full font-medium transition" data-filter="restaurant">
+                    Nhà hàng
+                </button>
+                <button class="filter-btn px-6 py-2 rounded-full font-medium transition" data-filter="events">
+                    Sự kiện
+                </button>
+                <button class="filter-btn px-6 py-2 rounded-full font-medium transition" data-filter="customers">
+                    Khách hàng
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery">
+                <!-- Loading state -->
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-4xl text-orange-600"></i>
+                    <p class="mt-4 text-gray-600">Đang tải album...</p>
+                </div>
+                <!-- Dishes (Old static content - will be replaced by JS) -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm hidden" data-category="dishes">
+                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600" alt="Cá lóc nướng"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Cá Lóc Nướng Trui</h3>
+                        <p class="text-gray-600 text-sm">Món ăn đặc sản</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="dishes">
+                    <img src="https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=600" alt="Lẩu mắm"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Lẩu Mắm Miền Tây</h3>
+                        <p class="text-gray-600 text-sm">Món ăn truyền thống</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="dishes">
+                    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600" alt="Bánh xèo"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Bánh Xèo</h3>
+                        <p class="text-gray-600 text-sm">Món ăn truyền thống</p>
+                    </div>
+                </div>
+
+                <!-- Restaurant -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="restaurant">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600"
+                        alt="Không gian nhà hàng" class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Không Gian Sang Trọng</h3>
+                        <p class="text-gray-600 text-sm">Khu vực trong nhà</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="restaurant">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600" alt="Phòng VIP"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Phòng VIP</h3>
+                        <p class="text-gray-600 text-sm">Dành cho sự kiện</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="restaurant">
+                    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600" alt="Sân vườn"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Khu Vực Sân Vườn</h3>
+                        <p class="text-gray-600 text-sm">Không gian thoáng mát</p>
+                    </div>
+                </div>
+
+                <!-- Events -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="events">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600" alt="Sự kiện"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Tiệc Cưới</h3>
+                        <p class="text-gray-600 text-sm">Tổ chức sự kiện</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="events">
+                    <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600" alt="Sinh nhật"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Tiệc Sinh Nhật</h3>
+                        <p class="text-gray-600 text-sm">Tổ chức sinh nhật</p>
+                    </div>
+                </div>
+
+                <!-- Customers -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="customers">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600" alt="Khách hàng"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Khách Hàng Hài Lòng</h3>
+                        <p class="text-gray-600 text-sm">Gia đình sum vầy</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-sm" data-category="customers">
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600" alt="Khách hàng"
+                        class="w-full h-64 object-cover">
+                    <div class="p-4 bg-white">
+                        <h3 class="font-medium text-lg">Trải Nghiệm Tuyệt Vời</h3>
+                        <p class="text-gray-600 text-sm">Khách hàng thân thiết</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/loading.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/load-components.js"></script>
+    
+    <!-- Album functionality -->
+    <script src="js/album.js"></script>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/gsap-album.js"></script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+
+</html>

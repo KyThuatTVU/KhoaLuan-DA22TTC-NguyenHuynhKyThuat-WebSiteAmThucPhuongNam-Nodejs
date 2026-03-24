@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển hướng...</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script>
+        // Redirect to new dashboard
+        window.location.href = 'dashboard.html';
+    </script>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-900 text-white flex-shrink-0">
+            <div class="p-6 border-b border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-utensils text-3xl text-orange-600"></i>
+                    <div>
+                        <h1 class="font-dancing text-xl font-bold">Phương Nam Admin</h1>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="#" class="sidebar-link active flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tổng quan</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-utensils"></i>
+                    <span>Quản lý món ăn</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Đơn hàng</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Đặt bàn</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-users"></i>
+                    <span>Khách hàng</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Tin tức</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-images"></i>
+                    <span>Album ảnh</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Tin nhắn</span>
+                </a>
+                <a href="#" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài đặt</span>
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-4 border-t border-gray-800">
+                <a href="../index.html" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Về trang chủ</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center space-x-4">
+                        <button class="lg:hidden text-gray-600">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        <h2 class="text-2xl font-bold text-gray-800">Tổng Quan</h2>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button class="relative text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                        </button>
+                        
+                        <div class="flex items-center space-x-3">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff" alt="Admin" class="w-10 h-10 rounded-full">
+                            <div>
+                                <p class="font-medium text-gray-800">Admin</p>
+                                <p class="text-xs text-gray-500">Quản trị viên</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm mb-1">Doanh thu hôm nay</p>
+                                <p class="text-3xl font-bold text-gray-800">12.5M</p>
+                                <p class="text-green-600 text-sm mt-2">
+                                    <i class="fas fa-arrow-up"></i> 12% so với hôm qua
+                                </p>
+                            </div>
+                            <div class="bg-orange-100 w-14 h-14 rounded-full flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-2xl text-orange-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm mb-1">Đơn hàng mới</p>
+                                <p class="text-3xl font-bold text-gray-800">45</p>
+                                <p class="text-green-600 text-sm mt-2">
+                                    <i class="fas fa-arrow-up"></i> 8% so với hôm qua
+                                </p>
+                            </div>
+                            <div class="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-2xl text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm mb-1">Đặt bàn</p>
+                                <p class="text-3xl font-bold text-gray-800">23</p>
+                                <p class="text-green-600 text-sm mt-2">
+                                    <i class="fas fa-arrow-up"></i> 15% so với hôm qua
+                                </p>
+                            </div>
+                            <div class="bg-green-100 w-14 h-14 rounded-full flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-2xl text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm mb-1">Khách hàng mới</p>
+                                <p class="text-3xl font-bold text-gray-800">12</p>
+                                <p class="text-red-600 text-sm mt-2">
+                                    <i class="fas fa-arrow-down"></i> 5% so với hôm qua
+                                </p>
+                            </div>
+                            <div class="bg-purple-100 w-14 h-14 rounded-full flex items-center justify-center">
+                                <i class="fas fa-users text-2xl text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts & Tables -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Recent Orders -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-xl font-bold mb-4">Đơn hàng gần đây</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-3 text-gray-600 font-medium">Mã đơn</th>
+                                        <th class="text-left py-3 text-gray-600 font-medium">Khách hàng</th>
+                                        <th class="text-left py-3 text-gray-600 font-medium">Tổng tiền</th>
+                                        <th class="text-left py-3 text-gray-600 font-medium">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" class="py-8 text-center text-gray-500">
+                                            <i class="fas fa-info-circle text-2xl mb-2"></i>
+                                            <p>Vui lòng truy cập <a href="dashboard.html" class="text-orange-600 hover:underline">Dashboard</a> để xem dữ liệu thực tế</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Top Dishes -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-xl font-bold mb-4">Món ăn bán chạy</h3>
+                        <div class="py-8 text-center text-gray-500">
+                            <i class="fas fa-info-circle text-2xl mb-2"></i>
+                            <p>Vui lòng truy cập <a href="dashboard.html" class="text-orange-600 hover:underline">Dashboard</a> để xem dữ liệu thực tế</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Check admin authentication
+        async function checkAuth() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin-auth/check-session', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (!data.isAuthenticated) {
+                    window.location.href = 'dang-nhap-admin.html';
+                    return;
+                }
+                
+                console.log('Admin logged in:', data.data);
+            } catch (error) {
+                console.error('Error checking auth:', error);
+                window.location.href = 'dang-nhap-admin.html';
+            }
+        }
+        
+        // Check on page load
+        checkAuth();
+        
+        // Sidebar active state
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

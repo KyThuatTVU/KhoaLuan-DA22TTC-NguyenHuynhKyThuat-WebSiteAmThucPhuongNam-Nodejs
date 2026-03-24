@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm font-medium">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Cài đặt</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Quản lý cấu hình hệ thống</p></div>
+                </div>
+                <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <!-- Restaurant Info -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-slate-800"><i class="fas fa-store text-blue-600 mr-2"></i>Thông tin nhà hàng</h3>
+                        <form class="space-y-4" onsubmit="saveRestaurantInfo(event)">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-slate-700 mb-2">Tên nhà hàng</label><input type="text" id="ten_nha_hang" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-2">Số điện thoại</label><input type="tel" id="so_dien_thoai" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-2">Email</label><input type="email" id="email" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-2">Website</label><input type="url" id="website" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-slate-700 mb-2">Địa chỉ</label><input type="text" id="dia_chi" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                            </div>
+                            <div class="flex justify-end"><button type="submit" class="btn-primary"><i class="fas fa-save mr-2"></i>Lưu thay đổi</button></div>
+                        </form>
+                    </div>
+
+                    <!-- Business Hours -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-slate-800"><i class="fas fa-clock text-blue-600 mr-2"></i>Giờ hoạt động</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <span class="font-medium text-slate-700">Thứ 2 - Thứ 6</span>
+                                <div class="flex items-center space-x-2">
+                                    <input type="time" id="gio_mo_t2t6" value="08:00" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                    <span class="text-slate-400">-</span>
+                                    <input type="time" id="gio_dong_t2t6" value="22:00" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <span class="font-medium text-slate-700">Thứ 7 - Chủ nhật</span>
+                                <div class="flex items-center space-x-2">
+                                    <input type="time" id="gio_mo_t7cn" value="07:00" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                    <span class="text-slate-400">-</span>
+                                    <input type="time" id="gio_dong_t7cn" value="23:00" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end mt-4"><button onclick="saveBusinessHours()" class="btn-primary"><i class="fas fa-save mr-2"></i>Lưu thay đổi</button></div>
+                    </div>
+
+                    <!-- Delivery Settings -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-slate-800"><i class="fas fa-shipping-fast text-blue-600 mr-2"></i>Cài đặt giao hàng</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div><p class="font-medium text-slate-700">Cho phép giao hàng</p><p class="text-sm text-slate-500">Bật/tắt chức năng giao hàng</p></div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="cho_phep_giao_hang" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div><label class="block text-sm font-medium text-slate-700 mb-2">Phí giao hàng mặc định (VNĐ)</label><input type="number" id="phi_giao_hang" value="20000" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                            <div><label class="block text-sm font-medium text-slate-700 mb-2">Miễn phí giao hàng cho đơn từ (VNĐ)</label><input type="number" id="mien_phi_giao_hang_tu" value="200000" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
+                        </div>
+                        <div class="flex justify-end mt-4"><button onclick="saveDeliverySettings()" class="btn-primary"><i class="fas fa-save mr-2"></i>Lưu thay đổi</button></div>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-slate-800"><i class="fas fa-share-alt text-blue-600 mr-2"></i>Mạng xã hội</h3>
+                        <p class="text-sm text-slate-500 mb-4">Cập nhật liên kết mạng xã hội hiển thị ở footer website</p>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-xl">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fab fa-facebook-f text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Facebook</label>
+                                    <input type="url" id="facebook_url" placeholder="https://facebook.com/yourpage" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-xl">
+                                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fab fa-youtube text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">YouTube</label>
+                                    <input type="url" id="youtube_url" placeholder="https://youtube.com/@yourchannel" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-xl">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fab fa-instagram text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Instagram</label>
+                                    <input type="url" id="instagram_url" placeholder="https://instagram.com/yourprofile" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-xl">
+                                <div class="w-12 h-12 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fab fa-tiktok text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">TikTok</label>
+                                    <input type="url" id="tiktok_url" placeholder="https://tiktok.com/@yourprofile" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end mt-4"><button onclick="saveSocialMedia()" class="btn-primary"><i class="fas fa-save mr-2"></i>Lưu thay đổi</button></div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-slate-800"><i class="fas fa-credit-card text-blue-600 mr-2"></i>Phương thức thanh toán</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div class="flex items-center space-x-3"><i class="fas fa-money-bill-wave text-emerald-600 text-xl"></i><div><p class="font-medium text-slate-700">Tiền mặt</p><p class="text-sm text-slate-500">Thanh toán khi nhận hàng</p></div></div>
+                                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="thanh_toan_tien_mat" onchange="savePaymentMethod('thanh_toan_tien_mat', this.checked)" checked class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div class="flex items-center space-x-3"><i class="fas fa-university text-blue-600 text-xl"></i><div><p class="font-medium text-slate-700">Chuyển khoản</p><p class="text-sm text-slate-500">Chuyển khoản ngân hàng</p></div></div>
+                                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="thanh_toan_chuyen_khoan" onchange="savePaymentMethod('thanh_toan_chuyen_khoan', this.checked)" checked class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div class="flex items-center space-x-3"><i class="fas fa-mobile-alt text-purple-600 text-xl"></i><div><p class="font-medium text-slate-700">MoMo</p><p class="text-sm text-slate-500">Ví điện tử MoMo</p></div></div>
+                                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="thanh_toan_momo" onchange="savePaymentMethod('thanh_toan_momo', this.checked)" checked class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Effects Settings -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-slate-800"><i class="fas fa-magic text-blue-600 mr-2"></i>Hiệu ứng trang trí</h3>
+                        <p class="text-sm text-slate-500 mb-4">Bật/tắt các hiệu ứng trang trí trên website</p>
+                        <div class="space-y-4">
+                            <!-- Christmas Intro Effect -->
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-xl">🎄</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-700">Intro Giáng sinh 🎅</p>
+                                        <p class="text-sm text-slate-500">Màn hình chào mừng Giáng sinh với ông già Noel</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="hieu_ung_intro_giang_sinh" onchange="saveEffectSetting('hieu_ung_intro_giang_sinh', this.checked)" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                </label>
+                            </div>
+                            
+                            <!-- Tet Intro Effect -->
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-xl">🧧</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-700">Intro chào mừng Tết 🎊</p>
+                                        <p class="text-sm text-slate-500">Màn hình chào mừng năm mới khi vào trang</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="hieu_ung_intro_tet" onchange="saveEffectSetting('hieu_ung_intro_tet', this.checked)" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                </label>
+                            </div>
+                            
+                            <!-- Snow Effect -->
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-snowflake text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-700">Hiệu ứng tuyết rơi ❄️</p>
+                                        <p class="text-sm text-slate-500">Tuyết rơi nhẹ nhàng trên toàn trang web</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="hieu_ung_tuyet" onchange="saveEffectSetting('hieu_ung_tuyet', this.checked)" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            
+                            <!-- Cherry Blossom Effect -->
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl border border-pink-100">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-xl">🌸</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-slate-700">Hiệu ứng hoa mai 🌸</p>
+                                        <p class="text-sm text-slate-500">Hoa mai/hoa đào rơi lãng mạn (Tết)</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="hieu_ung_hoa_mai" onchange="saveEffectSetting('hieu_ung_hoa_mai', this.checked)" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                                </label>
+                            </div>
+                            
+                            <!-- Preview buttons -->
+                            <div class="flex flex-wrap gap-3 pt-2">
+                                <button onclick="previewChristmasIntro()" class="flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition text-sm font-medium">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Xem intro Giáng sinh</span>
+                                </button>
+                                <button onclick="previewTetIntro()" class="flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition text-sm font-medium">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Xem intro Tết</span>
+                                </button>
+                                <button onclick="previewSnowEffect()" class="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition text-sm font-medium">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Xem trước tuyết</span>
+                                </button>
+                                <button onclick="previewBlossomEffect()" class="flex items-center space-x-2 px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 transition text-sm font-medium">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Xem trước hoa mai</span>
+                                </button>
+                                <button onclick="stopAllEffects()" class="flex items-center space-x-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition text-sm font-medium">
+                                    <i class="fas fa-stop"></i>
+                                    <span>Dừng xem trước</span>
+                                </button>
+                            </div>
+                            
+                            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-2">
+                                <p class="text-sm text-amber-700">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <strong>Lưu ý:</strong> Nên chỉ bật 1 hiệu ứng tại một thời điểm để tránh ảnh hưởng hiệu năng. Hiệu ứng sẽ tự động áp dụng cho tất cả các trang.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center text-red-700"><i class="fas fa-exclamation-triangle mr-2"></i>Vùng nguy hiểm</h3>
+                        <div class="space-y-3">
+                            <button class="w-full bg-white border border-red-300 text-red-700 px-4 py-2.5 rounded-xl hover:bg-red-50 transition"><i class="fas fa-database mr-2"></i>Sao lưu dữ liệu</button>
+                            <button class="w-full bg-white border border-red-300 text-red-700 px-4 py-2.5 rounded-xl hover:bg-red-50 transition"><i class="fas fa-trash-restore mr-2"></i>Xóa cache hệ thống</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+    <script>
+        // Load settings khi trang load
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_URL}/settings`, { credentials: 'include' });
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const s = result.data;
+                    // Thông tin nhà hàng
+                    document.getElementById('ten_nha_hang').value = s.ten_nha_hang || '';
+                    document.getElementById('so_dien_thoai').value = s.so_dien_thoai || '';
+                    document.getElementById('email').value = s.email || '';
+                    document.getElementById('website').value = s.website || '';
+                    document.getElementById('dia_chi').value = s.dia_chi || '';
+                    
+                    // Giờ hoạt động
+                    if (s.gio_mo_cua_t2_t6) {
+                        const [open1, close1] = s.gio_mo_cua_t2_t6.split('-');
+                        document.getElementById('gio_mo_t2t6').value = open1 || '08:00';
+                        document.getElementById('gio_dong_t2t6').value = close1 || '22:00';
+                    }
+                    if (s.gio_mo_cua_t7_cn) {
+                        const [open2, close2] = s.gio_mo_cua_t7_cn.split('-');
+                        document.getElementById('gio_mo_t7cn').value = open2 || '07:00';
+                        document.getElementById('gio_dong_t7cn').value = close2 || '23:00';
+                    }
+                    
+                    // Giao hàng
+                    document.getElementById('cho_phep_giao_hang').checked = s.cho_phep_giao_hang === '1';
+                    document.getElementById('phi_giao_hang').value = s.phi_giao_hang || '20000';
+                    document.getElementById('mien_phi_giao_hang_tu').value = s.mien_phi_giao_hang_tu || '200000';
+                    
+                    // Thanh toán
+                    document.getElementById('thanh_toan_tien_mat').checked = s.thanh_toan_tien_mat === '1';
+                    document.getElementById('thanh_toan_chuyen_khoan').checked = s.thanh_toan_chuyen_khoan === '1';
+                    document.getElementById('thanh_toan_momo').checked = s.thanh_toan_momo === '1';
+                    
+                    // Mạng xã hội
+                    document.getElementById('facebook_url').value = s.facebook_url || '';
+                    document.getElementById('youtube_url').value = s.youtube_url || '';
+                    document.getElementById('instagram_url').value = s.instagram_url || '';
+                    document.getElementById('tiktok_url').value = s.tiktok_url || '';
+                    
+                    // Hiệu ứng trang trí
+                    document.getElementById('hieu_ung_intro_giang_sinh').checked = s.hieu_ung_intro_giang_sinh === '1';
+                    document.getElementById('hieu_ung_intro_tet').checked = s.hieu_ung_intro_tet === '1';
+                    document.getElementById('hieu_ung_tuyet').checked = s.hieu_ung_tuyet === '1';
+                    document.getElementById('hieu_ung_hoa_mai').checked = s.hieu_ung_hoa_mai === '1';
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Lưu thông tin nhà hàng
+        async function saveRestaurantInfo(e) {
+            e.preventDefault();
+            try {
+                const settings = {
+                    ten_nha_hang: document.getElementById('ten_nha_hang').value,
+                    so_dien_thoai: document.getElementById('so_dien_thoai').value,
+                    email: document.getElementById('email').value,
+                    website: document.getElementById('website').value,
+                    dia_chi: document.getElementById('dia_chi').value
+                };
+                
+                const response = await fetch(`${API_URL}/settings/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ settings }),
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                alert(result.success ? 'Đã lưu thông tin nhà hàng!' : 'Lỗi: ' + result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            }
+        }
+
+        // Lưu giờ hoạt động
+        async function saveBusinessHours() {
+            try {
+                const settings = {
+                    gio_mo_cua_t2_t6: document.getElementById('gio_mo_t2t6').value + '-' + document.getElementById('gio_dong_t2t6').value,
+                    gio_mo_cua_t7_cn: document.getElementById('gio_mo_t7cn').value + '-' + document.getElementById('gio_dong_t7cn').value
+                };
+                
+                const response = await fetch(`${API_URL}/settings/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ settings }),
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                alert(result.success ? 'Đã lưu giờ hoạt động!' : 'Lỗi: ' + result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            }
+        }
+
+        // Lưu cài đặt giao hàng
+        async function saveDeliverySettings() {
+            try {
+                const settings = {
+                    cho_phep_giao_hang: document.getElementById('cho_phep_giao_hang').checked ? '1' : '0',
+                    phi_giao_hang: document.getElementById('phi_giao_hang').value,
+                    mien_phi_giao_hang_tu: document.getElementById('mien_phi_giao_hang_tu').value
+                };
+                
+                const response = await fetch(`${API_URL}/settings/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ settings }),
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                alert(result.success ? 'Đã lưu cài đặt giao hàng!' : 'Lỗi: ' + result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            }
+        }
+
+        // Lưu phương thức thanh toán (tự động khi toggle)
+        async function savePaymentMethod(key, checked) {
+            try {
+                await fetch(`${API_URL}/settings/${key}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: checked ? '1' : '0' }),
+                    credentials: 'include'
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Lưu mạng xã hội
+        async function saveSocialMedia() {
+            try {
+                const settings = {
+                    facebook_url: document.getElementById('facebook_url').value.trim(),
+                    youtube_url: document.getElementById('youtube_url').value.trim(),
+                    instagram_url: document.getElementById('instagram_url').value.trim(),
+                    tiktok_url: document.getElementById('tiktok_url').value.trim()
+                };
+                
+                const response = await fetch(`${API_URL}/settings/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ settings }),
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                alert(result.success ? 'Đã lưu liên kết mạng xã hội!' : 'Lỗi: ' + result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            }
+        }
+
+        // Load settings khi trang load
+        loadSettings();
+        
+        // ===== VISUAL EFFECTS FUNCTIONS =====
+        
+        // Lưu cài đặt hiệu ứng
+        async function saveEffectSetting(key, checked) {
+            try {
+                const response = await fetch(`${API_URL}/settings/${key}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: checked ? '1' : '0' }),
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    // Hiển thị thông báo nhỏ
+                    showToast(checked ? `Đã bật ${key === 'hieu_ung_tuyet' ? 'hiệu ứng tuyết' : 'hiệu ứng hoa mai'}` : `Đã tắt ${key === 'hieu_ung_tuyet' ? 'hiệu ứng tuyết' : 'hiệu ứng hoa mai'}`, 'success');
+                }
+            } catch (error) {
+                console.error('Error saving effect setting:', error);
+                showToast('Có lỗi xảy ra!', 'error');
+            }
+        }
+        
+        // Hiển thị toast notification
+        function showToast(message, type = 'info') {
+            // Xóa toast cũ nếu có
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast-notification fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2 animate-slide-up ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-blue-500 text-white'
+            }`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+        
+        // Preview Christmas Intro
+        function previewChristmasIntro() {
+            // Load CSS nếu chưa có
+            if (!document.getElementById('christmas-intro-css')) {
+                const link = document.createElement('link');
+                link.id = 'christmas-intro-css';
+                link.rel = 'stylesheet';
+                link.href = '../css/christmas-intro.css';
+                document.head.appendChild(link);
+            }
+            
+            // Load script nếu chưa có
+            if (!window.ChristmasIntro) {
+                const script = document.createElement('script');
+                script.src = '../js/christmas-intro.js';
+                script.onload = () => {
+                    setTimeout(() => {
+                        if (window.ChristmasIntro) {
+                            window.ChristmasIntro.show();
+                            showToast('Đang xem trước intro Giáng sinh 🎄', 'info');
+                        }
+                    }, 100);
+                };
+                document.head.appendChild(script);
+            } else {
+                window.ChristmasIntro.show();
+                showToast('Đang xem trước intro Giáng sinh 🎄', 'info');
+            }
+        }
+        
+        // Preview Tet Intro
+        function previewTetIntro() {
+            // Load CSS nếu chưa có
+            if (!document.getElementById('tet-intro-css')) {
+                const link = document.createElement('link');
+                link.id = 'tet-intro-css';
+                link.rel = 'stylesheet';
+                link.href = '../css/tet-intro.css';
+                document.head.appendChild(link);
+            }
+            
+            // Load script nếu chưa có
+            if (!window.TetIntro) {
+                const script = document.createElement('script');
+                script.src = '../js/tet-intro.js';
+                script.onload = () => {
+                    setTimeout(() => {
+                        if (window.TetIntro) {
+                            window.TetIntro.show();
+                            showToast('Đang xem trước intro Tết 🧧', 'info');
+                        }
+                    }, 100);
+                };
+                document.head.appendChild(script);
+            } else {
+                window.TetIntro.show();
+                showToast('Đang xem trước intro Tết 🧧', 'info');
+            }
+        }
+        
+        // Preview Snow Effect
+        function previewSnowEffect() {
+            // Load script nếu chưa có
+            if (!window.SnowEffect) {
+                const script = document.createElement('script');
+                script.src = '../js/snow-effect.js';
+                script.onload = () => {
+                    setTimeout(() => {
+                        if (window.SnowEffect) {
+                            window.SnowEffect.start();
+                            showToast('Đang xem trước hiệu ứng tuyết ❄️', 'info');
+                        }
+                    }, 100);
+                };
+                document.head.appendChild(script);
+            } else {
+                window.SnowEffect.start();
+                showToast('Đang xem trước hiệu ứng tuyết ❄️', 'info');
+            }
+        }
+        
+        // Preview Cherry Blossom Effect
+        function previewBlossomEffect() {
+            // Load script nếu chưa có
+            if (!window.CherryBlossomEffect) {
+                const script = document.createElement('script');
+                script.src = '../js/cherry-blossom-effect.js';
+                script.onload = () => {
+                    setTimeout(() => {
+                        if (window.CherryBlossomEffect) {
+                            window.CherryBlossomEffect.start();
+                            showToast('Đang xem trước hiệu ứng hoa mai 🌸', 'info');
+                        }
+                    }, 100);
+                };
+                document.head.appendChild(script);
+            } else {
+                window.CherryBlossomEffect.start();
+                showToast('Đang xem trước hiệu ứng hoa mai 🌸', 'info');
+            }
+        }
+        
+        // Stop all effects preview
+        function stopAllEffects() {
+            if (window.SnowEffect) {
+                window.SnowEffect.stop();
+            }
+            if (window.CherryBlossomEffect) {
+                window.CherryBlossomEffect.stop();
+            }
+            showToast('Đã dừng xem trước hiệu ứng', 'info');
+        }
+    </script>
+    
+    <style>
+        @keyframes slide-up {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+        }
+        @keyframes fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .animate-fade-out {
+            animation: fade-out 0.3s ease-out;
+        }
+    </style>
+</body>
+</html>

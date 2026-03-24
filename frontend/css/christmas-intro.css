@@ -1,0 +1,549 @@
+/* Christmas Intro Animation - Santa Sleigh */
+
+.christmas-intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    animation: fadeOut 1s ease-out 4.5s forwards;
+}
+
+.christmas-intro-overlay.hidden {
+    display: none;
+}
+
+/* Stars background */
+.intro-stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.intro-star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Moon */
+.intro-moon {
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle at 30% 30%, #fef3c7, #fde047);
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(254, 243, 199, 0.6);
+    animation: moonGlow 3s ease-in-out infinite;
+}
+
+@keyframes moonGlow {
+    0%, 100% { box-shadow: 0 0 40px rgba(254, 243, 199, 0.6); }
+    50% { box-shadow: 0 0 60px rgba(254, 243, 199, 0.9); }
+}
+
+/* Santa Sleigh Container */
+.santa-sleigh-container {
+    position: absolute;
+    left: -400px;
+    top: 30%;
+    animation: flyAcross 6s ease-in-out forwards;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+@keyframes flyAcross {
+    0% {
+        left: -400px;
+        top: 30%;
+        transform: rotate(-5deg) scale(0.8);
+    }
+    25% {
+        top: 28%;
+        transform: rotate(-2deg) scale(0.9);
+    }
+    50% {
+        top: 25%;
+        transform: rotate(0deg) scale(1);
+    }
+    75% {
+        top: 23%;
+        transform: rotate(2deg) scale(1.05);
+    }
+    100% {
+        left: calc(100% + 100px);
+        top: 20%;
+        transform: rotate(5deg) scale(1.1);
+    }
+}
+
+/* Santa and Sleigh */
+.santa-sleigh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 60px;
+    animation: bounce 0.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Reindeer */
+.reindeer {
+    animation: reindeerRun 0.3s ease-in-out infinite;
+}
+
+@keyframes reindeerRun {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+/* Trail effect */
+.santa-trail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.trail-particle {
+    position: absolute;
+    font-size: 20px;
+    animation: trailFade 1s ease-out forwards;
+}
+
+@keyframes trailFade {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+}
+
+/* Welcome Text */
+.intro-welcome-text {
+    position: absolute;
+    bottom: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    animation: textFadeIn 1s ease-out 1s forwards;
+    opacity: 0;
+}
+
+@keyframes textFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.intro-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    font-family: 'Dancing Script', cursive;
+}
+
+.intro-subtitle {
+    font-size: 20px;
+    color: rgba(255,255,255,0.9);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Snow falling in intro */
+.intro-snow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.intro-snowflake {
+    position: absolute;
+    top: -20px;
+    color: white;
+    font-size: 16px;
+    animation: introSnowfall linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes introSnowfall {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Loading spinner */
+.intro-loading {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    animation: loadingFadeIn 0.5s ease-out 2.5s forwards;
+    opacity: 0;
+}
+
+@keyframes loadingFadeIn {
+    to { opacity: 1; }
+}
+
+.loading-dot {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    animation: loadingBounce 1s ease-in-out infinite;
+}
+
+.loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loadingBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .intro-title {
+        font-size: 32px;
+    }
+    
+    .intro-subtitle {
+        font-size: 16px;
+    }
+    
+    .santa-sleigh {
+        font-size: 32px;
+    }
+    
+    .intro-moon {
+        width: 60px;
+        height: 60px;
+        top: 8%;
+        right: 10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .intro-title {
+        font-size: 24px;
+    }
+    
+    .intro-subtitle {
+        font-size: 14px;
+    }
+    
+    .santa-sleigh {
+        font-size: 24px;
+    }
+}
+
+
+/* Christmas Trees on ground */
+.intro-trees {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 5%;
+    z-index: 10;
+}
+
+.intro-tree {
+    font-size: 80px;
+    animation: treeGrow 1s ease-out forwards;
+    transform: scale(0);
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+}
+
+.intro-tree:nth-child(1) { animation-delay: 0.5s; }
+.intro-tree:nth-child(2) { animation-delay: 0.7s; }
+.intro-tree:nth-child(3) { animation-delay: 0.9s; }
+.intro-tree:nth-child(4) { animation-delay: 1.1s; }
+.intro-tree:nth-child(5) { animation-delay: 1.3s; }
+
+@keyframes treeGrow {
+    0% {
+        transform: scale(0) translateY(50px);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1) translateY(0);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Snowman */
+.intro-snowman {
+    position: absolute;
+    bottom: 5%;
+    left: 15%;
+    font-size: 70px;
+    animation: snowmanAppear 1.5s ease-out 1.5s forwards;
+    transform: scale(0);
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+}
+
+@keyframes snowmanAppear {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.2) rotate(10deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.intro-snowman-wave {
+    animation: wave 1s ease-in-out infinite 3s;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+}
+
+/* Gifts */
+.intro-gifts {
+    position: absolute;
+    bottom: 5%;
+    right: 15%;
+    display: flex;
+    gap: 10px;
+    font-size: 55px;
+}
+
+.intro-gift {
+    animation: giftDrop 0.8s ease-out forwards;
+    transform: translateY(-100px);
+    opacity: 0;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+}
+
+.intro-gift:nth-child(1) { animation-delay: 2s; }
+.intro-gift:nth-child(2) { animation-delay: 2.2s; }
+.intro-gift:nth-child(3) { animation-delay: 2.4s; }
+
+@keyframes giftDrop {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(10px) rotate(180deg);
+    }
+    80% {
+        transform: translateY(-5px) rotate(360deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+/* Bells */
+.intro-bells {
+    position: absolute;
+    top: 15%;
+    left: 10%;
+    font-size: 50px;
+    animation: bellRing 2s ease-in-out infinite 2.5s;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+}
+
+@keyframes bellRing {
+    0%, 100% { transform: rotate(0deg); }
+    10%, 30%, 50%, 70%, 90% { transform: rotate(-15deg); }
+    20%, 40%, 60%, 80% { transform: rotate(15deg); }
+}
+
+/* Candy Canes */
+.intro-candy {
+    position: absolute;
+    top: 20%;
+    right: 12%;
+    font-size: 50px;
+    animation: candySpin 3s linear infinite 2s;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+}
+
+@keyframes candySpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Ho Ho Ho text - Hidden */
+.intro-hohoho {
+    display: none;
+}
+
+/* Audio control button */
+.intro-audio-control {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.intro-audio-control:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.intro-audio-control.muted {
+    opacity: 0.5;
+}
+
+/* Skip button */
+.intro-skip-button {
+    position: absolute;
+    bottom: 8%;
+    right: 5%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    animation: skipButtonPulse 2s ease-in-out infinite 4s;
+}
+
+.intro-skip-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+@keyframes skipButtonPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .intro-tree {
+        font-size: 50px;
+    }
+    
+    .intro-snowman {
+        font-size: 45px;
+        left: 10%;
+    }
+    
+    .intro-gifts {
+        font-size: 40px;
+        right: 10%;
+    }
+    
+    .intro-bells,
+    .intro-candy {
+        font-size: 35px;
+    }
+    
+    .santa-sleigh {
+        font-size: 40px;
+    }
+    
+    .intro-moon {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .intro-tree {
+        font-size: 40px;
+    }
+    
+    .intro-snowman {
+        font-size: 38px;
+        bottom: 3%;
+    }
+    
+    .intro-gifts {
+        font-size: 34px;
+        bottom: 3%;
+    }
+    
+    .santa-sleigh {
+        font-size: 32px;
+    }
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng của tôi - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        .status-badge {
+            @apply px-3 py-1 rounded-full text-xs font-medium;
+        }
+        .order-card {
+            transition: all 0.3s;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        /* Mobile order card improvements */
+        @media (max-width: 639px) {
+            .order-card {
+                padding: 1rem;
+            }
+            
+            .order-item-row {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- My Orders Content -->
+    <section class="py-12 min-h-screen">
+        <div class="container mx-auto px-4">
+            <!-- Page Header -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                            <i class="fas fa-shopping-bag text-orange-600 mr-3"></i>
+                            Đơn hàng của tôi
+                        </h1>
+                        <p class="text-gray-600">Quản lý và theo dõi đơn hàng của bạn</p>
+                    </div>
+                    <button onclick="loadOrders()" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>
+                        Làm mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterOrders('all')" class="filter-btn active px-4 py-2 rounded-lg font-medium transition" data-status="all">
+                        <i class="fas fa-list mr-2"></i>
+                        Tất cả
+                    </button>
+                    <button onclick="filterOrders('cho_xac_nhan')" class="filter-btn px-4 py-2 rounded-lg font-medium transition" data-status="cho_xac_nhan">
+                        <i class="fas fa-clock mr-2"></i>
+                        Chờ xác nhận
+                    </button>
+                    <button onclick="filterOrders('da_xac_nhan')" class="filter-btn px-4 py-2 rounded-lg font-medium transition" data-status="da_xac_nhan">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Đã xác nhận
+                    </button>
+                    <button onclick="filterOrders('dang_chuan_bi')" class="filter-btn px-4 py-2 rounded-lg font-medium transition" data-status="dang_chuan_bi">
+                        <i class="fas fa-fire mr-2"></i>
+                        Đang chuẩn bị
+                    </button>
+                    <button onclick="filterOrders('hoan_thanh')" class="filter-btn px-4 py-2 rounded-lg font-medium transition" data-status="hoan_thanh">
+                        <i class="fas fa-star mr-2"></i>
+                        Hoàn thành
+                    </button>
+                    <button onclick="filterOrders('da_huy')" class="filter-btn px-4 py-2 rounded-lg font-medium transition" data-status="da_huy">
+                        <i class="fas fa-times-circle mr-2"></i>
+                        Đã hủy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div id="orders-container" class="space-y-4">
+                <!-- Orders will be loaded here -->
+                <div class="text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-4xl text-orange-600 mb-4"></i>
+                    <p class="text-gray-600">Đang tải đơn hàng...</p>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden bg-white rounded-xl shadow-sm p-12 text-center">
+                <i class="fas fa-shopping-bag text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Chưa có đơn hàng nào</h3>
+                <p class="text-gray-600 mb-6">Hãy đặt món ăn ngon từ thực đơn của chúng tôi</p>
+                <a href="thuc-don.html" class="inline-block bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition">
+                    <i class="fas fa-utensils mr-2"></i>
+                    Xem thực đơn
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Detail Modal -->
+    <div id="order-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h3 class="text-2xl font-bold">
+                    <i class="fas fa-receipt text-orange-600 mr-2"></i>
+                    Chi tiết đơn hàng
+                </h3>
+                <button onclick="closeOrderDetail()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="order-detail-content" class="p-6">
+                <!-- Order details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Order Modal -->
+    <div id="cancel-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full">
+            <div class="p-6">
+                <div class="text-center mb-4">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-3xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Xác nhận hủy đơn hàng</h3>
+                    <p class="text-gray-600">Bạn có chắc chắn muốn hủy đơn hàng này?</p>
+                    <p class="text-sm text-gray-500 mt-2">Mã đơn: <span id="cancel-order-code" class="font-medium"></span></p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Lý do hủy</label>
+                    <textarea id="cancel-reason" rows="3" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-orange-600" placeholder="Nhập lý do hủy đơn (không bắt buộc)"></textarea>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeCancelModal()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-medium hover:bg-gray-300 transition">
+                        Không, giữ đơn
+                    </button>
+                    <button onclick="confirmCancelOrder()" class="flex-1 bg-red-600 text-white py-3 rounded-lg font-medium hover:bg-red-700 transition">
+                        Đồng ý hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="js/loading.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/load-components.js"></script>
+    <script src="js/my-orders.js"></script>
+
+    <!-- GSAP Animation -->
+    <script>
+        // Animate page header only (không animate order cards vì my-orders.js đã xử lý)
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.text-center.mb-8', {
+                y: 30,
+                opacity: 0,
+                duration: 0.6,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.filter-buttons', {
+                y: 20,
+                opacity: 0,
+                duration: 0.6,
+                delay: 0.2,
+                ease: 'power3.out'
+            });
+        });
+    </script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+</html>

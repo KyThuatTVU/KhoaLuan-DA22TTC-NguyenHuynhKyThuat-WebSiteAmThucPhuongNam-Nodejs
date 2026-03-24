@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Liên hệ - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm font-medium">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Liên hệ</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Tin nhắn từ khách hàng</p></div>
+                </div>
+                <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Tổng liên hệ</p><p id="total-contacts" class="text-xl sm:text-2xl font-bold text-slate-800">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fas fa-envelope text-slate-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Chưa đọc</p><p id="new-contacts" class="text-xl sm:text-2xl font-bold text-orange-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-xl flex items-center justify-center"><i class="fas fa-envelope-open text-orange-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Đã đọc</p><p id="read-contacts" class="text-xl sm:text-2xl font-bold text-blue-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-eye text-blue-600 text-base sm:text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-xs sm:text-sm">Đã phản hồi</p><p id="replied-contacts" class="text-xl sm:text-2xl font-bold text-emerald-600">0</p></div><div class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fas fa-reply text-emerald-600 text-base sm:text-xl"></i></div></div></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-4 sm:mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                        <input type="text" id="search" placeholder="Tìm tên, email, nội dung..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="status-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="new">Chưa đọc</option>
+                            <option value="read">Đã đọc</option>
+                            <option value="replied">Đã phản hồi</option>
+                        </select>
+                        <select id="subject-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả chủ đề</option>
+                            <option value="Câu hỏi chung">Câu hỏi chung</option>
+                            <option value="Đặt bàn">Đặt bàn</option>
+                            <option value="Đặt tiệc">Đặt tiệc</option>
+                            <option value="Góp ý & Phản hồi">Góp ý & Phản hồi</option>
+                            <option value="Hợp tác kinh doanh">Hợp tác kinh doanh</option>
+                        </select>
+                        <button onclick="applyFilters()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl hover:bg-slate-900"><i class="fas fa-filter mr-2"></i>Lọc</button>
+                    </div>
+                </div>
+
+                <!-- Contacts Table -->
+                <div class="content-card overflow-hidden p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Người gửi</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Chủ đề</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Nội dung</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase hidden sm:table-cell">Ngày gửi</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Trạng thái</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contacts-tbody" class="divide-y divide-slate-100">
+                                <tr><td colspan="6" class="px-6 py-12 text-center text-slate-500"><i class="fas fa-spinner fa-spin text-3xl mb-2"></i><p>Đang tải...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="flex justify-center mt-6 space-x-2"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-800">Chi tiết liên hệ</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="modal-content" class="p-6"></div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+
+    <script>
+        let contacts = [];
+        let currentPage = 1;
+        const limit = 10;
+
+        async function loadContacts(page = 1) {
+            try {
+                const status = document.getElementById('status-filter').value;
+                const search = document.getElementById('search').value;
+                let url = `${API_URL}/contact?page=${page}&limit=${limit}`;
+                if (status) url += `&trang_thai=${status}`;
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                
+                const response = await fetch(url, { credentials: 'include' });
+                const result = await response.json();
+                if (result.success) {
+                    contacts = result.data || [];
+                    renderContacts(contacts);
+                    renderPagination(result.pagination);
+                    loadStats();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('contacts-tbody').innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-red-500"><i class="fas fa-exclamation-circle text-2xl mb-2"></i><br>Không thể tải dữ liệu</td></tr>`;
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/contact/stats/summary`, { credentials: 'include' });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('total-contacts').textContent = result.data.total || 0;
+                    document.getElementById('new-contacts').textContent = result.data.new_count || 0;
+                    document.getElementById('read-contacts').textContent = result.data.read_count || 0;
+                    document.getElementById('replied-contacts').textContent = result.data.replied_count || 0;
+                }
+            } catch (error) { console.error('Error loading stats:', error); }
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'new': '<span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">Chưa đọc</span>',
+                'read': '<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Đã đọc</span>',
+                'replied': '<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Đã phản hồi</span>'
+            };
+            return badges[status] || badges['new'];
+        }
+
+        function renderContacts(items) {
+            const tbody = document.getElementById('contacts-tbody');
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">Chưa có liên hệ nào</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = items.map(c => `
+                <tr class="hover:bg-slate-50 ${c.trang_thai === 'new' ? 'bg-orange-50/50' : ''}">
+                    <td class="px-4 py-4">
+                        <div><p class="font-medium text-slate-800">${c.ho_ten}</p><p class="text-xs text-slate-500">${c.email}</p><p class="text-xs text-slate-400">${c.so_dien_thoai || ''}</p></div>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-slate-700 hidden md:table-cell">${c.tieu_de || 'Câu hỏi chung'}</td>
+                    <td class="px-4 py-4 text-sm text-slate-600 max-w-xs truncate">${c.noi_dung.substring(0, 80)}${c.noi_dung.length > 80 ? '...' : ''}</td>
+                    <td class="px-4 py-4 text-sm text-slate-500 hidden sm:table-cell">${new Date(c.ngay_gui).toLocaleDateString('vi-VN')}</td>
+                    <td class="px-4 py-4">${getStatusBadge(c.trang_thai)}</td>
+                    <td class="px-4 py-4">
+                        <div class="flex space-x-1">
+                            <button onclick="viewDetail(${c.ma_lien_he})" class="p-2 rounded-lg text-blue-600 hover:bg-blue-50" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                            <button onclick="updateStatus(${c.ma_lien_he}, 'replied')" class="p-2 rounded-lg text-emerald-600 hover:bg-emerald-50" title="Đánh dấu đã phản hồi"><i class="fas fa-reply"></i></button>
+                            <button onclick="deleteContact(${c.ma_lien_he})" class="p-2 rounded-lg text-red-600 hover:bg-red-50" title="Xóa"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPagination(pagination) {
+            if (!pagination || pagination.totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            let html = '';
+            for (let i = 1; i <= pagination.totalPages; i++) {
+                html += `<button onclick="loadContacts(${i})" class="px-4 py-2 rounded-lg ${i === pagination.page ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">${i}</button>`;
+            }
+            document.getElementById('pagination').innerHTML = html;
+        }
+
+        async function viewDetail(id) {
+            try {
+                const response = await fetch(`${API_URL}/contact/${id}`, { credentials: 'include' });
+                const result = await response.json();
+                if (result.success) {
+                    const c = result.data;
+                    // Mark as read
+                    if (c.trang_thai === 'new') {
+                        await updateStatus(id, 'read', false);
+                    }
+                    
+                    let imagesHtml = '';
+                    if (c.hinh_anh) {
+                        const images = c.hinh_anh.split(',');
+                        imagesHtml = `<div class="mt-4"><p class="font-semibold text-slate-700 mb-2">Hình ảnh đính kèm:</p><div class="grid grid-cols-3 gap-2">${images.map(img => `<a href="${API_URL.replace('/api', '')}${img}" target="_blank"><img src="${API_URL.replace('/api', '')}${img}" class="w-full h-24 object-cover rounded-lg hover:opacity-80"></a>`).join('')}</div></div>`;
+                    }
+                    
+                    document.getElementById('modal-content').innerHTML = `
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><p class="text-sm text-slate-500">Họ tên</p><p class="font-medium">${c.ho_ten}</p></div>
+                                <div><p class="text-sm text-slate-500">Email</p><p class="font-medium">${c.email}</p></div>
+                                <div><p class="text-sm text-slate-500">Số điện thoại</p><p class="font-medium">${c.so_dien_thoai || 'N/A'}</p></div>
+                                <div><p class="text-sm text-slate-500">Chủ đề</p><p class="font-medium">${c.tieu_de || 'Câu hỏi chung'}</p></div>
+                                <div><p class="text-sm text-slate-500">Ngày gửi</p><p class="font-medium">${new Date(c.ngay_gui).toLocaleString('vi-VN')}</p></div>
+                                <div><p class="text-sm text-slate-500">Trạng thái</p>${getStatusBadge(c.trang_thai)}</div>
+                            </div>
+                            <div><p class="text-sm text-slate-500 mb-2">Nội dung</p><div class="bg-slate-50 p-4 rounded-xl text-slate-700 whitespace-pre-wrap">${c.noi_dung}</div></div>
+                            ${imagesHtml}
+                            <div class="flex space-x-3 pt-4 border-t">
+                                <button onclick="updateStatus(${c.ma_lien_he}, 'replied')" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl hover:bg-emerald-700"><i class="fas fa-reply mr-2"></i>Đánh dấu đã phản hồi</button>
+                                <a href="mailto:${c.email}?subject=Re: ${c.tieu_de || 'Liên hệ từ website'}" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl hover:bg-blue-700 text-center"><i class="fas fa-envelope mr-2"></i>Gửi email</a>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('detail-modal').classList.remove('hidden');
+                    document.getElementById('detail-modal').classList.add('flex');
+                }
+            } catch (error) { console.error('Error:', error); alert('Không thể tải chi tiết'); }
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+            document.getElementById('detail-modal').classList.remove('flex');
+        }
+
+        async function updateStatus(id, status, reload = true) {
+            try {
+                await fetch(`${API_URL}/contact/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ trang_thai: status }),
+                    credentials: 'include'
+                });
+                if (reload) {
+                    loadContacts(currentPage);
+                    closeModal();
+                }
+            } catch (error) { console.error('Error:', error); }
+        }
+
+        async function deleteContact(id) {
+            if (!confirm('Bạn có chắc muốn xóa liên hệ này?')) return;
+            try {
+                const response = await fetch(`${API_URL}/contact/${id}`, { method: 'DELETE', credentials: 'include' });
+                if ((await response.json()).success) {
+                    loadContacts(currentPage);
+                    alert('Xóa thành công!');
+                }
+            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+        }
+
+        function applyFilters() {
+            currentPage = 1;
+            loadContacts(1);
+        }
+
+        document.getElementById('search').addEventListener('keypress', e => { if (e.key === 'Enter') applyFilters(); });
+        
+        loadContacts();
+    </script>
+</body>
+</html>

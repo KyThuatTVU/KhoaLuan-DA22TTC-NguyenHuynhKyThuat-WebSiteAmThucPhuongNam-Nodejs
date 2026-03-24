@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Bàn & Đặt Món - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        .menu-item-card {
+            transition: all 0.3s ease;
+        }
+        .menu-item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .menu-item-card.selected {
+            border-color: #ea580c;
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+        }
+        .quantity-btn {
+            transition: all 0.2s ease;
+        }
+        .quantity-btn:hover {
+            background-color: #ea580c;
+            color: white;
+        }
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        .step-indicator.active {
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+            color: white;
+        }
+        .step-indicator.completed {
+            background: #22c55e;
+            color: white;
+        }
+        .cart-summary {
+            position: sticky;
+            top: 100px;
+        }
+        @media (max-width: 1024px) {
+            .cart-summary {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                border-radius: 1rem 1rem 0 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Payment QR Modal -->
+    <div id="payment-qr-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden overflow-y-auto py-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 my-auto">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-center">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-qrcode text-white text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white">Thanh toán đặt bàn</h3>
+                <p class="text-white/90 mt-2">Quét mã QR để thanh toán</p>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <!-- QR Code -->
+                <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 mb-4">
+                    <img id="qr-code-image" src="" alt="QR Code" class="w-full max-w-xs mx-auto rounded-lg shadow-lg">
+                </div>
+
+                <!-- Bank Info -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-4 space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Ngân hàng:</span>
+                        <span class="font-bold" id="bank-name">Vietcombank</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Số tài khoản:</span>
+                        <span class="font-bold" id="account-number">1052053578</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Chủ tài khoản:</span>
+                        <span class="font-bold" id="account-name">NGUYEN HUYNH KY THUAT</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-2 mt-2">
+                        <span class="text-gray-600">Số tiền:</span>
+                        <span class="font-bold text-orange-600 text-xl" id="payment-amount">0đ</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nội dung:</span>
+                        <span class="font-bold text-blue-600" id="transfer-content">DB000001</span>
+                    </div>
+                </div>
+
+                <!-- Timer -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-center">
+                    <i class="fas fa-clock text-yellow-600 mr-2"></i>
+                    <span class="text-sm text-yellow-800">Mã QR có hiệu lực trong: </span>
+                    <span class="font-bold text-yellow-900 text-lg" id="qr-timer">5:00</span>
+                </div>
+
+                <!-- Instructions -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                    <p class="text-sm text-blue-800 font-medium mb-2">
+                        <i class="fas fa-info-circle mr-1"></i> Hướng dẫn thanh toán:
+                    </p>
+                    <ol class="text-sm text-blue-700 space-y-1 ml-4 list-decimal">
+                        <li>Mở ứng dụng ngân hàng của bạn</li>
+                        <li>Quét mã QR hoặc chuyển khoản thủ công</li>
+                        <li>Nhập đúng nội dung chuyển khoản</li>
+                        <li>Sau khi chuyển khoản, bấm "Đã thanh toán"</li>
+                    </ol>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3">
+                    <button onclick="cancelPayment()" 
+                            class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-300 transition">
+                        <i class="fas fa-times mr-2"></i>Hủy
+                    </button>
+                    <button id="btn-confirm-payment" onclick="confirmPayment()" 
+                            class="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-xl font-medium hover:opacity-90 transition">
+                        <i class="fas fa-check mr-2"></i>Đã thanh toán
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Banner Section -->
+    <section class="relative w-full text-white overflow-hidden h-[250px] sm:h-[320px] md:h-[380px] lg:h-[420px] flex items-center justify-center text-center">
+        <div class="absolute inset-0 opacity-80" style="background-image: url('images/Banner-Com-ngon-scaled.jpg'); background-size: cover; background-position: center;"></div>
+        <div class="relative z-10 px-4">
+            <h1 class="font-dancing text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 drop-shadow-lg text-[#4b2c16]">
+                Đặt bàn & Đặt món
+            </h1>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-[#5b3a1e]">
+                Đặt bàn trước và chọn món để được phục vụ nhanh chóng
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-8 sm:py-12 md:py-16" id="main-content">
+        <div class="container mx-auto px-4">
+            <!-- Step Indicators -->
+            <div class="flex justify-center mb-8">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <div id="step1-indicator" class="step-indicator w-10 h-10 rounded-full flex items-center justify-center font-bold active">1</div>
+                        <span class="ml-2 font-medium text-gray-700 hidden sm:inline">Thông tin đặt bàn</span>
+                    </div>
+                    <div class="w-8 sm:w-16 h-1 bg-gray-300 rounded" id="step-line-1"></div>
+                    <div class="flex items-center">
+                        <div id="step2-indicator" class="step-indicator w-10 h-10 rounded-full flex items-center justify-center font-bold bg-gray-300 text-gray-600">2</div>
+                        <span class="ml-2 font-medium text-gray-500 hidden sm:inline">Chọn món ăn</span>
+                    </div>
+                    <div class="w-8 sm:w-16 h-1 bg-gray-300 rounded" id="step-line-2"></div>
+                    <div class="flex items-center">
+                        <div id="step3-indicator" class="step-indicator w-10 h-10 rounded-full flex items-center justify-center font-bold bg-gray-300 text-gray-600">3</div>
+                        <span class="ml-2 font-medium text-gray-500 hidden sm:inline">Xác nhận</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto">
+                <!-- Step 1: Booking Info -->
+                <div id="step1-content" class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+                    <!-- Booking Form -->
+                    <div class="bg-white rounded-2xl shadow-xl p-5 sm:p-8 lg:p-10 border border-orange-100">
+                        <div class="flex items-center mb-6 sm:mb-8">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+                                <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                            </div>
+                            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Thông tin đặt bàn</h2>
+                        </div>
+                        <form id="booking-info-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Họ và tên *</label>
+                                <input type="text" id="ten_nguoi_dat" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600" placeholder="Nguyễn Văn A">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Số điện thoại *</label>
+                                    <input type="tel" id="so_dien_thoai" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600" placeholder="0123456789">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Email</label>
+                                    <input type="email" id="email" class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600" placeholder="email@example.com">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Ngày đặt *</label>
+                                    <input type="date" id="ngay_dat" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Giờ đến *</label>
+                                    <input type="time" id="gio_den" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600">
+                                </div>
+                            </div>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-start">
+                                <i class="fas fa-info-circle text-yellow-600 mr-2 mt-0.5"></i>
+                                <p class="text-sm text-yellow-800">
+                                    <strong>Lưu ý:</strong> Thời gian đặt bàn phải trước ít nhất 3 tiếng so với giờ hiện tại. Nhà hàng mở cửa từ 7:00 đến 23:00.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Số lượng khách *</label>
+                                    <select id="so_luong" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600">
+                                        <option value="">Chọn số lượng khách</option>
+                                        <option value="1">1 người</option>
+                                        <option value="2">2 người</option>
+                                        <option value="3">3 người</option>
+                                        <option value="4">4 người</option>
+                                        <option value="5">5 người</option>
+                                        <option value="6">6 người</option>
+                                        <option value="7">7-10 người</option>
+                                        <option value="10">Trên 10 người</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Khu vực</label>
+                                    <select id="khu_vuc" class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600">
+                                        <option value="">Chọn khu vực (tùy chọn)</option>
+                                        <option value="indoor">Khu vực trong nhà</option>
+                                        <option value="outdoor">Khu vực sân vườn</option>
+                                        <option value="vip">Phòng VIP</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Ghi chú</label>
+                                <textarea id="ghi_chu" rows="3" class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600" placeholder="Yêu cầu đặc biệt, dị ứng thực phẩm..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 rounded-lg font-medium text-lg hover:opacity-90 transition">
+                                <i class="fas fa-arrow-right mr-2"></i> Tiếp tục chọn món
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Restaurant Info -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-2xl shadow-xl p-5 sm:p-8 border border-orange-100">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="fas fa-info-circle text-white text-lg"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800">Thông tin nhà hàng</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-map-marker-alt text-orange-600 text-xl mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">Địa chỉ</p>
+                                        <p class="text-gray-600" data-setting="dia_chi">123 Đường ABC, Phường 1, TP. Vĩnh Long</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-phone text-orange-600 text-xl mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">Điện thoại</p>
+                                        <p class="text-gray-600" data-setting="so_dien_thoai">0123 456 789</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-clock text-orange-600 text-xl mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">Giờ mở cửa</p>
+                                        <p class="text-gray-600">T2-T6: <span data-setting="gio_mo_cua_t2_t6">08:00-22:00</span></p>
+                                        <p class="text-gray-600">T7-CN: <span data-setting="gio_mo_cua_t7_cn">07:00-23:00</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-5 sm:p-8 border border-orange-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-exclamation-circle text-white"></i>
+                                </div>
+                                <h4 class="font-bold text-xl text-gray-800">Lưu ý quan trọng</h4>
+                            </div>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start bg-white rounded-lg p-3 border-l-4 border-red-500">
+                                    <i class="fas fa-exclamation-triangle text-red-600 mr-3 mt-0.5 text-lg"></i>
+                                    <span><strong class="text-red-600">Vui lòng đặt bàn trước ít nhất 3 tiếng</strong> để nhà hàng có thời gian chuẩn bị tốt nhất</span>
+                                </li>
+                                <li class="flex items-start bg-white rounded-lg p-3">
+                                    <i class="fas fa-check-circle text-orange-600 mr-3 mt-0.5 text-lg"></i>
+                                    <span><strong>Bắt buộc đặt món trước</strong> để nhà hàng chuẩn bị kịp thời</span>
+                                </li>
+                                <li class="flex items-start bg-white rounded-lg p-3">
+                                    <i class="fas fa-check-circle text-orange-600 mr-3 mt-0.5 text-lg"></i>
+                                    <span>Bàn được giữ trong vòng <strong>15 phút</strong> kể từ giờ đặt</span>
+                                </li>
+                                <li class="flex items-start bg-white rounded-lg p-3">
+                                    <i class="fas fa-check-circle text-orange-600 mr-3 mt-0.5 text-lg"></i>
+                                    <span>Thanh toán tại nhà hàng sau khi dùng bữa</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Select Menu Items -->
+                <div id="step2-content" class="hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Menu Items -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-2xl shadow-xl p-5 sm:p-8 border border-orange-100">
+                                <div class="flex items-center justify-between mb-6">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-3">
+                                            <i class="fas fa-utensils text-white text-lg"></i>
+                                        </div>
+                                        <h2 class="text-2xl font-bold text-gray-800">Chọn món ăn</h2>
+                                    </div>
+                                    <button onclick="goToStep(1)" class="text-orange-600 hover:text-orange-700 font-medium">
+                                        <i class="fas fa-arrow-left mr-1"></i> Quay lại
+                                    </button>
+                                </div>
+
+                                <!-- Category Filter -->
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    <button class="category-filter px-4 py-2 rounded-full bg-orange-600 text-white font-medium" data-category="all">
+                                        Tất cả
+                                    </button>
+                                </div>
+
+                                <!-- Search -->
+                                <div class="relative mb-6">
+                                    <input type="text" id="menu-search" placeholder="Tìm kiếm món ăn..." 
+                                           class="w-full px-4 py-3 pl-12 border rounded-lg focus:outline-none focus:border-orange-600">
+                                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+
+                                <!-- Menu Grid -->
+                                <div id="menu-items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <!-- Menu items will be loaded here -->
+                                    <div class="col-span-full text-center py-8">
+                                        <i class="fas fa-spinner fa-spin text-4xl text-orange-600 mb-4"></i>
+                                        <p class="text-gray-600">Đang tải thực đơn...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Items Summary -->
+                        <div class="lg:col-span-1">
+                            <div class="cart-summary bg-white rounded-2xl shadow-xl p-5 border border-orange-100">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mr-3">
+                                        <i class="fas fa-shopping-basket text-white text-lg"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-800">Món đã chọn</h3>
+                                </div>
+
+                                <div id="selected-items-list" class="space-y-3 max-h-[300px] overflow-y-auto mb-4">
+                                    <p class="text-gray-500 text-center py-4">Chưa chọn món nào</p>
+                                </div>
+
+                                <div class="border-t pt-4">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="font-medium text-gray-700">Tổng dự kiến:</span>
+                                        <span id="total-price" class="text-2xl font-bold text-orange-600">0đ</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mb-4">* Thanh toán tại nhà hàng sau khi dùng bữa</p>
+                                    <button id="btn-continue-step3" onclick="goToStep(3)" disabled
+                                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <i class="fas fa-arrow-right mr-2"></i> Xác nhận đặt bàn
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Confirmation -->
+                <div id="step3-content" class="hidden">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="bg-white rounded-2xl shadow-xl p-5 sm:p-8 border border-orange-100">
+                            <div class="flex items-center mb-6">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="fas fa-clipboard-check text-white text-lg"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold text-gray-800">Xác nhận đặt bàn</h2>
+                            </div>
+
+                            <!-- Booking Summary -->
+                            <div class="bg-orange-50 rounded-xl p-5 mb-6">
+                                <h3 class="font-bold text-lg mb-4 text-gray-800">Thông tin đặt bàn</h3>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-600">Họ tên:</span>
+                                        <p id="confirm-name" class="font-medium"></p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">Số điện thoại:</span>
+                                        <p id="confirm-phone" class="font-medium"></p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">Ngày đặt:</span>
+                                        <p id="confirm-date" class="font-medium"></p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">Giờ đến:</span>
+                                        <p id="confirm-time" class="font-medium"></p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">Số khách:</span>
+                                        <p id="confirm-guests" class="font-medium"></p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">Khu vực:</span>
+                                        <p id="confirm-area" class="font-medium"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Selected Items Summary -->
+                            <div class="mb-6">
+                                <h3 class="font-bold text-lg mb-4 text-gray-800">Món ăn đã đặt trước</h3>
+                                <div id="confirm-items-list" class="space-y-3">
+                                    <!-- Items will be listed here -->
+                                </div>
+                                <div class="flex justify-between items-center mt-4 pt-4 border-t">
+                                    <span class="font-bold text-lg">Tổng dự kiến:</span>
+                                    <span id="confirm-total" class="text-2xl font-bold text-orange-600"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <button onclick="goToStep(2)" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition">
+                                    <i class="fas fa-arrow-left mr-2"></i> Quay lại
+                                </button>
+                                <button id="btn-submit-booking" onclick="submitBooking()" 
+                                        class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-lg font-medium hover:opacity-90 transition">
+                                    <i class="fas fa-check mr-2"></i> Xác nhận đặt bàn
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+    <!-- Chatbot Container -->
+    <div id="chatbot-container"></div>
+    
+    <script src="js/loading.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/load-components.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // API URL
+        const API_URL = window.API_URL || 'http://localhost:3000/api';
+        
+        // State management
+        let currentStep = 1;
+        let bookingInfo = {};
+        let selectedItems = {}; // {ma_mon: {dish info, quantity}}
+        let menuItems = [];
+        let categories = [];
+        let currentReservationId = null; // Lưu mã đặt bàn sau khi tạo
+        let paymentTimer = null;
+        let paymentExpiryTime = null;
+        
+        // Constants
+        const MIN_HOURS_ADVANCE = 3;
+        
+        // Disable form cho khách chưa đăng nhập
+        function disableFormForGuest() {
+            const form = document.getElementById('booking-info-form');
+            const formContainer = form.closest('.bg-white');
+            
+            // Disable tất cả input trong form
+            const inputs = form.querySelectorAll('input, select, textarea, button');
+            inputs.forEach(input => {
+                input.disabled = true;
+                input.classList.add('bg-gray-100', 'cursor-not-allowed', 'opacity-60');
+            });
+            
+            // Thêm thông báo yêu cầu đăng nhập vào đầu form
+            const loginNotice = document.createElement('div');
+            loginNotice.className = 'mb-6 p-4 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl';
+            loginNotice.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user-lock text-orange-600 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-800 mb-1">Vui lòng đăng nhập để đặt bàn</h4>
+                        <p class="text-sm text-gray-600 mb-3">Đăng nhập để chúng tôi có thể phục vụ bạn tốt hơn và lưu lại lịch sử đặt bàn.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="dang-nhap.html?redirect=dat-ban.html" 
+                               class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-medium hover:opacity-90 transition text-sm">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Đăng nhập
+                            </a>
+                            <a href="dang-ky.html?redirect=dat-ban.html" 
+                               class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition text-sm">
+                                <i class="fas fa-user-plus mr-2"></i>Đăng ký tài khoản
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Chèn thông báo vào đầu form
+            form.insertBefore(loginNotice, form.firstChild);
+        }
+        
+        // Check login on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                // Disable form và hiển thị thông báo yêu cầu đăng nhập
+                disableFormForGuest();
+                return;
+            }
+            
+            // Pre-fill user info if logged in
+            const user = getUserData();
+            if (user) {
+                document.getElementById('ten_nguoi_dat').value = user.ten_nguoi_dung || '';
+                document.getElementById('so_dien_thoai').value = user.so_dien_thoai || '';
+                document.getElementById('email').value = user.email || '';
+                
+                // Khóa các trường thông tin cá nhân nếu đã đăng nhập
+                if (user.ten_nguoi_dung) {
+                    document.getElementById('ten_nguoi_dat').readOnly = true;
+                    document.getElementById('ten_nguoi_dat').classList.add('bg-gray-100', 'cursor-not-allowed');
+                }
+                if (user.so_dien_thoai) {
+                    document.getElementById('so_dien_thoai').readOnly = true;
+                    document.getElementById('so_dien_thoai').classList.add('bg-gray-100', 'cursor-not-allowed');
+                }
+                if (user.email) {
+                    document.getElementById('email').readOnly = true;
+                    document.getElementById('email').classList.add('bg-gray-100', 'cursor-not-allowed');
+                }
+            }
+            
+            // Set min date
+            setMinDate();
+            
+            // Load menu items
+            await loadMenuItems();
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+        
+        // Set minimum date (today)
+        function setMinDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const dateInput = document.getElementById('ngay_dat');
+            dateInput.min = `${yyyy}-${mm}-${dd}`;
+            dateInput.value = `${yyyy}-${mm}-${dd}`;
+            
+            // Set default time (current time + MIN_HOURS_ADVANCE hours, rounded to next 30 min)
+            const defaultTime = new Date(today.getTime() + (MIN_HOURS_ADVANCE + 0.5) * 60 * 60 * 1000);
+            let hours = defaultTime.getHours();
+            let minutes = Math.ceil(defaultTime.getMinutes() / 30) * 30;
+            
+            // Nếu minutes = 60, chuyển sang giờ tiếp theo
+            if (minutes >= 60) {
+                hours += 1;
+                minutes = 0;
+            }
+            
+            // Đảm bảo trong giờ mở cửa (7:00 - 23:00)
+            if (hours < 7) {
+                hours = 7;
+                minutes = 0;
+            } else if (hours >= 23) {
+                // Nếu quá 23h, chuyển sang ngày hôm sau lúc 7h
+                const nextDay = new Date(today);
+                nextDay.setDate(nextDay.getDate() + 1);
+                const nextYyyy = nextDay.getFullYear();
+                const nextMm = String(nextDay.getMonth() + 1).padStart(2, '0');
+                const nextDd = String(nextDay.getDate()).padStart(2, '0');
+                dateInput.value = `${nextYyyy}-${nextMm}-${nextDd}`;
+                hours = 7;
+                minutes = 0;
+            }
+            
+            const hoursStr = String(hours).padStart(2, '0');
+            const minutesStr = String(minutes).padStart(2, '0');
+            document.getElementById('gio_den').value = `${hoursStr}:${minutesStr}`;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Booking info form
+            document.getElementById('booking-info-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (validateBookingInfo()) {
+                    saveBookingInfo();
+                    goToStep(2);
+                }
+            });
+            
+            // Menu search
+            document.getElementById('menu-search').addEventListener('input', function(e) {
+                filterMenuItems(e.target.value);
+            });
+            
+            // Date change - validate time
+            document.getElementById('ngay_dat').addEventListener('change', validateDateTime);
+            document.getElementById('gio_den').addEventListener('change', validateDateTime);
+        }
+        
+        // Validate date and time
+        function validateDateTime() {
+            const dateInput = document.getElementById('ngay_dat');
+            const timeInput = document.getElementById('gio_den');
+            
+            if (!dateInput.value || !timeInput.value) return true;
+            
+            const bookingDateTime = new Date(`${dateInput.value}T${timeInput.value}`);
+            const now = new Date();
+            const minBookingTime = new Date(now.getTime() + MIN_HOURS_ADVANCE * 60 * 60 * 1000);
+            
+            // Kiểm tra thời gian đặt bàn phải trước ít nhất 3 tiếng
+            if (bookingDateTime < minBookingTime) {
+                const hoursLeft = Math.ceil((minBookingTime - bookingDateTime) / (60 * 60 * 1000));
+                showNotification(
+                    `Vui lòng đặt bàn trước ít nhất ${MIN_HOURS_ADVANCE} tiếng. Thời gian sớm nhất bạn có thể đặt là ${formatDateTime(minBookingTime)}`, 
+                    'error'
+                );
+                // Reset về thời gian hợp lệ
+                const minDate = new Date(minBookingTime);
+                dateInput.value = minDate.toISOString().split('T')[0];
+                timeInput.value = minDate.toTimeString().slice(0, 5);
+                return false;
+            }
+            
+            // Kiểm tra giờ mở cửa
+            const hours = bookingDateTime.getHours();
+            if (hours < 7 || hours >= 23) {
+                showNotification('Nhà hàng mở cửa từ 7:00 đến 23:00. Vui lòng chọn giờ trong khoảng thời gian này.', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Format date time for display
+        function formatDateTime(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} lúc ${hours}:${minutes}`;
+        }
+        
+        // Validate booking info
+        function validateBookingInfo() {
+            const name = document.getElementById('ten_nguoi_dat').value.trim();
+            const phone = document.getElementById('so_dien_thoai').value.trim();
+            const date = document.getElementById('ngay_dat').value;
+            const time = document.getElementById('gio_den').value;
+            const guests = document.getElementById('so_luong').value;
+            
+            if (!name || !phone || !date || !time || !guests) {
+                showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
+                return false;
+            }
+            
+            // Validate phone
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (!phoneRegex.test(phone)) {
+                showNotification('Số điện thoại không hợp lệ', 'error');
+                return false;
+            }
+            
+            return validateDateTime();
+        }
+        
+        // Save booking info
+        function saveBookingInfo() {
+            bookingInfo = {
+                ten_nguoi_dat: document.getElementById('ten_nguoi_dat').value.trim(),
+                so_dien_thoai: document.getElementById('so_dien_thoai').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                ngay_dat: document.getElementById('ngay_dat').value,
+                gio_den: document.getElementById('gio_den').value,
+                so_luong: document.getElementById('so_luong').value,
+                khu_vuc: document.getElementById('khu_vuc').value,
+                ghi_chu: document.getElementById('ghi_chu').value.trim()
+            };
+        }
+        
+        // Load menu items
+        async function loadMenuItems() {
+            try {
+                const response = await fetch(`${API_URL}/menu`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    menuItems = result.data.filter(item => item.trang_thai === 1);
+                    
+                    // Extract categories
+                    const categorySet = new Set();
+                    menuItems.forEach(item => {
+                        if (item.ten_danh_muc) categorySet.add(item.ten_danh_muc);
+                    });
+                    categories = Array.from(categorySet);
+                    
+                    renderCategoryFilters();
+                    renderMenuItems(menuItems);
+                }
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                document.getElementById('menu-items-grid').innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-4"></i>
+                        <p class="text-gray-600">Không thể tải thực đơn. Vui lòng thử lại.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Render category filters
+        function renderCategoryFilters() {
+            const container = document.querySelector('.category-filter').parentElement;
+            container.innerHTML = `
+                <button class="category-filter px-4 py-2 rounded-full bg-orange-600 text-white font-medium" data-category="all">
+                    Tất cả
+                </button>
+                ${categories.map(cat => `
+                    <button class="category-filter px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-medium hover:bg-orange-100" data-category="${cat}">
+                        ${cat}
+                    </button>
+                `).join('')}
+            `;
+            
+            // Add click handlers
+            container.querySelectorAll('.category-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    container.querySelectorAll('.category-filter').forEach(b => {
+                        b.classList.remove('bg-orange-600', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    this.classList.add('bg-orange-600', 'text-white');
+                    
+                    const category = this.dataset.category;
+                    if (category === 'all') {
+                        renderMenuItems(menuItems);
+                    } else {
+                        renderMenuItems(menuItems.filter(item => item.ten_danh_muc === category));
+                    }
+                });
+            });
+        }
+        
+        // Render menu items
+        function renderMenuItems(items) {
+            const grid = document.getElementById('menu-items-grid');
+            
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600">Không tìm thấy món ăn</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = items.map(item => {
+                const isSelected = selectedItems[item.ma_mon];
+                const quantity = isSelected ? isSelected.quantity : 0;
+                
+                // Xử lý đường dẫn ảnh giống như menu.js
+                let imagePath = item.anh_mon || '/images/placeholder.jpg';
+                if (imagePath && !imagePath.startsWith('/') && !imagePath.startsWith('http')) {
+                    imagePath = '/images/' + imagePath;
+                }
+                const imageUrl = imagePath.startsWith('http') ? imagePath : `http://localhost:3000${imagePath}`;
+                
+                return `
+                    <div class="menu-item-card border rounded-xl p-4 ${isSelected ? 'selected' : ''}" data-id="${item.ma_mon}">
+                        <div class="flex gap-4">
+                            <img src="${imageUrl}" alt="${item.ten_mon}" 
+                                 class="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                                 onerror="this.onerror=null; this.src='images/placeholder.svg'; this.style.objectFit='contain';">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-gray-800 truncate">${item.ten_mon}</h4>
+                                <p class="text-sm text-gray-500 line-clamp-2">${item.mo_ta || ''}</p>
+                                <p class="text-orange-600 font-bold mt-1">${formatPrice(item.gia_tien)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t">
+                            ${quantity > 0 ? `
+                                <div class="flex items-center gap-2">
+                                    <button onclick="updateItemQuantity(${item.ma_mon}, -1)" 
+                                            class="quantity-btn w-8 h-8 rounded-full border border-orange-600 text-orange-600 flex items-center justify-center">
+                                        <i class="fas fa-minus text-sm"></i>
+                                    </button>
+                                    <span class="w-8 text-center font-bold">${quantity}</span>
+                                    <button onclick="updateItemQuantity(${item.ma_mon}, 1)" 
+                                            class="quantity-btn w-8 h-8 rounded-full border border-orange-600 text-orange-600 flex items-center justify-center">
+                                        <i class="fas fa-plus text-sm"></i>
+                                    </button>
+                                </div>
+                            ` : `
+                                <button onclick="addItem(${item.ma_mon})" 
+                                        class="w-full bg-orange-600 text-white py-2 rounded-lg font-medium hover:bg-orange-700 transition">
+                                    <i class="fas fa-plus mr-1"></i> Thêm món
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Filter menu items by search
+        function filterMenuItems(searchTerm) {
+            const filtered = menuItems.filter(item => 
+                item.ten_mon.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (item.mo_ta && item.mo_ta.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+            renderMenuItems(filtered);
+        }
+        
+        // Add item to selection
+        function addItem(maMonId) {
+            const item = menuItems.find(m => m.ma_mon === maMonId);
+            if (!item) return;
+            
+            selectedItems[maMonId] = {
+                ...item,
+                quantity: 1
+            };
+            
+            updateUI();
+        }
+        
+        // Update item quantity
+        function updateItemQuantity(maMonId, delta) {
+            if (!selectedItems[maMonId]) return;
+            
+            selectedItems[maMonId].quantity += delta;
+            
+            if (selectedItems[maMonId].quantity <= 0) {
+                delete selectedItems[maMonId];
+            }
+            
+            updateUI();
+        }
+        
+        // Remove item
+        function removeItem(maMonId) {
+            delete selectedItems[maMonId];
+            updateUI();
+        }
+        
+        // Update UI after selection changes
+        function updateUI() {
+            // Re-render menu items to show updated quantities
+            const searchTerm = document.getElementById('menu-search').value;
+            if (searchTerm) {
+                filterMenuItems(searchTerm);
+            } else {
+                const activeCategory = document.querySelector('.category-filter.bg-orange-600');
+                const category = activeCategory ? activeCategory.dataset.category : 'all';
+                if (category === 'all') {
+                    renderMenuItems(menuItems);
+                } else {
+                    renderMenuItems(menuItems.filter(item => item.ten_danh_muc === category));
+                }
+            }
+            
+            // Update selected items list
+            updateSelectedItemsList();
+            
+            // Update total
+            updateTotal();
+            
+            // Enable/disable continue button
+            const hasItems = Object.keys(selectedItems).length > 0;
+            document.getElementById('btn-continue-step3').disabled = !hasItems;
+        }
+        
+        // Update selected items list
+        function updateSelectedItemsList() {
+            const container = document.getElementById('selected-items-list');
+            const items = Object.values(selectedItems);
+            
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Chưa chọn món nào</p>';
+                return;
+            }
+            
+            container.innerHTML = items.map(item => `
+                <div class="flex items-center justify-between bg-orange-50 rounded-lg p-3">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-800 truncate">${item.ten_mon}</p>
+                        <p class="text-sm text-orange-600">${formatPrice(item.gia_tien)} x ${item.quantity}</p>
+                    </div>
+                    <div class="flex items-center gap-2 ml-2">
+                        <span class="font-bold text-gray-800">${formatPrice(item.gia_tien * item.quantity)}</span>
+                        <button onclick="removeItem(${item.ma_mon})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Update total price
+        function updateTotal() {
+            const total = Object.values(selectedItems).reduce((sum, item) => {
+                return sum + (parseFloat(item.gia_tien) * item.quantity);
+            }, 0);
+            
+            document.getElementById('total-price').textContent = formatPrice(total);
+        }
+        
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+        }
+        
+        // Go to step
+        function goToStep(step) {
+            // Validate before moving forward
+            if (step === 2 && currentStep === 1) {
+                if (!validateBookingInfo()) return;
+                saveBookingInfo();
+            }
+            
+            if (step === 3 && currentStep === 2) {
+                if (Object.keys(selectedItems).length === 0) {
+                    showNotification('Vui lòng chọn ít nhất 1 món ăn', 'error');
+                    return;
+                }
+                updateConfirmationPage();
+            }
+            
+            // Hide all steps
+            document.getElementById('step1-content').classList.add('hidden');
+            document.getElementById('step2-content').classList.add('hidden');
+            document.getElementById('step3-content').classList.add('hidden');
+            
+            // Show current step
+            document.getElementById(`step${step}-content`).classList.remove('hidden');
+            
+            // Update indicators and lines
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`step${i}-indicator`);
+                const stepText = indicator.nextElementSibling;
+                indicator.classList.remove('active', 'completed', 'bg-gray-300', 'text-gray-600');
+                
+                if (i < step) {
+                    indicator.classList.add('completed');
+                    if (stepText) {
+                        stepText.classList.remove('text-gray-500');
+                        stepText.classList.add('text-green-600');
+                    }
+                } else if (i === step) {
+                    indicator.classList.add('active');
+                    if (stepText) {
+                        stepText.classList.remove('text-gray-500');
+                        stepText.classList.add('text-gray-700');
+                    }
+                } else {
+                    indicator.classList.add('bg-gray-300', 'text-gray-600');
+                    if (stepText) {
+                        stepText.classList.remove('text-gray-700', 'text-green-600');
+                        stepText.classList.add('text-gray-500');
+                    }
+                }
+            }
+            
+            // Update progress lines
+            const line1 = document.getElementById('step-line-1');
+            const line2 = document.getElementById('step-line-2');
+            
+            if (step >= 2) {
+                line1.classList.remove('bg-gray-300');
+                line1.classList.add('bg-green-500');
+            } else {
+                line1.classList.remove('bg-green-500');
+                line1.classList.add('bg-gray-300');
+            }
+            
+            if (step >= 3) {
+                line2.classList.remove('bg-gray-300');
+                line2.classList.add('bg-green-500');
+            } else {
+                line2.classList.remove('bg-green-500');
+                line2.classList.add('bg-gray-300');
+            }
+            
+            currentStep = step;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Update confirmation page
+        function updateConfirmationPage() {
+            document.getElementById('confirm-name').textContent = bookingInfo.ten_nguoi_dat;
+            document.getElementById('confirm-phone').textContent = bookingInfo.so_dien_thoai;
+            document.getElementById('confirm-date').textContent = new Date(bookingInfo.ngay_dat).toLocaleDateString('vi-VN');
+            document.getElementById('confirm-time').textContent = bookingInfo.gio_den;
+            document.getElementById('confirm-guests').textContent = bookingInfo.so_luong + ' người';
+            
+            const areaMap = { 'indoor': 'Trong nhà', 'outdoor': 'Sân vườn', 'vip': 'Phòng VIP' };
+            document.getElementById('confirm-area').textContent = areaMap[bookingInfo.khu_vuc] || 'Không chọn';
+            
+            // Items list
+            const items = Object.values(selectedItems);
+            const itemsContainer = document.getElementById('confirm-items-list');
+            itemsContainer.innerHTML = items.map(item => `
+                <div class="flex justify-between items-center py-2 border-b">
+                    <div>
+                        <span class="font-medium">${item.ten_mon}</span>
+                        <span class="text-gray-500 ml-2">x${item.quantity}</span>
+                    </div>
+                    <span class="font-medium">${formatPrice(item.gia_tien * item.quantity)}</span>
+                </div>
+            `).join('');
+            
+            // Total
+            const total = items.reduce((sum, item) => sum + (parseFloat(item.gia_tien) * item.quantity), 0);
+            document.getElementById('confirm-total').textContent = formatPrice(total);
+        }
+        
+        // Submit booking
+        async function submitBooking() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showNotification('Vui lòng đăng nhập để đặt bàn', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('btn-submit-booking');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+            
+            try {
+                // Prepare data
+                const monAn = Object.values(selectedItems).map(item => ({
+                    ma_mon: item.ma_mon,
+                    so_luong: item.quantity,
+                    ghi_chu: null
+                }));
+                
+                const response = await fetch(`${API_URL}/reservations/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        ...bookingInfo,
+                        mon_an: monAn
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentReservationId = result.data.ma_dat_ban;
+                    // Hiển thị modal thanh toán QR thay vì success modal
+                    await showPaymentQRModal(result.data);
+                } else {
+                    showNotification(result.message || 'Có lỗi xảy ra', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Xác nhận đặt bàn';
+                }
+            } catch (error) {
+                console.error('Error submitting booking:', error);
+                showNotification('Không thể kết nối đến server', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Xác nhận đặt bàn';
+            }
+        }
+        
+        // Show payment QR modal
+        async function showPaymentQRModal(reservationData) {
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Gọi API tạo QR code
+                const response = await fetch(`${API_URL}/reservation-payment/create-payment-qr`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        ma_dat_ban: reservationData.ma_dat_ban
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const { qrCodeUrl, bankInfo, amount, transferContent, expiryTime } = result.data;
+                    
+                    // Hiển thị modal
+                    document.getElementById('qr-code-image').src = qrCodeUrl;
+                    document.getElementById('bank-name').textContent = bankInfo.bankName;
+                    document.getElementById('account-number').textContent = bankInfo.accountNumber;
+                    document.getElementById('account-name').textContent = bankInfo.accountName;
+                    document.getElementById('payment-amount').textContent = formatPrice(amount);
+                    document.getElementById('transfer-content').textContent = transferContent;
+                    
+                    // Lưu thời gian hết hạn
+                    paymentExpiryTime = new Date(expiryTime);
+                    
+                    // Hiển thị modal
+                    document.getElementById('payment-qr-modal').classList.remove('hidden');
+                    
+                    // Bắt đầu đếm ngược
+                    startPaymentTimer();
+                } else {
+                    showNotification(result.message || 'Không thể tạo mã QR', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating payment QR:', error);
+                showNotification('Lỗi tạo mã QR thanh toán', 'error');
+            }
+        }
+        
+        // Start payment timer
+        function startPaymentTimer() {
+            if (paymentTimer) clearInterval(paymentTimer);
+            
+            paymentTimer = setInterval(() => {
+                const now = new Date();
+                const timeLeft = paymentExpiryTime - now;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(paymentTimer);
+                    document.getElementById('qr-timer').textContent = 'Hết hạn (Demo: vẫn có thể thanh toán)';
+                    document.getElementById('qr-timer').classList.add('text-yellow-600');
+                    // Demo mode: Không tự động hủy, cho phép người dùng vẫn bấm "Đã thanh toán"
+                    return;
+                }
+                
+                const minutes = Math.floor(timeLeft / 60000);
+                const seconds = Math.floor((timeLeft % 60000) / 1000);
+                document.getElementById('qr-timer').textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+                
+                // Đổi màu khi còn dưới 1 phút
+                if (timeLeft < 60000) {
+                    document.getElementById('qr-timer').classList.add('text-red-600');
+                }
+            }, 1000);
+        }
+        
+        // Confirm payment
+        async function confirmPayment() {
+            const token = localStorage.getItem('token');
+            const btn = document.getElementById('btn-confirm-payment');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang xác nhận...';
+            
+            try {
+                const response = await fetch(`${API_URL}/reservation-payment/confirm-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        ma_dat_ban: currentReservationId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Dừng timer
+                    if (paymentTimer) clearInterval(paymentTimer);
+                    
+                    // Đóng modal thanh toán
+                    document.getElementById('payment-qr-modal').classList.add('hidden');
+                    
+                    // Hiển thị success modal
+                    showSuccessModal({
+                        ma_dat_ban: currentReservationId,
+                        ...bookingInfo,
+                        tong_tien_du_kien: Object.values(selectedItems).reduce((sum, item) => 
+                            sum + (parseFloat(item.gia_tien) * item.quantity), 0),
+                        so_mon_da_dat: Object.keys(selectedItems).length
+                    });
+                } else {
+                    showNotification(result.message || 'Xác nhận thanh toán thất bại', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check mr-2"></i> Đã thanh toán';
+                }
+            } catch (error) {
+                console.error('Error confirming payment:', error);
+                showNotification('Lỗi xác nhận thanh toán', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check mr-2"></i> Đã thanh toán';
+            }
+        }
+        
+        // Cancel payment
+        function cancelPayment() {
+            if (paymentTimer) clearInterval(paymentTimer);
+            document.getElementById('payment-qr-modal').classList.add('hidden');
+            
+            // Reset form
+            showNotification('Đã hủy thanh toán. Bạn có thể thanh toán sau tại trang "Đơn hàng của tôi"', 'info');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+        
+        // Show success modal
+        function showSuccessModal(data) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-center">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check text-white text-4xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Đặt bàn thành công!</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between py-2 border-b">
+                                <span class="text-gray-600">Mã đặt bàn:</span>
+                                <span class="font-bold text-orange-600">#${data.ma_dat_ban}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b">
+                                <span class="text-gray-600">Họ tên:</span>
+                                <span class="font-medium">${data.ten_nguoi_dat}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b">
+                                <span class="text-gray-600">Ngày đặt:</span>
+                                <span class="font-medium">${new Date(data.ngay_dat).toLocaleDateString('vi-VN')}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b">
+                                <span class="text-gray-600">Giờ đến:</span>
+                                <span class="font-medium">${data.gio_den}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b">
+                                <span class="text-gray-600">Số món đã đặt:</span>
+                                <span class="font-medium">${data.so_mon_da_dat} món</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-gray-600">Tổng dự kiến:</span>
+                                <span class="font-bold text-orange-600">${formatPrice(data.tong_tien_du_kien)}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center mb-4">
+                            Đặt bàn đã được xác nhận và thanh toán thành công!<br>
+                            Nhà hàng sẽ liên hệ nếu cần thêm thông tin.
+                        </p>
+                        <button onclick="window.location.href='index.html'" 
+                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-xl font-medium hover:opacity-90 transition">
+                            Về trang chủ
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            notification.className = `fixed top-6 right-6 z-50 px-6 py-4 rounded-lg shadow-lg ${bgColor} text-white`;
+            notification.innerHTML = `<i class="fas ${icon} mr-2"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+    </script>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" 
+        class="fixed bottom-32 right-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
+        style="z-index: 99999 !important;"
+        aria-label="Scroll to top">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <style>
+        @media (max-width: 640px) {
+            #scroll-to-top {
+                bottom: 8rem !important;
+                right: 1rem !important;
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+            
+            #scroll-to-top i {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Scroll to Top functionality
+        (function() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            if (!scrollBtn) return;
+            
+            function checkScroll() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.style.opacity = '1';
+                    scrollBtn.style.visibility = 'visible';
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.visibility = 'hidden';
+                }
+            }
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll();
+            
+            scrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+    </script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+</html>

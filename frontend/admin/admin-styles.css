@@ -1,0 +1,188 @@
+/* Admin Navy Theme Styles */
+body { background: #f0f4f8; }
+.sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+.sidebar-item { color: #94a3b8; transition: all 0.2s; }
+.sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+.header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
+.admin-card { background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; }
+.content-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
+.stat-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
+.filter-btn { padding: 8px 16px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; border: 1px solid #e2e8f0; background: #f8fafc; color: #475569; }
+.filter-btn:hover { background: #e2e8f0; }
+.filter-btn.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; border-color: transparent; }
+.btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 10px; font-weight: 500; transition: all 0.2s; }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.table-header { background: #f8fafc; }
+.table-row:hover { background: #f8fafc; }
+
+/* ============================================
+   SIDEBAR TOGGLE FUNCTIONALITY
+   ============================================ */
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+@media (max-width: 1023px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Sidebar overlay */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sidebar mobile positioning */
+@media (max-width: 1023px) {
+    #sidebar {
+        position: fixed;
+        left: -288px;
+        top: 0;
+        bottom: 0;
+        width: 288px;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        overflow: hidden;
+    }
+    
+    #sidebar.open {
+        left: 0;
+    }
+    
+    /* Sidebar structure for mobile */
+    #sidebar .h-full,
+    #sidebar > div {
+        height: 100%;
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Logo section - fixed */
+    #sidebar .p-5.border-b {
+        flex-shrink: 0;
+    }
+    
+    /* Navigation - scrollable */
+    #sidebar nav {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        min-height: 0;
+        padding-bottom: 80px; /* Space for admin card */
+    }
+    
+    /* Custom scrollbar for sidebar nav */
+    #sidebar nav::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    #sidebar nav::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    #sidebar nav::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+    }
+    
+    /* Admin card - fixed at bottom */
+    #sidebar .p-4.border-t {
+        flex-shrink: 0;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%);
+    }
+}
+
+/* ============================================
+   ADDITIONAL RESPONSIVE IMPROVEMENTS
+   ============================================ */
+
+/* Responsive grid utilities */
+.grid-responsive-4 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .grid-responsive-4 {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+.grid-responsive-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .grid-responsive-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-responsive-3 {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+/* Table wrapper */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* Responsive text */
+@media (max-width: 639px) {
+    .text-responsive-lg {
+        font-size: 1.125rem !important;
+    }
+    
+    .text-responsive-xl {
+        font-size: 1.25rem !important;
+    }
+    
+    .text-responsive-2xl {
+        font-size: 1.5rem !important;
+    }
+}

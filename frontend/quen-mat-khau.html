@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quên Mật Khẩu - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <div class="min-h-screen flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full">
+            <!-- Logo -->
+            <div class="flex justify-center mb-6 sm:mb-8">
+                <a href="index.html" class="flex items-center gap-2 sm:gap-3">
+                    <img src="images/Green Simple Clean Vegan Food Logo.png" alt="Phương Nam Logo" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-orange-600 shadow-md object-cover">
+                    <div>
+                        <h1 class="font-dancing text-2xl sm:text-3xl font-bold text-gray-800">Phương Nam</h1>
+                        <p class="text-xs sm:text-sm text-gray-600">Vĩnh Long</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-key text-3xl text-orange-600"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2 text-gray-800">Quên Mật Khẩu?</h2>
+                    <p class="text-gray-600 text-sm">Nhập email của bạn để nhận mã xác thực đặt lại mật khẩu</p>
+                </div>
+
+                <form id="forgot-password-form" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email" id="email" name="email" required 
+                                   style="color: #1f2937 !important; background-color: white !important;"
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                   placeholder="email@example.com">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" 
+                            style="display: flex !important; visibility: visible !important; opacity: 1 !important; align-items: center; justify-content: center; gap: 0.5rem;"
+                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-4 rounded-lg font-medium text-base hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Gửi mã xác thực</span>
+                    </button>
+
+                    <div class="text-center pt-2">
+                        <a href="dang-nhap.html" class="text-orange-600 hover:text-orange-700 font-medium text-sm inline-flex items-center gap-2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Quay lại đăng nhập</span>
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Form nhập mã xác thực (ẩn ban đầu) -->
+                <form id="verify-code-form" class="space-y-5 hidden">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <p class="text-sm text-green-700 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Mã xác thực đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư!</span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mã xác thực (6 số)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-shield-alt text-gray-400"></i>
+                            </div>
+                            <input type="text" id="verify-code" name="verify_code" required maxlength="6" pattern="[0-9]{6}" 
+                                   style="color: #1f2937 !important; background-color: white !important;"
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-center text-2xl tracking-widest font-bold transition" 
+                                   placeholder="000000">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 text-center">Mã có hiệu lực trong 10 phút</p>
+                    </div>
+
+                    <button type="submit" id="verify-btn" 
+                            style="display: flex !important; visibility: visible !important; opacity: 1 !important; align-items: center; justify-content: center; gap: 0.5rem;"
+                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-4 rounded-lg font-medium text-base hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-check"></i>
+                        <span>Xác thực mã</span>
+                    </button>
+
+                    <div class="text-center pt-2">
+                        <button type="button" id="back-to-email" class="text-orange-600 hover:text-orange-700 font-medium text-sm inline-flex items-center gap-2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Nhập lại email</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-6">
+                <a href="index.html" class="text-gray-600 hover:text-gray-800 transition text-sm inline-flex items-center gap-2">
+                    <i class="fas fa-home"></i>
+                    <span>Quay lại trang chủ</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const API_URL = 'http://localhost:3000/api/auth';
+        let userEmail = '';
+
+        // Form gửi email
+        document.getElementById('forgot-password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (!email) {
+                showNotification('Vui lòng nhập email!', 'error');
+                return;
+            }
+
+            // Disable button và hiển thị loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang gửi...</span>';
+            submitBtn.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; align-items: center; justify-content: center; gap: 0.5rem;';
+            submitBtn.className = 'w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-4 rounded-lg font-medium text-base transition duration-200 shadow-lg';
+
+            try {
+                const response = await fetch(`${API_URL}/forgot-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    userEmail = email;
+                    showNotification(data.message, 'success');
+                    
+                    // Ẩn form email, hiện form nhập mã
+                    document.getElementById('forgot-password-form').classList.add('hidden');
+                    document.getElementById('verify-code-form').classList.remove('hidden');
+                    
+                    // Focus vào input mã
+                    document.getElementById('verify-code').focus();
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra!', 'error');
+                }
+            } catch (error) {
+                console.error('Lỗi:', error);
+                showNotification('Không thể kết nối đến server! Vui lòng kiểm tra backend đang chạy.', 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Gửi mã xác thực</span>';
+                submitBtn.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; align-items: center; justify-content: center; gap: 0.5rem;';
+                submitBtn.className = 'w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-4 rounded-lg font-medium text-base hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg hover:shadow-xl';
+            }
+        });
+
+        // Form xác thực mã
+        document.getElementById('verify-code-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const verifyCode = document.getElementById('verify-code').value.trim();
+            const verifyBtn = document.getElementById('verify-btn');
+            
+            if (!verifyCode || verifyCode.length !== 6) {
+                showNotification('Vui lòng nhập đúng mã 6 số!', 'error');
+                return;
+            }
+
+            // Disable button và hiển thị loading
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang xác thực...</span>';
+            verifyBtn.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; align-items: center; justify-content: center; gap: 0.5rem;';
+            verifyBtn.className = 'w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-4 rounded-lg font-medium text-base transition duration-200 shadow-lg';
+
+            try {
+                const response = await fetch(`${API_URL}/verify-reset-code`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email: userEmail,
+                        ma_code: verifyCode 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification('Xác thực thành công! Đang chuyển hướng...', 'success');
+                    
+                    // Lưu email và mã vào sessionStorage để sử dụng ở trang đặt lại mật khẩu
+                    sessionStorage.setItem('reset_email', userEmail);
+                    sessionStorage.setItem('reset_code', verifyCode);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dat-lai-mat-khau.html';
+                    }, 1500);
+                } else {
+                    showNotification(data.message || 'Mã xác thực không đúng!', 'error');
+                }
+            } catch (error) {
+                console.error('Lỗi:', error);
+                showNotification('Không thể kết nối đến server! Vui lòng kiểm tra backend đang chạy.', 'error');
+            } finally {
+                // Re-enable button
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = '<i class="fas fa-check"></i><span>Xác thực mã</span>';
+                verifyBtn.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; align-items: center; justify-content: center; gap: 0.5rem;';
+                verifyBtn.className = 'w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-4 rounded-lg font-medium text-base hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg hover:shadow-xl';
+            }
+        });
+
+        // Nút quay lại nhập email
+        document.getElementById('back-to-email').addEventListener('click', function() {
+            document.getElementById('verify-code-form').classList.add('hidden');
+            document.getElementById('forgot-password-form').classList.remove('hidden');
+            document.getElementById('verify-code').value = '';
+        });
+
+        // Chỉ cho phép nhập số trong input mã xác thực
+        document.getElementById('verify-code').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!-- Chatbot Component -->
+<style>
+    /* Chatbot mobile fullscreen */
+    @media (max-width: 640px) {
+        #chatbotPanel.mobile-open {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            border-radius: 0 !important;
+            z-index: 99999 !important;
+            opacity: 1 !important;
+            transform: none !important;
+            pointer-events: auto !important;
+        }
+        #chatbotPanel.mobile-open .chatbot-header {
+            padding-top: max(16px, env(safe-area-inset-top));
+        }
+        #chatbotPanel.mobile-open #chatbotMessages {
+            height: calc(100vh - 160px) !important;
+            height: calc(100dvh - 160px) !important;
+        }
+        #chatbotButton {
+            width: 56px !important;
+            height: 56px !important;
+            right: 16px !important;
+            bottom: 16px !important;
+        }
+        #chatbotButton i {
+            font-size: 26px !important;
+        }
+        /* Ẩn nút expand trên mobile vì đã fullscreen */
+        #expandChatbot {
+            display: none !important;
+        }
+    }
+
+    /* ===== EXPANDED / MAXIMIZED MODE ===== */
+    #chatbotPanel.chatbot-expanded {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        bottom: auto !important;
+        right: auto !important;
+        width: 900px !important;
+        max-width: 92vw !important;
+        max-height: 85vh !important;
+        height: 85vh !important;
+        border-radius: 16px !important;
+        opacity: 1 !important;
+        scale: 1 !important;
+        pointer-events: auto !important;
+        z-index: 100000 !important;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.3) !important;
+    }
+    #chatbotPanel.chatbot-expanded #chatbotMessages {
+        height: calc(85vh - 160px) !important;
+    }
+    /* Overlay mờ phía sau khi mở rộng */
+    #chatbotOverlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 99998;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        transition: opacity 0.3s ease;
+    }
+    #chatbotOverlay.active {
+        display: block;
+    }
+    /* Nút expand active state */
+    #expandChatbot.expanded i::before {
+        content: "\f066";
+    }
+    /* Animation cho chuyển đổi */
+    #chatbotPanel {
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    /* Chat bubble styles */
+    .chat-bubble-bot {
+        background: white;
+        border-radius: 18px;
+        border-top-left-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    /* GraphQL Dish Cards Scroll */
+    .chat-bubble-bot .flex.overflow-x-auto {
+        scrollbar-width: thin;
+        scrollbar-color: #d1d5db transparent;
+    }
+    .chat-bubble-bot .flex.overflow-x-auto::-webkit-scrollbar {
+        height: 4px;
+    }
+    .chat-bubble-bot .flex.overflow-x-auto::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .chat-bubble-bot .flex.overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+    }
+    .chat-bubble-bot .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* History dropdown */
+    #chatHistoryDropdown {
+        display: none;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    #chatHistoryDropdown.show {
+        display: block;
+    }
+    .history-item {
+        transition: all 0.2s ease;
+    }
+    .history-item:hover {
+        background-color: #f0fdf4;
+    }
+    .history-item.active {
+        background-color: #dcfce7;
+        border-left: 3px solid #22c55e;
+    }
+
+    /* ===== TTS (Text-to-Speech) Button ===== */
+    .tts-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 8px;
+        padding: 4px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 9999px;
+        background: #f9fafb;
+        color: #6b7280;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+    .tts-btn:hover {
+        background: #f0fdf4;
+        border-color: #86efac;
+        color: #16a34a;
+    }
+    .tts-btn.tts-playing {
+        background: #dcfce7;
+        border-color: #22c55e;
+        color: #16a34a;
+    }
+    .tts-btn.tts-playing .tts-icon::before {
+        content: "\f04d";
+    }
+    .tts-btn .tts-pulse {
+        display: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        animation: ttsPulse 1s infinite;
+    }
+    .tts-btn.tts-playing .tts-pulse {
+        display: inline-block;
+    }
+    @keyframes ttsPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.75); }
+    }
+</style>
+
+<!-- CHATBOT BUTTON - Màu xanh gradient -->
+<button id="chatbotButton"
+    class="fixed bottom-6 right-6 z-[9999] w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-transform duration-300">
+    <i class="fas fa-robot text-3xl"></i>
+</button>
+
+<!-- CHAT PANEL -->
+<div id="chatbotPanel"
+    class="fixed bottom-24 right-6 z-[9999] w-[400px] sm:w-[420px] bg-white rounded-2xl shadow-2xl overflow-hidden 
+           transform opacity-0 scale-90 pointer-events-none transition-all duration-300"
+    style="max-height: 600px;">
+    
+    <!-- Header - Màu xanh gradient -->
+    <div class="chatbot-header bg-gradient-to-r from-green-500 to-blue-600 p-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-robot text-xl text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-white font-bold">Trà My - Trợ lý Phương Nam</h3>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span>
+                    <p class="text-white/80 text-xs">Trực tuyến 24/7 • GraphQL AI</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <!-- Nút xem lịch sử -->
+            <button onclick="toggleChatHistory()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition" title="Lịch sử chat">
+                <i class="fas fa-history text-sm"></i>
+            </button>
+            <!-- Nút chat mới -->
+            <button onclick="startNewChat()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition" title="Chat mới">
+                <i class="fas fa-plus text-sm"></i>
+            </button>
+            <!-- Nút mở rộng / thu nhỏ -->
+            <button id="expandChatbot" onclick="toggleExpandChatbot()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition" title="Mở rộng">
+                <i class="fas fa-expand text-sm"></i>
+            </button>
+            <!-- Nút đóng -->
+            <button id="closeChatbot" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition" title="Đóng">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- History Dropdown -->
+    <div id="chatHistoryDropdown" class="absolute left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-20" style="top: 72px;">
+        <div class="p-3 border-b border-gray-100 bg-gray-50">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700">📜 Lịch sử trò chuyện</span>
+                <button onclick="toggleChatHistory()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div id="historyList" class="max-h-[250px] overflow-y-auto">
+            <div class="text-center text-gray-400 text-sm py-6">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải...
+            </div>
+        </div>
+        <!-- Login prompt -->
+        <div id="historyLoginPrompt" class="hidden p-3 bg-yellow-50 border-t border-yellow-100 text-center">
+            <p class="text-xs text-yellow-700 mb-2">🔒 Đăng nhập để xem lịch sử chat</p>
+            <a href="dang-nhap.html" class="inline-block px-4 py-1.5 bg-green-500 text-white rounded-full text-xs font-medium hover:bg-green-600">
+                Đăng nhập
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div id="chatbotMessages" class="p-4 space-y-3 overflow-y-auto bg-gradient-to-b from-gray-50 to-white" style="height: 420px;">
+        <!-- Messages will be loaded dynamically -->
+    </div>
+
+    <!-- Input Area -->
+    <div class="p-3 bg-white border-t border-gray-100">
+        <div class="flex items-center gap-2">
+            <input type="text" id="chatbotInput"
+                class="flex-1 h-11 border border-gray-200 rounded-full px-4 text-sm focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition"
+                placeholder="Nhập tin nhắn..."
+                onkeypress="if(event.key==='Enter') chatbotSendMessage()">
+            <button id="sendMessage" onclick="chatbotSendMessage()"
+                class="w-11 h-11 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white hover:scale-105 transition flex-shrink-0">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay mờ khi chatbot mở rộng -->
+<div id="chatbotOverlay" onclick="toggleExpandChatbot()"></div>

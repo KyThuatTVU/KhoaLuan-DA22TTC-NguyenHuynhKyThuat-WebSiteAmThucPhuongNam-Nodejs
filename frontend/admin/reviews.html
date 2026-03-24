@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đánh giá - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm font-medium">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                    <div class="space-y-1">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Đánh giá</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Kiểm duyệt và quản lý bình luận sản phẩm</p></div>
+                </div>
+                <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-6">
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Tổng đánh giá</p><p id="stat-total" class="text-2xl font-bold text-slate-800">0</p></div><div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fas fa-comments text-slate-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Chờ duyệt</p><p id="stat-pending" class="text-2xl font-bold text-amber-600">0</p></div><div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><i class="fas fa-clock text-amber-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Đã duyệt</p><p id="stat-approved" class="text-2xl font-bold text-emerald-600">0</p></div><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fas fa-check-circle text-emerald-600 text-xl"></i></div></div></div>
+                    <div class="stat-card"><div class="flex items-center justify-between"><div><p class="text-slate-500 text-sm">Đã khóa</p><p id="stat-rejected" class="text-2xl font-bold text-red-600">0</p></div><div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><i class="fas fa-ban text-red-600 text-xl"></i></div></div></div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Star Distribution Chart -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-star text-yellow-400 mr-2"></i>Phân bố đánh giá sao</h3>
+                        <div class="h-64">
+                            <canvas id="starDistributionChart"></canvas>
+                        </div>
+                        <div id="average-rating-display" class="mt-4 text-center">
+                            <p class="text-sm text-slate-500">Điểm trung bình</p>
+                            <p class="text-3xl font-bold text-yellow-500">0.0 <i class="fas fa-star text-xl"></i></p>
+                        </div>
+                    </div>
+
+                    <!-- Status Distribution Chart -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-chart-pie text-blue-500 mr-2"></i>Trạng thái đánh giá</h3>
+                        <div class="h-64 flex items-center justify-center">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top Products Chart -->
+                    <div class="content-card">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-trophy text-orange-500 mr-2"></i>Top món ăn được đánh giá</h3>
+                        <div class="h-64">
+                            <canvas id="topProductsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Over Time Chart -->
+                <div class="content-card mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-slate-800"><i class="fas fa-chart-line text-emerald-500 mr-2"></i>Đánh giá theo thời gian</h3>
+                        <select id="time-range" onchange="updateTimeChart()" class="px-3 py-1.5 border border-slate-200 rounded-lg text-sm">
+                            <option value="7">7 ngày qua</option>
+                            <option value="30" selected>30 ngày qua</option>
+                            <option value="90">3 tháng qua</option>
+                        </select>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="reviewsTimeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <input type="text" id="search" placeholder="Tìm theo tên, nội dung..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="status-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="pending">Chờ duyệt</option>
+                            <option value="approved">Đã duyệt</option>
+                            <option value="rejected">Đã khóa</option>
+                        </select>
+                        <select id="star-filter" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả sao</option>
+                            <option value="5">5 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="1">1 sao</option>
+                        </select>
+                        <button onclick="applyFilters()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl hover:bg-slate-900"><i class="fas fa-filter mr-2"></i>Lọc</button>
+                        <button onclick="resetFilters()" class="bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl hover:bg-slate-300"><i class="fas fa-redo mr-2"></i>Đặt lại</button>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div id="bulk-actions" class="hidden content-card mb-4 bg-blue-50 border border-blue-200">
+                    <div class="flex items-center justify-between">
+                        <span class="text-blue-700"><i class="fas fa-check-square mr-2"></i>Đã chọn <strong id="selected-count">0</strong> đánh giá</span>
+                        <div class="flex gap-2">
+                            <button onclick="bulkApprove()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 text-sm"><i class="fas fa-check mr-1"></i>Duyệt</button>
+                            <button onclick="bulkReject()" class="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 text-sm"><i class="fas fa-ban mr-1"></i>Khóa</button>
+                            <button onclick="bulkDelete()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm"><i class="fas fa-trash mr-1"></i>Xóa</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Table -->
+                <div class="content-card overflow-hidden p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="px-4 py-4 text-left"><input type="checkbox" id="select-all" onchange="toggleSelectAll()" class="w-4 h-4 rounded"></th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Người đánh giá</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Món ăn</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Đánh giá</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Nội dung</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Ngày</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Trạng thái</th>
+                                    <th class="px-4 py-4 text-left text-xs font-semibold text-slate-600 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviews-tbody" class="divide-y divide-slate-100">
+                                <tr><td colspan="8" class="px-6 py-12 text-center text-slate-500"><i class="fas fa-spinner fa-spin text-3xl mb-2"></i><p>Đang tải...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <!-- Review Detail Modal -->
+    <div id="review-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Chi tiết đánh giá</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="review-detail" class="p-6"></div>
+        </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div id="reply-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold"><i class="fas fa-reply mr-2"></i>Trả lời đánh giá</h3>
+                <button onclick="closeReplyModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Nội dung trả lời</label>
+                    <textarea id="reply-content" 
+                              class="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                              rows="5" 
+                              placeholder="Nhập nội dung trả lời cho khách hàng..."></textarea>
+                    <p class="text-xs text-slate-500 mt-1">Câu trả lời sẽ hiển thị với tên "Admin" trên trang người dùng</p>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="event.preventDefault(); submitReply()" 
+                            class="flex-1 bg-green-600 text-white px-4 py-2.5 rounded-lg hover:bg-green-700 font-medium">
+                        <i class="fas fa-paper-plane mr-2"></i>Gửi trả lời
+                    </button>
+                    <button type="button" onclick="event.preventDefault(); closeReplyModal()" 
+                            class="px-4 py-2.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 font-medium">
+                        Hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+
+    <script>
+        let reviews = [];
+        let selectedIds = [];
+
+        let apiStats = null;
+        let dailyStats = [];
+        let topProducts = [];
+
+        async function loadReviews() {
+            try {
+                const response = await fetch(`${API_URL}/reviews/admin/all`, { credentials: 'include' });
+                const data = await response.json();
+                if (data.success) {
+                    reviews = data.data || [];
+                    apiStats = data.stats;
+                    dailyStats = data.dailyStats || [];
+                    topProducts = data.topProducts || [];
+                    renderReviews(reviews);
+                    updateStats(data.stats);
+                    updateChartsWithData();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('reviews-tbody').innerHTML = `<tr><td colspan="8" class="px-6 py-12 text-center text-red-500"><i class="fas fa-exclamation-circle text-3xl mb-2"></i><p>Không thể tải dữ liệu</p></td></tr>`;
+            }
+        }
+
+        // Chart instances
+        let starChart, statusChart, topProductsChart, timeChart;
+
+        function updateStats(stats) {
+            document.getElementById('stat-total').textContent = stats.total || 0;
+            document.getElementById('stat-pending').textContent = stats.pending || 0;
+            document.getElementById('stat-approved').textContent = stats.approved || 0;
+            document.getElementById('stat-rejected').textContent = stats.rejected || 0;
+
+            // Update status chart
+            updateStatusChart(stats);
+        }
+
+        function initCharts() {
+            // Star Distribution Chart
+            const starCtx = document.getElementById('starDistributionChart').getContext('2d');
+            starChart = new Chart(starCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['5 sao', '4 sao', '3 sao', '2 sao', '1 sao'],
+                    datasets: [{
+                        label: 'Số lượng',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: ['#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444'],
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Đã duyệt', 'Chờ duyệt', 'Đã khóa'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0,
+                        cutout: '65%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
+                    }
+                }
+            });
+
+            // Top Products Chart
+            const topCtx = document.getElementById('topProductsChart').getContext('2d');
+            topProductsChart = new Chart(topCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Số đánh giá',
+                        data: [],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Reviews Over Time Chart
+            const timeCtx = document.getElementById('reviewsTimeChart').getContext('2d');
+            timeChart = new Chart(timeCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Đánh giá mới',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
+                    }
+                }
+            });
+        }
+
+        function updateStatusChart(stats) {
+            if (statusChart) {
+                statusChart.data.datasets[0].data = [stats.approved || 0, stats.pending || 0, stats.rejected || 0];
+                statusChart.update();
+            }
+        }
+
+        function updateChartsWithData() {
+            // Star distribution from API
+            if (apiStats && apiStats.starDistribution) {
+                const dist = apiStats.starDistribution;
+                if (starChart) {
+                    starChart.data.datasets[0].data = [dist[5], dist[4], dist[3], dist[2], dist[1]];
+                    starChart.update();
+                }
+
+                const avgRating = parseFloat(apiStats.average_rating || 0).toFixed(1);
+                document.getElementById('average-rating-display').innerHTML = `
+                    <p class="text-sm text-slate-500">Điểm trung bình</p>
+                    <p class="text-3xl font-bold text-yellow-500">${avgRating} <i class="fas fa-star text-xl"></i></p>
+                `;
+            }
+
+            // Top products from API
+            if (topProducts.length > 0 && topProductsChart) {
+                topProductsChart.data.labels = topProducts.map(p => p.ten_mon.length > 18 ? p.ten_mon.substring(0, 18) + '...' : p.ten_mon);
+                topProductsChart.data.datasets[0].data = topProducts.map(p => p.review_count);
+                topProductsChart.update();
+            }
+
+            // Time chart
+            updateTimeChart();
+        }
+
+        function updateTimeChart() {
+            const days = parseInt(document.getElementById('time-range').value);
+            const now = new Date();
+            const dateLabels = [];
+            const dateCounts = {};
+
+            // Generate date labels
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date(now);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                dateLabels.push(dateStr);
+                dateCounts[dateStr] = 0;
+            }
+
+            // Use daily stats from API if available
+            if (dailyStats.length > 0) {
+                dailyStats.forEach(stat => {
+                    const dateStr = new Date(stat.date).toISOString().split('T')[0];
+                    if (dateCounts.hasOwnProperty(dateStr)) {
+                        dateCounts[dateStr] = stat.count;
+                    }
+                });
+            } else {
+                // Fallback: count from reviews data
+                reviews.forEach(r => {
+                    const reviewDate = new Date(r.ngay_danh_gia).toISOString().split('T')[0];
+                    if (dateCounts.hasOwnProperty(reviewDate)) {
+                        dateCounts[reviewDate]++;
+                    }
+                });
+            }
+
+            if (timeChart) {
+                timeChart.data.labels = dateLabels.map(d => {
+                    const date = new Date(d);
+                    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+                });
+                timeChart.data.datasets[0].data = dateLabels.map(d => dateCounts[d]);
+                timeChart.update();
+            }
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}"></i>`;
+            }
+            return stars;
+        }
+
+        function renderReviews(items) {
+            const tbody = document.getElementById('reviews-tbody');
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-12 text-center text-slate-500"><i class="fas fa-comments text-4xl mb-3 text-slate-300"></i><p>Chưa có đánh giá nào</p></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map(review => {
+                const statusColors = { pending: 'bg-amber-100 text-amber-700', approved: 'bg-emerald-100 text-emerald-700', rejected: 'bg-red-100 text-red-700' };
+                const statusText = { pending: 'Chờ duyệt', approved: 'Đã duyệt', rejected: 'Đã khóa' };
+                const avatar = review.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.ten_nguoi_dung)}&background=random`;
+                const hasImages = review.images && review.images.length > 0;
+                const replyCount = review.reply_count || 0;
+                const hasReplies = replyCount > 0;
+                const replyBadge = hasReplies ? 
+                    `<span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                        <i class="fas fa-reply mr-1"></i>${replyCount} trả lời
+                    </span>` : '';
+
+                return `
+                    <tr class="hover:bg-slate-50 ${hasReplies ? 'bg-green-50/30' : ''}">
+                        <td class="px-4 py-4"><input type="checkbox" class="review-checkbox w-4 h-4 rounded" value="${review.ma_danh_gia}" onchange="updateSelection()"></td>
+                        <td class="px-4 py-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${avatar}" alt="${review.ten_nguoi_dung}" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-medium text-slate-800 text-sm">${review.ten_nguoi_dung}</p>
+                                    <p class="text-xs text-slate-500">${review.email || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-slate-700 max-w-[150px] truncate" title="${review.ten_mon}">${review.ten_mon}</td>
+                        <td class="px-4 py-4"><div class="flex">${renderStars(review.so_sao)}</div></td>
+                        <td class="px-4 py-4 text-sm text-slate-600 max-w-[200px]">
+                            <p class="truncate" title="${review.binh_luan || ''}">${review.binh_luan || '<em class="text-slate-400">Không có nội dung</em>'}</p>
+                            ${hasImages ? `<span class="text-xs text-blue-500"><i class="fas fa-image mr-1"></i>${review.images.length} ảnh</span>` : ''}
+                            ${replyBadge}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-slate-500">${formatDate(review.ngay_danh_gia)}</td>
+                        <td class="px-4 py-4">
+                            <div class="flex flex-wrap gap-1">
+                                <button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'pending')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${review.trang_thai === 'pending' ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}" 
+                                    title="Chờ duyệt">
+                                    <i class="fas fa-clock"></i>
+                                </button>
+                                <button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'approved')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${review.trang_thai === 'approved' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}" 
+                                    title="Đã duyệt">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'rejected')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${review.trang_thai === 'rejected' ? 'bg-red-500 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'}" 
+                                    title="Đã khóa">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4">
+                            <div class="flex items-center space-x-1">
+                                <button type="button" onclick="event.preventDefault(); viewReview(${review.ma_danh_gia})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                <button type="button" onclick="event.preventDefault(); toggleRepliesSection(${review.ma_danh_gia})" 
+                                    class="p-2 ${hasReplies ? 'text-blue-600 hover:bg-blue-50' : 'text-green-600 hover:bg-green-50'} rounded-lg" 
+                                    title="${hasReplies ? 'Xem & trả lời' : 'Trả lời'}">
+                                    <i class="fas ${hasReplies ? 'fa-comments' : 'fa-reply'}"></i>
+                                </button>
+                                <button type="button" onclick="event.preventDefault(); deleteReview(${review.ma_danh_gia})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg" title="Xóa"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Replies Section -->
+                    <tr id="replies-${review.ma_danh_gia}" class="hidden bg-green-50/50">
+                        <td colspan="8" class="px-4 py-4">
+                            <div class="bg-white rounded-lg border-2 border-green-200 p-4 ml-8">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-semibold text-slate-700">
+                                        <i class="fas fa-reply text-green-600 mr-2"></i>
+                                        Trả lời cho đánh giá của ${review.ten_nguoi_dung}
+                                    </h4>
+                                    <button type="button" onclick="event.preventDefault(); toggleRepliesSection(${review.ma_danh_gia})" 
+                                            class="text-slate-400 hover:text-slate-600">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Replies List -->
+                                <div id="replies-list-${review.ma_danh_gia}" class="space-y-3 mb-4">
+                                    <div class="text-center py-4 text-slate-400">
+                                        <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                                    </div>
+                                </div>
+                                
+                                <!-- Reply Form -->
+                                <div class="border-t pt-4">
+                                    <textarea id="reply-input-${review.ma_danh_gia}" 
+                                              class="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm" 
+                                              rows="3" 
+                                              placeholder="Nhập nội dung trả lời..."></textarea>
+                                    <div class="flex justify-end gap-2 mt-2">
+                                        <button type="button" onclick="event.preventDefault(); submitReplyInline(${review.ma_danh_gia})" 
+                                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium">
+                                            <i class="fas fa-paper-plane mr-1"></i>Gửi trả lời
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        // Xóa hàm renderReviews cũ (renderReviewsOld) - không cần nữa
+
+        async function toggleRepliesSection(reviewId) {
+            const repliesRow = document.getElementById(`replies-${reviewId}`);
+            const isHidden = repliesRow.classList.contains('hidden');
+            
+            if (isHidden) {
+                repliesRow.classList.remove('hidden');
+                await loadRepliesInline(reviewId);
+            } else {
+                repliesRow.classList.add('hidden');
+            }
+        }
+
+        async function loadRepliesInline(reviewId) {
+            const repliesList = document.getElementById(`replies-list-${reviewId}`);
+            
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}/replies`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    repliesList.innerHTML = data.data.map(reply => `
+                        <div class="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-3">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user-shield text-green-600"></i>
+                                    <p class="font-semibold text-green-800 text-sm">Admin</p>
+                                    <span class="text-xs text-slate-400 italic">Tác giả: ${reply.ten_admin}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-xs text-slate-500">${formatDate(reply.ngay_tra_loi)}</p>
+                                    <button type="button" onclick="event.preventDefault(); deleteReply(${reply.ma_tra_loi}, ${reviewId})" 
+                                            class="text-red-600 hover:text-red-800 text-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-slate-700 text-sm">${reply.noi_dung}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    repliesList.innerHTML = `
+                        <div class="text-center py-4 text-slate-400 text-sm">
+                            <i class="fas fa-comment-slash text-2xl mb-2"></i>
+                            <p>Chưa có trả lời nào. Hãy là người đầu tiên trả lời!</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading replies:', error);
+                repliesList.innerHTML = `
+                    <div class="text-center py-4 text-red-500 text-sm">
+                        <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+                        <p>Không thể tải trả lời</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function submitReplyInline(reviewId) {
+            const textarea = document.getElementById(`reply-input-${reviewId}`);
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                alert('Vui lòng nhập nội dung trả lời');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ noi_dung: content })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    textarea.value = ''; // Clear input
+                    await loadRepliesInline(reviewId); // Reload replies
+                    loadReviews(); // Reload để cập nhật badge
+                    alert('✅ Gửi trả lời thành công!');
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Có lỗi xảy ra khi gửi trả lời');
+            }
+        }
+
+        async function deleteReply(replyId, reviewId) {
+            if (!confirm('Xác nhận xóa trả lời này?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/replies/${replyId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    await loadRepliesInline(reviewId); // Reload replies
+                    loadReviews(); // Reload để cập nhật badge
+                    alert('✅ Xóa trả lời thành công!');
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Có lỗi xảy ra khi xóa trả lời');
+            }
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}"></i>`;
+            }
+            return stars;
+        }
+
+        // Xóa hàm renderReviewsOld - không cần nữa
+        function renderReviewsOldRemoved(items) {
+            // Đã được thay thế bởi renderReviews mới
+        }
+
+        async function viewReview(reviewId) {
+            const review = reviews.find(r => r.ma_danh_gia === reviewId);
+            if (!review) return;
+
+            const avatar = review.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.ten_nguoi_dung)}&background=random`;
+            const statusColors = { pending: 'bg-amber-100 text-amber-700', approved: 'bg-emerald-100 text-emerald-700', rejected: 'bg-red-100 text-red-700' };
+            const statusText = { pending: 'Chờ duyệt', approved: 'Đã duyệt', rejected: 'Đã khóa' };
+
+            let imagesHtml = '';
+            if (review.images && review.images.length > 0) {
+                imagesHtml = `
+                    <div class="mt-4">
+                        <p class="text-sm font-medium text-slate-700 mb-2">Hình ảnh đính kèm:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${review.images.map(img => `<img src="${API_URL.replace('/api', '')}${img}" alt="Review image" class="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-80" onclick="window.open('${API_URL.replace('/api', '')}${img}', '_blank')">`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            const repliesHtml = await loadRepliesForReview(reviewId);
+
+            document.getElementById('review-detail').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <img src="${avatar}" alt="${review.ten_nguoi_dung}" class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <p class="font-semibold text-lg">${review.ten_nguoi_dung}</p>
+                            <p class="text-sm text-slate-500">${review.email || ''}</p>
+                        </div>
+                        <span class="ml-auto px-3 py-1 rounded-full text-sm font-medium ${statusColors[review.trang_thai]}">${statusText[review.trang_thai]}</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4">
+                        <p class="text-sm text-slate-500 mb-1">Món ăn</p>
+                        <p class="font-medium">${review.ten_mon}</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Đánh giá</p>
+                            <div class="flex text-xl">${renderStars(review.so_sao)}</div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Ngày đánh giá</p>
+                            <p class="font-medium">${formatDate(review.ngay_danh_gia)}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500 mb-1">Nội dung bình luận</p>
+                        <p class="bg-slate-50 rounded-xl p-4">${review.binh_luan || '<em class="text-slate-400">Không có nội dung</em>'}</p>
+                    </div>
+                    ${imagesHtml}
+                    ${repliesHtml}
+                </div>
+            `;
+
+            document.getElementById('review-modal').classList.remove('hidden');
+        }
+
+        // Xóa hàm renderReviewsOld - không cần nữa
+        function renderReviewsOldRemoved(items) {
+            // Đã được thay thế bởi renderReviews mới
+        }
+
+        async function submitReplyInline(reviewId) {
+            const textarea = document.getElementById(`reply-input-${reviewId}`);
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                alert('Vui lòng nhập nội dung trả lời');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ noi_dung: content })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    textarea.value = ''; // Clear input
+                    await loadRepliesInline(reviewId); // Reload replies
+                    alert('✅ Gửi trả lời thành công!');
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Có lỗi xảy ra khi gửi trả lời');
+            }
+        }
+
+        async function deleteReply(replyId, reviewId) {
+            if (!confirm('Xác nhận xóa trả lời này?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/replies/${replyId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    await loadRepliesInline(reviewId); // Reload replies
+                    alert('✅ Xóa trả lời thành công!');
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Có lỗi xảy ra khi xóa trả lời');
+            }
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}"></i>`;
+            }
+            return stars;
+        }
+
+        function renderReviewsOld(items) {
+            const tbody = document.getElementById('reviews-tbody');
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-12 text-center text-slate-500"><i class="fas fa-comments text-4xl mb-3 text-slate-300"></i><p>Chưa có đánh giá nào</p></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map(review => {
+                const statusColors = { pending: 'bg-amber-100 text-amber-700', approved: 'bg-emerald-100 text-emerald-700', rejected: 'bg-red-100 text-red-700' };
+                const statusText = { pending: 'Chờ duyệt', approved: 'Đã duyệt', rejected: 'Đã khóa' };
+                const avatar = review.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.ten_nguoi_dung)}&background=random`;
+                const hasImages = review.images && review.images.length > 0;
+
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-4"><input type="checkbox" class="review-checkbox w-4 h-4 rounded" value="${review.ma_danh_gia}" onchange="updateSelection()"></td>
+                        <td class="px-4 py-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${avatar}" alt="${review.ten_nguoi_dung}" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <p class="font-medium text-slate-800 text-sm">${review.ten_nguoi_dung}</p>
+                                    <p class="text-xs text-slate-500">${review.email || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4 text-sm text-slate-700 max-w-[150px] truncate" title="${review.ten_mon}">${review.ten_mon}</td>
+                        <td class="px-4 py-4"><div class="flex text-sm">${renderStars(review.so_sao)}</div></td>
+                        <td class="px-4 py-4 text-sm text-slate-600 max-w-[200px]">
+                            <p class="truncate" title="${review.binh_luan || ''}">${review.binh_luan || '<em class="text-slate-400">Không có nội dung</em>'}</p>
+                            ${hasImages ? `<span class="text-xs text-blue-500"><i class="fas fa-image mr-1"></i>${review.images.length} ảnh</span>` : ''}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-slate-500">${formatDate(review.ngay_danh_gia)}</td>
+                        <td class="px-4 py-4">
+                            <div class="flex flex-wrap gap-1">
+                                <button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'pending')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${review.trang_thai === 'pending' ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}" 
+                                    title="Chờ duyệt">
+                                    <i class="fas fa-clock"></i>
+                                </button>
+                                <button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'approved')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${review.trang_thai === 'approved' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}" 
+                                    title="Đã duyệt">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'rejected')" 
+                                    class="px-2 py-1 rounded-lg text-xs font-medium transition-all ${review.trang_thai === 'rejected' ? 'bg-red-500 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'}" 
+                                    title="Đã khóa">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4">
+                            <div class="flex items-center space-x-1">
+                                <button type="button" onclick="event.preventDefault(); viewReview(${review.ma_danh_gia})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                <button type="button" onclick="event.preventDefault(); openReplyModal(${review.ma_danh_gia})" class="p-2 text-green-600 hover:bg-green-50 rounded-lg" title="Trả lời"><i class="fas fa-reply"></i></button>
+                                <button type="button" onclick="event.preventDefault(); deleteReview(${review.ma_danh_gia})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg" title="Xóa"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        async function viewReview(reviewId) {
+            const review = reviews.find(r => r.ma_danh_gia === reviewId);
+            if (!review) return;
+
+            const avatar = review.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.ten_nguoi_dung)}&background=random`;
+            const statusColors = { pending: 'bg-amber-100 text-amber-700', approved: 'bg-emerald-100 text-emerald-700', rejected: 'bg-red-100 text-red-700' };
+            const statusText = { pending: 'Chờ duyệt', approved: 'Đã duyệt', rejected: 'Đã khóa' };
+
+            let imagesHtml = '';
+            if (review.images && review.images.length > 0) {
+                imagesHtml = `
+                    <div class="mt-4">
+                        <p class="text-sm font-medium text-slate-700 mb-2">Hình ảnh đính kèm:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${review.images.map(img => `<img src="${API_URL.replace('/api', '')}${img}" alt="Review image" class="w-24 h-24 object-cover rounded-lg cursor-pointer hover:opacity-80" onclick="window.open('${API_URL.replace('/api', '')}${img}', '_blank')">`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            const repliesHtml = await loadRepliesForReview(reviewId);
+
+            document.getElementById('review-detail').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <img src="${avatar}" alt="${review.ten_nguoi_dung}" class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <p class="font-semibold text-lg">${review.ten_nguoi_dung}</p>
+                            <p class="text-sm text-slate-500">${review.email || ''}</p>
+                        </div>
+                        <span class="ml-auto px-3 py-1 rounded-full text-sm font-medium ${statusColors[review.trang_thai]}">${statusText[review.trang_thai]}</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4">
+                        <p class="text-sm text-slate-500 mb-1">Món ăn</p>
+                        <p class="font-medium">${review.ten_mon}</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Đánh giá</p>
+                            <div class="flex text-xl">${renderStars(review.so_sao)}</div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Ngày đánh giá</p>
+                            <p class="font-medium">${formatDate(review.ngay_danh_gia)}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500 mb-1">Nội dung bình luận</p>
+                        <p class="bg-slate-50 rounded-xl p-4">${review.binh_luan || '<em class="text-slate-400">Không có nội dung</em>'}</p>
+                    </div>
+                    ${imagesHtml}
+                    ${repliesHtml}
+                    <div class="flex gap-2 pt-4 border-t">
+                        <button type="button" onclick="event.preventDefault(); openReplyModalFromDetail(${review.ma_danh_gia})" class="flex-1 bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"><i class="fas fa-reply mr-2"></i>Trả lời</button>
+                        ${review.trang_thai !== 'approved' ? `<button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'approved'); closeModal();" class="flex-1 bg-emerald-500 text-white py-2 rounded-xl hover:bg-emerald-600"><i class="fas fa-check mr-2"></i>Duyệt</button>` : ''}
+                        ${review.trang_thai !== 'rejected' ? `<button type="button" onclick="event.preventDefault(); updateStatus(${review.ma_danh_gia}, 'rejected'); closeModal();" class="flex-1 bg-amber-500 text-white py-2 rounded-xl hover:bg-amber-600"><i class="fas fa-ban mr-2"></i>Khóa</button>` : ''}
+                        <button type="button" onclick="event.preventDefault(); deleteReview(${review.ma_danh_gia}); closeModal();" class="flex-1 bg-red-500 text-white py-2 rounded-xl hover:bg-red-600"><i class="fas fa-trash mr-2"></i>Xóa</button>
+                    </div>
+                </div>`;
+            document.getElementById('review-modal').classList.remove('hidden');
+        }
+
+        async function loadRepliesForReview(reviewId) {
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}/replies`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    return `
+                        <div class="border-t pt-4">
+                            <h4 class="font-semibold text-slate-700 mb-3">
+                                <i class="fas fa-reply text-green-600 mr-2"></i>
+                                Trả lời của Admin (${data.data.length})
+                            </h4>
+                            <div class="space-y-3">
+                                ${data.data.map(reply => `
+                                    <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="fas fa-user-shield text-green-600"></i>
+                                                <p class="font-semibold text-green-800">Admin</p>
+                                                <span class="text-xs text-slate-400 italic">Tác giả: ${reply.ten_admin}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500">${formatDate(reply.ngay_tra_loi)}</p>
+                                        </div>
+                                        <p class="text-slate-700">${reply.noi_dung}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                return '';
+            } catch (error) {
+                console.error('Error loading replies:', error);
+                return '';
+            }
+        }
+
+        function openReplyModalFromDetail(reviewId) {
+            closeModal();
+            openReplyModal(reviewId);
+        }
+
+        async function updateStatus(reviewId, status) {
+            try {
+                const response = await fetch(`${API_URL}/reviews/admin/${reviewId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ trang_thai: status })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        async function deleteReview(reviewId) {
+            if (!confirm('Xác nhận xóa đánh giá này? Hành động này không thể hoàn tác.')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/admin/${reviewId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    loadReviews();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('select-all').checked;
+            document.querySelectorAll('.review-checkbox').forEach(cb => cb.checked = selectAll);
+            updateSelection();
+        }
+
+        function updateSelection() {
+            selectedIds = Array.from(document.querySelectorAll('.review-checkbox:checked')).map(cb => parseInt(cb.value));
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+            
+            if (selectedIds.length > 0) {
+                bulkActions.classList.remove('hidden');
+                selectedCount.textContent = selectedIds.length;
+            } else {
+                bulkActions.classList.add('hidden');
+            }
+        }
+
+        async function bulkApprove() {
+            if (!confirm(`Duyệt ${selectedIds.length} đánh giá đã chọn?`)) return;
+            await bulkUpdateStatus('approved');
+        }
+
+        async function bulkReject() {
+            if (!confirm(`Khóa ${selectedIds.length} đánh giá đã chọn?`)) return;
+            await bulkUpdateStatus('rejected');
+        }
+
+        async function bulkUpdateStatus(status) {
+            try {
+                const response = await fetch(`${API_URL}/reviews/admin/bulk-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ ids: selectedIds, trang_thai: status })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    selectedIds = [];
+                    document.getElementById('select-all').checked = false;
+                    loadReviews();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        async function bulkDelete() {
+            if (!confirm(`Xóa ${selectedIds.length} đánh giá đã chọn? Hành động này không thể hoàn tác.`)) return;
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/admin/bulk-delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ ids: selectedIds })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    selectedIds = [];
+                    document.getElementById('select-all').checked = false;
+                    loadReviews();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra');
+            }
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            const star = document.getElementById('star-filter').value;
+
+            let filtered = reviews.filter(r => {
+                const matchSearch = !search || 
+                    r.ten_nguoi_dung.toLowerCase().includes(search) || 
+                    (r.binh_luan && r.binh_luan.toLowerCase().includes(search)) ||
+                    r.ten_mon.toLowerCase().includes(search);
+                const matchStatus = !status || r.trang_thai === status;
+                const matchStar = !star || r.so_sao === parseInt(star);
+                return matchSearch && matchStatus && matchStar;
+            });
+            renderReviews(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('star-filter').value = '';
+            renderReviews(reviews);
+        }
+
+        function closeModal() {
+            document.getElementById('review-modal').classList.add('hidden');
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Reply functions
+        let currentReviewId = null;
+
+        async function openReplyModal(reviewId) {
+            currentReviewId = reviewId;
+            const textarea = document.getElementById('reply-content');
+            
+            // Load reply hiện tại nếu có
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}/replies`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    // Có reply rồi, hiển thị để edit
+                    textarea.value = data.data[0].noi_dung;
+                    document.querySelector('#reply-modal h3').innerHTML = '<i class="fas fa-edit mr-2"></i>Chỉnh sửa trả lời';
+                } else {
+                    // Chưa có reply, tạo mới
+                    textarea.value = '';
+                    document.querySelector('#reply-modal h3').innerHTML = '<i class="fas fa-reply mr-2"></i>Trả lời đánh giá';
+                }
+            } catch (error) {
+                console.error('Error loading reply:', error);
+                textarea.value = '';
+            }
+            
+            document.getElementById('reply-modal').classList.remove('hidden');
+        }
+
+        function closeReplyModal() {
+            document.getElementById('reply-modal').classList.add('hidden');
+            currentReviewId = null;
+        }
+
+        async function submitReply() {
+            const content = document.getElementById('reply-content').value.trim();
+            
+            if (!content) {
+                alert('Vui lòng nhập nội dung trả lời');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/${currentReviewId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ noi_dung: content })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const message = data.data.is_update ? 
+                        '✅ Cập nhật trả lời thành công!' : 
+                        '✅ Trả lời đánh giá thành công!';
+                    alert(message);
+                    closeReplyModal();
+                    loadReviews(); // Reload danh sách
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Có lỗi xảy ra khi gửi trả lời');
+            }
+        }
+
+        // Load on page ready
+        initCharts();
+        loadReviews();
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+/* Christmas Theme - Background & Snow Effect */
+
+/* Christmas Background Container */
+.christmas-bg {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 30%, #1e3a5a 60%, #1a365d 100%);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Background decorations layer */
+.christmas-bg::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 40%),
+        radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Main content wrapper - above snow */
+.christmas-content {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+
+/* Allow scrolling for long forms */
+.christmas-bg {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Snow canvas container */
+.snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Individual snowflake */
+.snowflake {
+    position: absolute;
+    top: -10px;
+    color: white;
+    font-size: 1em;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8);
+    animation: snowfall linear infinite;
+    opacity: 0.8;
+    user-select: none;
+}
+
+@keyframes snowfall {
+    0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.3;
+    }
+}
+
+/* Snowflake variations */
+.snowflake:nth-child(odd) {
+    animation-timing-function: ease-in-out;
+}
+
+.snowflake:nth-child(even) {
+    animation-timing-function: linear;
+}
+
+/* Additional snowflakes decoration on corners */
+.snowflake-decoration {
+    position: fixed;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.6;
+    color: white;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+.snowflake-decoration.top-left {
+    top: 50px;
+    left: 50px;
+    font-size: 60px;
+    animation: float 6s ease-in-out infinite;
+}
+
+.snowflake-decoration.top-right {
+    top: 80px;
+    right: 80px;
+    font-size: 50px;
+    animation: float 5s ease-in-out infinite 1s;
+}
+
+.snowflake-decoration.mid-left {
+    top: 30%;
+    left: 30px;
+    font-size: 40px;
+    animation: float 7s ease-in-out infinite 0.5s;
+}
+
+.snowflake-decoration.mid-right {
+    top: 40%;
+    right: 40px;
+    font-size: 45px;
+    animation: float 6.5s ease-in-out infinite 1.5s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+}
+
+/* Card styling for Christmas theme */
+.christmas-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+}
+
+/* Logo section styling */
+.christmas-logo {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 1rem;
+    display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .snowflake-decoration {
+        display: none;
+    }
+    
+    .christmas-content {
+        padding: 1rem;
+    }
+}
+
+/* Ensure footer is not covered */
+body.christmas-bg #footer-container {
+    position: relative;
+    z-index: 100;
+}

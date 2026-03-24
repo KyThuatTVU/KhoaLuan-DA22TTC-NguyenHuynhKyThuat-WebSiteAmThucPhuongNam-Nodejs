@@ -1,0 +1,256 @@
+<!-- Modal Đăng Nhập Admin -->
+<div id="admin-login-modal"
+    class="fixed inset-0 bg-black bg-opacity-50 z-[9999] hidden items-center justify-center p-4">
+    <div class="bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full border border-gray-700 transform transition-all">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-orange-600 to-red-600 p-6 rounded-t-2xl relative">
+            <button onclick="closeAdminLoginModal()"
+                class="absolute top-4 right-4 text-white hover:text-gray-200 transition">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-3">
+                    <i class="fas fa-shield-alt text-orange-600 text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Đăng Nhập Quản Trị</h2>
+                <p class="text-orange-100 text-sm mt-1">Chỉ dành cho quản trị viên</p>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6">
+            <form id="modal-admin-login-form" class="space-y-4">
+                <!-- Tài khoản -->
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Tài khoản</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-500"></i>
+                        </div>
+                        <input type="text" id="modal-tai-khoan" required
+                            class="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-orange-600 text-white placeholder-gray-400"
+                            placeholder="Nhập tài khoản admin">
+                    </div>
+                </div>
+
+                <!-- Mật khẩu -->
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Mật khẩu</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-500"></i>
+                        </div>
+                        <input type="password" id="modal-mat-khau" required
+                            class="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-orange-600 text-white placeholder-gray-400"
+                            placeholder="Nhập mật khẩu">
+                        <button type="button" onclick="toggleModalPassword()"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i id="modal-password-icon" class="fas fa-eye text-gray-500"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember -->
+                <div class="flex items-center">
+                    <input type="checkbox" id="modal-remember" class="w-4 h-4 text-orange-600 rounded">
+                    <label for="modal-remember" class="ml-2 text-sm text-gray-400">Ghi nhớ đăng nhập</label>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-lg font-medium text-lg hover:from-orange-700 hover:to-red-700 transition shadow-lg">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Đăng nhập
+                </button>
+
+                <!-- Divider -->
+                <div class="relative my-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-600"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-gray-800 text-gray-400">Hoặc đăng nhập với</span>
+                    </div>
+                </div>
+
+                <!-- Google Login Button -->
+                <button type="button" onclick="loginAdminWithGoogle()"
+                    class="w-full bg-white border-2 border-gray-600 text-gray-800 py-3 rounded-lg font-medium text-lg hover:bg-gray-100 transition shadow-md flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-2" viewBox="0 0 24 24">
+                        <path fill="#4285F4"
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853"
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05"
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#EA4335"
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    Đăng nhập với Google
+                </button>
+
+                <!-- Alert -->
+                <div id="modal-alert-message" class="hidden p-3 rounded-lg text-sm"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Functions đã được định nghĩa trong load-components.js
+    // Chỉ cần các helper functions ở đây
+
+    // Đóng modal khi click outside
+    document.getElementById('admin-login-modal')?.addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeAdminLoginModal();
+        }
+    });
+
+    // Toggle password visibility
+    function toggleModalPassword() {
+        const passwordInput = document.getElementById('modal-mat-khau');
+        const passwordIcon = document.getElementById('modal-password-icon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('fa-eye');
+            passwordIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('fa-eye-slash');
+            passwordIcon.classList.add('fa-eye');
+        }
+    }
+
+    // Show alert in modal
+    function showModalAlert(message, type = 'error') {
+        const alertDiv = document.getElementById('modal-alert-message');
+        alertDiv.className = `p-3 rounded-lg text-sm ${type === 'success' ? 'bg-green-600' : 'bg-red-600'} text-white`;
+        alertDiv.textContent = message;
+        alertDiv.classList.remove('hidden');
+
+        setTimeout(() => {
+            alertDiv.classList.add('hidden');
+        }, 5000);
+    }
+
+    // Google Login cho Admin
+    function loginAdminWithGoogle() {
+        window.location.href = 'http://localhost:3000/api/admin-auth/google';
+    }
+
+    // Xử lý callback từ Google (nếu có)
+    window.addEventListener('DOMContentLoaded', async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const googleToken = urlParams.get('google_token');
+        const success = urlParams.get('success');
+        const error = urlParams.get('error');
+
+        if (error) {
+            openAdminLoginModal();
+            showModalAlert('Đăng nhập Google thất bại. Vui lòng thử lại!', 'error');
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+        }
+
+        if (googleToken && success) {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin-auth/google/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token: googleToken })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    localStorage.setItem('admin_token', result.data.token);
+                    localStorage.setItem('admin_info', JSON.stringify(result.data));
+
+                    alert('Đăng nhập Google thành công!');
+                    console.log('🔄 Redirecting to admin panel...');
+                    window.location.href = 'http://localhost:3000/admin/index1.html';
+                } else {
+                    openAdminLoginModal();
+                    showModalAlert('Xác thực Google thất bại', 'error');
+                }
+            } catch (error) {
+                console.error('Lỗi verify Google token:', error);
+                openAdminLoginModal();
+                showModalAlert('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+            }
+
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+
+    // Xử lý form đăng nhập
+    document.getElementById('modal-admin-login-form')?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalButtonHTML = submitButton.innerHTML;
+
+        const formData = {
+            tai_khoan: document.getElementById('modal-tai-khoan').value.trim(),
+            mat_khau: document.getElementById('modal-mat-khau').value
+        };
+
+        if (!formData.tai_khoan || !formData.mat_khau) {
+            showModalAlert('Vui lòng nhập đầy đủ thông tin', 'error');
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+
+        try {
+            const response = await fetch('http://localhost:3000/api/admin-auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                console.log('✅ Login successful:', result);
+                localStorage.setItem('admin_token', result.data.token);
+                localStorage.setItem('admin_info', JSON.stringify(result.data));
+
+                showModalAlert('Đăng nhập thành công! Đang chuyển hướng...', 'success');
+
+                // Đóng modal trước
+                closeAdminLoginModal();
+
+                // Redirect với nhiều cách thử
+                console.log('🔄 Current URL:', window.location.href);
+                console.log('🔄 Redirecting to admin panel...');
+
+                const adminUrl = 'http://localhost:3000/admin/index1.html';
+                console.log('🔄 Target URL:', adminUrl);
+
+                // Thử mở tab mới
+                const newWindow = window.open(adminUrl, '_self');
+                if (!newWindow) {
+                    console.log('⚠️ Popup blocked, using location.href');
+                    window.location.href = adminUrl;
+                }
+            } else {
+                showModalAlert(result.message || 'Đăng nhập thất bại', 'error');
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonHTML;
+            }
+
+        } catch (error) {
+            console.error('Lỗi:', error);
+            showModalAlert('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonHTML;
+        }
+    });
+</script>

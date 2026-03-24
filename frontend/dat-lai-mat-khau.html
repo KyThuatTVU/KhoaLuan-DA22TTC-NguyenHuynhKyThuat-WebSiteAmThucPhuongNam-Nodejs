@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Lại Mật Khẩu - Nhà hàng Phương Nam Vĩnh Long</title>
+    <link rel="icon" type="image/png" href="images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <div class="min-h-screen flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full">
+            <!-- Logo -->
+            <div class="text-center mb-6 sm:mb-8">
+                <a href="index.html" class="inline-flex items-center space-x-2 sm:space-x-3">
+                    <!-- Logo hình -->
+                    <img src="images/Green Simple Clean Vegan Food Logo.png" alt="Phương Nam Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-orange-600 shadow-md object-cover">
+                    
+                    <div class="text-left">
+                        <h1 class="font-dancing text-3xl font-bold text-gray-800">Phương Nam</h1>
+                        <p class="text-sm text-gray-600">Vĩnh Long</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                        <i class="fas fa-lock text-3xl text-green-600"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2">Đặt Lại Mật Khẩu</h2>
+                    <p class="text-gray-600">Nhập mật khẩu mới cho tài khoản của bạn</p>
+                </div>
+
+                <form id="reset-password-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Mật khẩu mới</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="new-password" name="new_password" required 
+                                   class="w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:border-orange-600" 
+                                   placeholder="Nhập mật khẩu mới"
+                                   minlength="6">
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('new-password', this)">
+                                <i class="fas fa-eye text-gray-400"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Tối thiểu 6 ký tự, có chữ cái và số</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Xác nhận mật khẩu</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="confirm-password" name="confirm_password" required 
+                                   class="w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:border-orange-600" 
+                                   placeholder="Nhập lại mật khẩu mới"
+                                   minlength="6">
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('confirm-password', this)">
+                                <i class="fas fa-eye text-gray-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p class="text-sm text-blue-700">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ cái và số
+                        </p>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-lg font-medium text-lg hover:from-orange-700 hover:to-red-700 transition shadow-lg">
+                        <i class="fas fa-check mr-2"></i> Đặt lại mật khẩu
+                    </button>
+
+                    <div class="text-center">
+                        <a href="dang-nhap.html" class="text-orange-600 hover:text-orange-700 font-medium inline-flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Quay lại đăng nhập
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-6">
+                <a href="index.html" class="text-gray-600 hover:text-gray-800 transition inline-flex items-center">
+                    <i class="fas fa-home mr-2"></i> Quay lại trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const API_URL = 'http://localhost:3000/api/auth';
+
+        // Kiểm tra xem có thông tin reset không
+        window.addEventListener('DOMContentLoaded', function() {
+            const resetEmail = sessionStorage.getItem('reset_email');
+            const resetCode = sessionStorage.getItem('reset_code');
+
+            if (!resetEmail || !resetCode) {
+                showNotification('Phiên làm việc đã hết hạn. Vui lòng thử lại!', 'error');
+                setTimeout(() => {
+                    window.location.href = 'quen-mat-khau.html';
+                }, 2000);
+            }
+        });
+
+        // Toggle hiển thị mật khẩu
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Xử lý form đặt lại mật khẩu
+        document.getElementById('reset-password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const submitBtn = document.getElementById('submit-btn');
+
+            // Validate
+            if (newPassword !== confirmPassword) {
+                showNotification('Mật khẩu xác nhận không khớp!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('Mật khẩu phải có ít nhất 6 ký tự!', 'error');
+                return;
+            }
+
+            // Kiểm tra có chữ cái
+            if (!/[A-Za-z]/.test(newPassword)) {
+                showNotification('Mật khẩu phải chứa ít nhất 1 chữ cái!', 'error');
+                return;
+            }
+
+            // Kiểm tra có số
+            if (!/[0-9]/.test(newPassword)) {
+                showNotification('Mật khẩu phải chứa ít nhất 1 chữ số!', 'error');
+                return;
+            }
+
+            // Lấy thông tin từ sessionStorage
+            const resetEmail = sessionStorage.getItem('reset_email');
+            const resetCode = sessionStorage.getItem('reset_code');
+
+            if (!resetEmail || !resetCode) {
+                showNotification('Phiên làm việc đã hết hạn!', 'error');
+                setTimeout(() => {
+                    window.location.href = 'quen-mat-khau.html';
+                }, 2000);
+                return;
+            }
+
+            // Disable button và hiển thị loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+
+            try {
+                const response = await fetch(`${API_URL}/reset-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: resetEmail,
+                        ma_code: resetCode,
+                        mat_khau_moi: newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    
+                    // Xóa thông tin trong sessionStorage
+                    sessionStorage.removeItem('reset_email');
+                    sessionStorage.removeItem('reset_code');
+                    
+                    // Chuyển hướng về trang đăng nhập
+                    setTimeout(() => {
+                        window.location.href = 'dang-nhap.html';
+                    }, 2000);
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra!', 'error');
+                }
+            } catch (error) {
+                console.error('Lỗi:', error);
+                showNotification('Không thể kết nối đến server!', 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Đặt lại mật khẩu';
+            }
+        });
+
+        // Thêm sự kiện kiểm tra password match khi gõ
+        document.getElementById('confirm-password').addEventListener('input', function() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && newPassword !== confirmPassword) {
+                this.setCustomValidity('Mật khẩu không khớp');
+                this.classList.add('border-red-500');
+            } else {
+                this.setCustomValidity('');
+                this.classList.remove('border-red-500');
+            }
+        });
+    </script>
+    
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+    <!-- Chatbot Container -->
+    <div id="chatbot-container"></div>
+    <script src="js/load-components.js"></script>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/gsap-auth.js"></script>
+    
+    <!-- Snow Effect -->
+    <script src="js/snow-effect.js"></script>
+    
+    <!-- Cherry Blossom Effect -->
+    <script src="js/cherry-blossom-effect.js"></script>
+    
+    <!-- Responsive Helper -->
+    <script src="js/responsive-helper.js"></script>
+</body>
+</html>
