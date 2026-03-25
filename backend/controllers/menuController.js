@@ -392,6 +392,35 @@ const updateDish = async (req, res) => {
 // Xóa món ăn (Admin)
 const deleteDish = async (req, res) => {
     try {
+        // Kiểm tra xem món ăn có trong đơn hàng không
+        const [orderItems] = await db.query(
+            'SELECT COUNT(*) as count FROM chi_tiet_don_hang WHERE ma_mon = ?',
+            [req.params.id]
+        );
+
+        // Nếu món ăn đã có trong đơn hàng, không cho phép xóa
+        // Thay vào đó, chuyển trạng thái thành không hoạt động
+        if (orderItems[0].count > 0) {
+            const [updateResult] = await db.query(
+                'UPDATE mon_an SET trang_thai = 0 WHERE ma_mon = ?',
+                [req.params.id]
+            );
+
+            if (updateResult.affectedRows === 0) {
+                return res.status(404).json({ 
+                    success: false, 
+                    message: 'Không tìm thấy món ăn' 
+                });
+            }
+
+            return res.json({ 
+                success: true, 
+                message: 'Món ăn đã có trong đơn hàng, đã chuyển sang trạng thái không hoạt động thay vì xóa',
+                deactivated: true
+            });
+        }
+
+        // Nếu món ăn chưa có trong đơn hàng, cho phép xóa
         const [result] = await db.query('DELETE FROM mon_an WHERE ma_mon = ?', [req.params.id]);
 
         if (result.affectedRows === 0) {
@@ -401,6 +430,15 @@ const deleteDish = async (req, res) => {
         res.json({ success: true, message: 'Xóa món ăn thành công' });
     } catch (error) {
         console.error('Error deleting product:', error);
+        
+        // Xử lý lỗi foreign key constraint
+        if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Không thể xóa món ăn này vì đã có trong đơn hàng. Vui lòng thử lại sau hoặc chuyển sang trạng thái không hoạt động.' 
+            });
+        }
+        
         res.status(500).json({ success: false, message: error.message });
     }
 };

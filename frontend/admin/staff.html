@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý nhân viên - Admin Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        body { background: #f0f4f8; }
+        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
+        .content-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
+        .btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+        .badge-active { background: #dcfce7; color: #16a34a; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+        .badge-inactive { background: #fee2e2; color: #dc2626; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+        .badge-staff { background: #dbeafe; color: #1d4ed8; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+        .badge-manager { background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: #fff; margin: 5% auto; padding: 0; border-radius: 16px; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 20px 24px; border-radius: 16px 16px 0 0; }
+        .modal-body { padding: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #1e3a5f; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; transition: all 0.2s; }
+        .form-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .form-select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0 transition-all duration-300">
+            <div class="h-full flex flex-col">
+                <!-- Logo -->
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div>
+                            <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                            <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-chart-pie w-5"></i><span class="text-sm font-medium">Tổng quan</span>
+                        </a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span>
+                        </a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span>
+                        </a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span>
+                        </a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span>
+                        </a>
+                        <a href="staff.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span>
+                        </a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                    <div class="space-y-1">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span>
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Admin Profile Card -->
+                <div class="p-4 border-t border-white/10">
+                    <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-4">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0">
+                                <p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p>
+                                <p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google Account</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 transition flex items-center">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Bar -->
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div>
+                        <h2 class="text-xl font-bold">Quản lý nhân viên</h2>
+                        <p class="text-sm text-blue-200">Quản lý tài khoản nhân viên POS</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="content-card">
+                    <!-- Header Actions -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800">Danh sách nhân viên</h3>
+                            <p class="text-sm text-gray-500 mt-1">Quản lý tài khoản đăng nhập hệ thống POS</p>
+                        </div>
+                        <button onclick="openAddModal()" class="btn-primary flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Thêm nhân viên</span>
+                        </button>
+                    </div>
+
+                    <!-- Staff Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Mã NV</th>
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tên nhân viên</th>
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Tài khoản</th>
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Số điện thoại</th>
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Vai trò</th>
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Trạng thái</th>
+                                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Ngày tạo</th>
+                                    <th class="text-center py-3 px-4 text-sm font-semibold text-gray-700">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-table-body">
+                                <tr>
+                                    <td colspan="8" class="text-center py-8 text-gray-400">
+                                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                        <p>Đang tải dữ liệu...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="staffModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex justify-between items-center">
+                <h3 id="modal-title" class="text-lg font-bold">Thêm nhân viên mới</h3>
+                <button onclick="closeModal()" class="text-white hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="staffForm">
+                    <input type="hidden" id="staff-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tên nhân viên <span class="text-red-500">*</span></label>
+                        <input type="text" id="staff-name" class="form-input" placeholder="Nhập tên nhân viên" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tài khoản <span class="text-red-500">*</span></label>
+                        <input type="text" id="staff-username" class="form-input" placeholder="Nhập tên đăng nhập" required>
+                    </div>
+
+                    <div class="form-group" id="password-group">
+                        <label class="form-label">Mật khẩu <span class="text-red-500">*</span></label>
+                        <input type="password" id="staff-password" class="form-input" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="tel" id="staff-phone" class="form-input" placeholder="Nhập số điện thoại">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Vai trò <span class="text-red-500">*</span></label>
+                        <select id="staff-role" class="form-select" required>
+                            <option value="staff">Nhân viên (Chỉ order)</option>
+                            <option value="manager">Quản lý (Full quyền)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái</label>
+                        <select id="staff-status" class="form-select">
+                            <option value="1">Hoạt động</option>
+                            <option value="0">Khóa</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closeModal()" class="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save mr-2"></i>Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex justify-between items-center">
+                <h3 class="text-lg font-bold">Đổi mật khẩu</h3>
+                <button onclick="closePasswordModal()" class="text-white hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="passwordForm">
+                    <input type="hidden" id="password-staff-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu mới <span class="text-red-500">*</span></label>
+                        <input type="password" id="new-password" class="form-input" placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Xác nhận mật khẩu <span class="text-red-500">*</span></label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Nhập lại mật khẩu mới" required>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closePasswordModal()" class="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-key mr-2"></i>Đổi mật khẩu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script>
+        const STAFF_API_URL = 'http://localhost:3000/api/staff';
+        let isEditMode = false;
+
+        // Load staff list
+        async function loadStaff() {
+            try {
+                const response = await fetch(STAFF_API_URL);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayStaff(result.data);
+                } else {
+                    showError('Không thể tải danh sách nhân viên');
+                }
+            } catch (error) {
+                console.error('Error loading staff:', error);
+                showError('Lỗi kết nối server');
+            }
+        }
+
+        // Display staff in table
+        function displayStaff(staffList) {
+            const tbody = document.getElementById('staff-table-body');
+            
+            if (staffList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-8 text-gray-400">
+                            <i class="fas fa-user-slash text-3xl mb-2"></i>
+                            <p>Chưa có nhân viên nào</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = staffList.map(staff => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                    <td class="py-3 px-4 text-sm text-gray-700">#${staff.ma_nhan_vien}</td>
+                    <td class="py-3 px-4 text-sm font-medium text-gray-800">${staff.ten_nhan_vien}</td>
+                    <td class="py-3 px-4 text-sm text-gray-700">${staff.tai_khoan}</td>
+                    <td class="py-3 px-4 text-sm text-gray-700">${staff.so_dien_thoai || '-'}</td>
+                    <td class="py-3 px-4">
+                        <span class="${staff.vai_tro === 'manager' ? 'badge-manager' : 'badge-staff'}">
+                            ${staff.vai_tro === 'manager' ? 'Quản lý' : 'Nhân viên'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="${staff.trang_thai === 1 ? 'badge-active' : 'badge-inactive'}">
+                            ${staff.trang_thai === 1 ? 'Hoạt động' : 'Khóa'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-700">${new Date(staff.ngay_tao).toLocaleDateString('vi-VN')}</td>
+                    <td class="py-3 px-4">
+                        <div class="flex justify-center space-x-2">
+                            <button onclick="openEditModal(${staff.ma_nhan_vien})" class="text-blue-600 hover:text-blue-800" title="Sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openPasswordModal(${staff.ma_nhan_vien})" class="text-orange-600 hover:text-orange-800" title="Đổi mật khẩu">
+                                <i class="fas fa-key"></i>
+                            </button>
+                            <button onclick="deleteStaff(${staff.ma_nhan_vien})" class="text-red-600 hover:text-red-800" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Open add modal
+        function openAddModal() {
+            isEditMode = false;
+            document.getElementById('modal-title').textContent = 'Thêm nhân viên mới';
+            document.getElementById('staffForm').reset();
+            document.getElementById('staff-id').value = '';
+            document.getElementById('staff-username').disabled = false;
+            document.getElementById('password-group').style.display = 'block';
+            document.getElementById('staff-password').required = true;
+            document.getElementById('staffModal').style.display = 'block';
+        }
+
+        // Open edit modal
+        async function openEditModal(id) {
+            isEditMode = true;
+            document.getElementById('modal-title').textContent = 'Chỉnh sửa nhân viên';
+            
+            try {
+                const response = await fetch(STAFF_API_URL);
+                const result = await response.json();
+                const staff = result.data.find(s => s.ma_nhan_vien === id);
+                
+                if (staff) {
+                    document.getElementById('staff-id').value = staff.ma_nhan_vien;
+                    document.getElementById('staff-name').value = staff.ten_nhan_vien;
+                    document.getElementById('staff-username').value = staff.tai_khoan;
+                    document.getElementById('staff-username').disabled = true;
+                    document.getElementById('staff-phone').value = staff.so_dien_thoai || '';
+                    document.getElementById('staff-role').value = staff.vai_tro;
+                    document.getElementById('staff-status').value = staff.trang_thai;
+                    document.getElementById('password-group').style.display = 'none';
+                    document.getElementById('staff-password').required = false;
+                    document.getElementById('staffModal').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading staff:', error);
+                showError('Không thể tải thông tin nhân viên');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('staffModal').style.display = 'none';
+        }
+
+        // Handle form submit
+        document.getElementById('staffForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('staff-id').value;
+            const data = {
+                ten_nhan_vien: document.getElementById('staff-name').value,
+                tai_khoan: document.getElementById('staff-username').value,
+                so_dien_thoai: document.getElementById('staff-phone').value,
+                vai_tro: document.getElementById('staff-role').value,
+                trang_thai: parseInt(document.getElementById('staff-status').value)
+            };
+
+            if (!isEditMode) {
+                data.mat_khau = document.getElementById('staff-password').value;
+            }
+
+            try {
+                const url = isEditMode ? `${STAFF_API_URL}/${id}` : STAFF_API_URL;
+                const method = isEditMode ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    closeModal();
+                    loadStaff();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error saving staff:', error);
+                showError('Lỗi kết nối server');
+            }
+        });
+
+        // Open password modal
+        function openPasswordModal(id) {
+            document.getElementById('password-staff-id').value = id;
+            document.getElementById('passwordForm').reset();
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        // Close password modal
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+
+        // Handle password form submit
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('password-staff-id').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (newPassword !== confirmPassword) {
+                showError('Mật khẩu xác nhận không khớp!');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showError('Mật khẩu phải có ít nhất 6 ký tự!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${STAFF_API_URL}/${id}/password`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mat_khau_moi: newPassword })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    closePasswordModal();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showError('Lỗi kết nối server');
+            }
+        });
+
+        // Delete staff
+        async function deleteStaff(id) {
+            if (!confirm('Bạn có chắc muốn xóa nhân viên này?')) return;
+
+            try {
+                const response = await fetch(`${STAFF_API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    loadStaff();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error deleting staff:', error);
+                showError('Lỗi kết nối server');
+            }
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            alert(message);
+        }
+
+        // Show error message
+        function showError(message) {
+            alert(message);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                localStorage.removeItem('adminUser');
+                window.location.href = 'dang-nhap-admin.html';
+            }
+        }
+
+        // Load data on page load
+        loadStaff();
+    </script>
+</body>
+</html>

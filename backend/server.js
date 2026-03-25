@@ -249,6 +249,8 @@ const notificationRoutes = require('./routes/notifications');
 const promotionRoutes = require('./routes/promotions');
 const reservationPaymentRoutes = require('./routes/reservation-payment');
 const ttsRoutes = require('./routes/tts');
+const posRoutes = require('./routes/pos');
+const staffRoutes = require('./routes/staff');
 
 // Register routes
 app.use('/api/tts', ttsRoutes);
@@ -274,6 +276,8 @@ app.use('/api/admin-chatbot', adminChatbotRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/promotions', promotionRoutes);
+app.use('/api/pos', posRoutes);
+app.use('/api/staff', staffRoutes);
 
 // Admin notifications routes
 const adminNotificationRoutes = require('./routes/admin-notifications');
@@ -293,4 +297,3 @@ app.listen(PORT, () => {
     console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
     console.log(`📁 Môi trường: ${process.env.NODE_ENV || 'development'}`);
 });
-v
