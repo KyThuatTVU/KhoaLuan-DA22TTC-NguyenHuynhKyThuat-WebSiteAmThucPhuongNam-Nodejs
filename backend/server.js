@@ -251,6 +251,9 @@ const reservationPaymentRoutes = require('./routes/reservation-payment');
 const ttsRoutes = require('./routes/tts');
 const posRoutes = require('./routes/pos');
 const staffRoutes = require('./routes/staff');
+const tableRoutes = require('./routes/tables');
+const inventoryRoutes = require('./routes/inventory');
+const recipeRoutes = require('./routes/recipe');
 
 // Register routes
 app.use('/api/tts', ttsRoutes);
@@ -278,6 +281,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/pos', posRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/tables', tableRoutes);
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/recipe', recipeRoutes);
 
 // Admin notifications routes
 const adminNotificationRoutes = require('./routes/admin-notifications');

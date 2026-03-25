@@ -9,8 +9,14 @@ const posController = require('../controllers/posController');
 // Tạo đơn hàng từ POS
 router.post('/orders', posController.createPOSOrder);
 
+// Gửi bếp (đặt bàn)
+router.post('/send-to-kitchen', posController.sendToKitchen);
+
 // Lấy danh sách bàn
 router.get('/tables', posController.getTables);
+
+// Lấy order hiện tại của 1 bàn cụ thể
+router.get('/table-order/:tableId', posController.getTableOrderDetail);
 
 // Lấy đơn hàng đang phục vụ tại bàn
 router.get('/table-orders', posController.getTableOrders);

@@ -207,10 +207,32 @@ const staffLogin = async (req, res) => {
             so_dien_thoai: staff[0].so_dien_thoai
         };
         
-        res.json({ 
-            success: true, 
-            message: 'Đăng nhập thành công!',
-            data: userData
+        // Bơm session admin cho cả Quản lý (manager) và Nhân viên (staff)
+        // để dùng chung một trang dashboard thống nhất (có kiểm duyệt RBAC)
+        let roleName = staff[0].vai_tro === 'manager' ? 'Quản lý' : 'Nhân viên';
+        let bgAvatarColor = staff[0].vai_tro === 'manager' ? 'ea580c' : '10b981'; // Cam cho manager, xanh emerald cho staff
+        
+        req.session.admin = {
+            ma_admin: staff[0].ma_nhan_vien, 
+            tai_khoan: staff[0].tai_khoan,
+            email: `${staff[0].tai_khoan}@pos.local`,
+            ten_hien_thi: staff[0].ten_nhan_vien,
+            anh_dai_dien: `https://ui-avatars.com/api/?name=${encodeURIComponent(roleName)}&background=${bgAvatarColor}&color=fff`,
+            quyen: staff[0].vai_tro === 'manager' ? 'POS_MANAGER' : 'POS_STAFF',
+            role: staff[0].vai_tro === 'manager' ? 'manager' : 'staff'
+        };
+        
+        req.session.save((err) => {
+            if (err) {
+                console.error('Error saving staff session:', err);
+                return res.status(500).json({ success: false, message: 'Lỗi tạo phiên đăng nhập' });
+            }
+            
+            res.json({ 
+                success: true, 
+                message: `Đăng nhập ${roleName.toLowerCase()} thành công!`,
+                data: userData
+            });
         });
     } catch (error) {
         console.error('Error staff login:', error);

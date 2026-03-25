@@ -33,9 +33,11 @@ const createPOSOrder = async (req, res) => {
         let discountAmount = 0;
         
         // Validate stock and calculate subtotal
+        // Validate stock using centralized ingredients
+        const ingredientRequirement = {};
         for (const item of items) {
             const [product] = await connection.query(
-                'SELECT so_luong_ton, gia_tien FROM mon_an WHERE ma_mon = ?',
+                'SELECT gia_tien, ten_mon FROM mon_an WHERE ma_mon = ?',
                 [item.ma_mon]
             );
             
@@ -43,11 +45,33 @@ const createPOSOrder = async (req, res) => {
                 throw new Error(`Món ăn ID ${item.ma_mon} không tồn tại`);
             }
             
-            if (product[0].so_luong_ton < item.so_luong) {
-                throw new Error(`Món ăn ID ${item.ma_mon} không đủ số lượng trong kho`);
+            // Get recipe
+            const [recipes] = await connection.query(
+                'SELECT ma_nguyen_lieu, so_luong_can FROM cong_thuc WHERE ma_mon = ?',
+                [item.ma_mon]
+            );
+            for (const r of recipes) {
+                const totalNeeded = r.so_luong_can * item.so_luong;
+                if (!ingredientRequirement[r.ma_nguyen_lieu]) {
+                    ingredientRequirement[r.ma_nguyen_lieu] = { needed: 0, mon_ans: [] };
+                }
+                ingredientRequirement[r.ma_nguyen_lieu].needed += totalNeeded;
+                ingredientRequirement[r.ma_nguyen_lieu].mon_ans.push(product[0].ten_mon);
             }
             
             subtotal += product[0].gia_tien * item.so_luong;
+        }
+
+        // Verify ingredient stock
+        for (const ma_nglieu in ingredientRequirement) {
+            const reqData = ingredientRequirement[ma_nglieu];
+            const [inv] = await connection.query(
+                'SELECT ten_nguyen_lieu, so_luong_ton FROM nguyen_lieu WHERE ma_nguyen_lieu = ?',
+                [ma_nglieu]
+            );
+            if (inv.length === 0 || inv[0].so_luong_ton < reqData.needed) {
+                throw new Error(`Không đủ nguyên liệu "${inv.length > 0 ? inv[0].ten_nguyen_lieu : ''}" cho món: ${[...new Set(reqData.mon_ans)].join(', ')}.`);
+            }
         }
         
         // Apply discount
@@ -109,11 +133,11 @@ const createPOSOrder = async (req, res) => {
                     [orderId, item.ma_mon, item.so_luong, item.gia]
                 );
                 
-                // Update stock
-                await connection.query(
-                    'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
-                    [item.so_luong, item.ma_mon]
-                );
+                // Xóa bỏ logic cũ trừ thẳng vào bảng mon_an
+                // await connection.query(
+                //     'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
+                //     [item.so_luong, item.ma_mon]
+                // );
             }
             
             // Create order status history
@@ -141,11 +165,11 @@ const createPOSOrder = async (req, res) => {
                     [orderId, item.ma_mon, item.so_luong, item.gia]
                 );
                 
-                // Update stock
-                await connection.query(
-                    'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
-                    [item.so_luong, item.ma_mon]
-                );
+                // Xóa bỏ logic cũ trừ thẳng vào bảng mon_an
+                // await connection.query(
+                //     'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
+                //     [item.so_luong, item.ma_mon]
+                // );
             }
             
             // Update table status
@@ -174,11 +198,11 @@ const createPOSOrder = async (req, res) => {
                     [orderId, item.ma_mon, item.so_luong, item.gia]
                 );
                 
-                // Update stock
-                await connection.query(
-                    'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
-                    [item.so_luong, item.ma_mon]
-                );
+                // Xóa bỏ logic cũ trừ thẳng vào bảng mon_an
+                // await connection.query(
+                //     'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
+                //     [item.so_luong, item.ma_mon]
+                // );
             }
         }
         
@@ -191,6 +215,16 @@ const createPOSOrder = async (req, res) => {
              orderType === 'table' ? orderId : null,
              totalAmount, paymentMethod]
         );
+        
+        // Thực hiện trừ kho trung tâm cho toàn bộ đơn hàng
+        for (const ma_nglieu in ingredientRequirement) {
+            await connection.query(
+                'UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton - ? WHERE ma_nguyen_lieu = ?',
+                [ingredientRequirement[ma_nglieu].needed, ma_nglieu]
+            );
+        }
+        const inventoryController = require('./inventoryController');
+        await inventoryController.updateAllDishMaxPortions(connection);
         
         await connection.commit();
         
@@ -218,6 +252,154 @@ const createPOSOrder = async (req, res) => {
     }
 };
 
+// Gửi bếp (Thêm/cập nhật món cho bàn đang phục vụ)
+const sendToKitchen = async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+        const { tableId, items, staffName } = req.body;
+        
+        let subtotal = 0;
+        const ingredientRequirement = {};
+        for (const item of items) {
+            subtotal += item.gia * item.so_luong;
+            const [recipes] = await connection.query('SELECT ma_nguyen_lieu, so_luong_can FROM cong_thuc WHERE ma_mon = ?', [item.ma_mon]);
+            for (const r of recipes) {
+                if (!ingredientRequirement[r.ma_nguyen_lieu]) ingredientRequirement[r.ma_nguyen_lieu] = { needed: 0 };
+                ingredientRequirement[r.ma_nguyen_lieu].needed += r.so_luong_can * item.so_luong;
+            }
+        }
+
+        // Kiểm tra bàn đang có order hay không
+        const [existingOrder] = await connection.query(
+            'SELECT ma_order FROM order_nha_hang WHERE ma_ban = ? AND trang_thai = "dang_phuc_vu"',
+            [tableId]
+        );
+
+        // Validate items
+        if (!items || items.length === 0) {
+            if (existingOrder.length > 0) {
+                // Hoàn lại kho nguyên liệu cho các món cũ
+                const [oldItems] = await connection.query(
+                    'SELECT ma_mon, so_luong FROM chi_tiet_order_nha_hang WHERE ma_order = ?',
+                    [orderId]
+                );
+                const ingredientRefund = {};
+                for (const oldItem of oldItems) {
+                    const [recipes] = await connection.query('SELECT ma_nguyen_lieu, so_luong_can FROM cong_thuc WHERE ma_mon = ?', [oldItem.ma_mon]);
+                    for (const r of recipes) {
+                        if (!ingredientRefund[r.ma_nguyen_lieu]) ingredientRefund[r.ma_nguyen_lieu] = 0;
+                        ingredientRefund[r.ma_nguyen_lieu] += r.so_luong_can * oldItem.so_luong;
+                    }
+                }
+                for (const ma_nglieu in ingredientRefund) {
+                    await connection.query('UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton + ? WHERE ma_nguyen_lieu = ?', [ingredientRefund[ma_nglieu], ma_nglieu]);
+                }
+                // Xóa chi tiết cũ & cập nhật trạng thái
+                await connection.query('DELETE FROM chi_tiet_order_nha_hang WHERE ma_order = ?', [orderId]);
+                await connection.query('UPDATE ban SET trang_thai = "trong" WHERE ma_ban = ?', [tableId]);
+                await connection.query('UPDATE order_nha_hang SET trang_thai = "huy", tong_tien = 0 WHERE ma_order = ?', [orderId]);
+                await connection.commit();
+                return res.json({
+                    success: true,
+                    message: 'Đã hủy order thành công!',
+                    data: { orderId: null }
+                });
+            } else {
+                await connection.rollback();
+                return res.status(400).json({ success: false, message: 'Đơn hàng trống!' });
+            }
+        }
+
+
+        let orderId;
+        if (existingOrder.length > 0) {
+            orderId = existingOrder[0].ma_order;
+            
+            // Hoàn lại kho nguyên liệu cho các món cũ
+            const [oldItems] = await connection.query(
+                'SELECT ma_mon, so_luong FROM chi_tiet_order_nha_hang WHERE ma_order = ?',
+                [orderId]
+            );
+            const ingredientRefund = {};
+            for (const oldItem of oldItems) {
+                const [recipes] = await connection.query('SELECT ma_nguyen_lieu, so_luong_can FROM cong_thuc WHERE ma_mon = ?', [oldItem.ma_mon]);
+                for (const r of recipes) {
+                    if (!ingredientRefund[r.ma_nguyen_lieu]) ingredientRefund[r.ma_nguyen_lieu] = 0;
+                    ingredientRefund[r.ma_nguyen_lieu] += r.so_luong_can * oldItem.so_luong;
+                }
+            }
+            for (const ma_nglieu in ingredientRefund) {
+                await connection.query('UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton + ? WHERE ma_nguyen_lieu = ?', [ingredientRefund[ma_nglieu], ma_nglieu]);
+            }
+            // Xóa chi tiết cũ
+            await connection.query('DELETE FROM chi_tiet_order_nha_hang WHERE ma_order = ?', [orderId]);
+            
+            // Cập nhật tổng tiền
+            await connection.query(
+                'UPDATE order_nha_hang SET tong_tien = ? WHERE ma_order = ?',
+                [subtotal, orderId]
+            );
+        } else {
+            // Tạo mới order
+            const [orderResult] = await connection.query(
+                'INSERT INTO order_nha_hang (ma_ban, ma_nhan_vien, tong_tien, trang_thai) VALUES (?, NULL, ?, "dang_phuc_vu")',
+                [tableId, subtotal]
+            );
+            orderId = orderResult.insertId;
+        }
+
+        // Luôn đảm bảo cập nhật trạng thái bàn thành đang phục vụ
+        await connection.query(
+            'UPDATE ban SET trang_thai = "dang_phuc_vu" WHERE ma_ban = ?',
+            [tableId]
+        );
+
+        // Kiểm tra xem kho tổng có đủ nguyên liệu không
+        for (const ma_nglieu in ingredientRequirement) {
+            const reqData = ingredientRequirement[ma_nglieu];
+            const [inv] = await connection.query('SELECT ten_nguyen_lieu, so_luong_ton FROM nguyen_lieu WHERE ma_nguyen_lieu = ?', [ma_nglieu]);
+            if (inv.length === 0 || inv[0].so_luong_ton < reqData.needed) {
+                throw new Error(`Không đủ nguyên liệu "${inv.length > 0 ? inv[0].ten_nguyen_lieu : ''}" để gửi món.`);
+            }
+        }
+
+        // Chèn món mới
+        for (const item of items) {
+            await connection.query(
+                'INSERT INTO chi_tiet_order_nha_hang (ma_order, ma_mon, so_luong, gia) VALUES (?, ?, ?, ?)',
+                [orderId, item.ma_mon, item.so_luong, item.gia]
+            );
+        }
+
+        // Trừ kho nguyên liệu tổng
+        for (const ma_nglieu in ingredientRequirement) {
+            await connection.query(
+                'UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton - ? WHERE ma_nguyen_lieu = ?',
+                [ingredientRequirement[ma_nglieu].needed, ma_nglieu]
+            );
+        }
+
+        const inventoryController = require('./inventoryController');
+        await inventoryController.updateAllDishMaxPortions(connection);
+
+        await connection.commit();
+
+        res.json({
+            success: true,
+            message: 'Đã gửi yêu cầu đến bếp thành công!',
+            data: { orderId }
+        });
+
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error send to kitchen:', error);
+        res.status(500).json({ success: false, message: error.message });
+    } finally {
+        connection.release();
+    }
+};
+
 // Lấy danh sách bàn
 const getTables = async (req, res) => {
     try {
@@ -232,7 +414,42 @@ const getTables = async (req, res) => {
     }
 };
 
-// Lấy đơn hàng đang phục vụ tại bàn
+// Lấy chi tiết đơn hàng đang phục vụ của một bàn cụ thể
+const getTableOrderDetail = async (req, res) => {
+    try {
+        const { tableId } = req.params;
+        
+        const [order] = await db.query(
+            'SELECT * FROM order_nha_hang WHERE ma_ban = ? AND trang_thai = "dang_phuc_vu"',
+            [tableId]
+        );
+        
+        if (order.length === 0) {
+            return res.json({ success: true, data: null });
+        }
+        
+        const [items] = await db.query(
+            `SELECT ct.ma_mon, m.ten_mon, m.anh_mon, ct.gia, ct.so_luong, m.so_luong_ton, '' as ghi_chu 
+             FROM chi_tiet_order_nha_hang ct
+             JOIN mon_an m ON ct.ma_mon = m.ma_mon
+             WHERE ct.ma_order = ?`,
+            [order[0].ma_order]
+        );
+        
+        res.json({
+            success: true,
+            data: {
+                orderId: order[0].ma_order,
+                items: items
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching table order detail:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Lấy đơn hàng đang phục vụ tại bàn (dashboard summary)
 const getTableOrders = async (req, res) => {
     try {
         const [orders] = await db.query(
@@ -269,12 +486,18 @@ const completeTableOrder = async (req, res) => {
         
         // Get order info
         const [order] = await connection.query(
-            'SELECT * FROM order_nha_hang WHERE ma_order = ?',
+            'SELECT o.*, b.ten_ban FROM order_nha_hang o JOIN ban b ON o.ma_ban = b.ma_ban WHERE o.ma_order = ?',
             [orderId]
         );
         
         if (order.length === 0) {
+            await connection.rollback();
             return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng!' });
+        }
+
+        if (order[0].trang_thai === 'da_thanh_toan') {
+            await connection.rollback();
+            return res.status(400).json({ success: false, message: 'Đơn hàng này đã được thanh toán!' });
         }
         
         // Update order status
@@ -289,13 +512,51 @@ const completeTableOrder = async (req, res) => {
             [order[0].ma_ban]
         );
         
-        // Update payment record
-        await connection.query(
-            `UPDATE thanh_toan 
-             SET trang_thai = 'success', phuong_thuc = ?, thoi_gian_thanh_toan = NOW()
-             WHERE ma_order_nha_hang = ?`,
-            [paymentMethod, orderId]
-        );
+        // Clone into don_hang for unified statistics and history
+        const [insertDonHang] = await connection.query(`
+            INSERT INTO don_hang (
+                ten_khach_vang_lai,
+                tong_tien,
+                trang_thai,
+                phuong_thuc_thanh_toan,
+                ghi_chu,
+                thoi_gian_tao
+            ) VALUES (?, ?, 'delivered', ?, ?, ?)
+        `, [
+            order[0].ten_ban + " (Tại bàn)", 
+            order[0].tong_tien, 
+            paymentMethod || 'cash', 
+            'Đơn hàng tại bàn POS',
+            order[0].thoi_gian_tao
+        ]);
+        const newDonHangId = insertDonHang.insertId;
+
+        // Insert items into chi_tiet_don_hang
+        const [items] = await connection.query('SELECT * FROM chi_tiet_order_nha_hang WHERE ma_order = ?', [orderId]);
+        for (const item of items) {
+             await connection.query(
+                'INSERT INTO chi_tiet_don_hang (ma_don_hang, ma_mon, so_luong, gia_tai_thoi_diem) VALUES (?, ?, ?, ?)', 
+                [newDonHangId, item.ma_mon, item.so_luong, item.gia]
+             );
+        }
+        
+        // Kiểm tra xem đã có record thanh toán chưa
+        const [payment] = await connection.query('SELECT ma_thanh_toan FROM thanh_toan WHERE ma_order_nha_hang = ?', [orderId]);
+        
+        if (payment.length > 0) {
+            await connection.query(
+                `UPDATE thanh_toan 
+                 SET trang_thai = 'success', phuong_thuc = ?, thoi_gian_thanh_toan = NOW(), ma_don_hang = ?
+                 WHERE ma_order_nha_hang = ?`,
+                [paymentMethod || 'cash', newDonHangId, orderId]
+            );
+        } else {
+            await connection.query(
+                `INSERT INTO thanh_toan (ma_order_nha_hang, ma_don_hang, phuong_thuc, so_tien, trang_thai, thoi_gian_thanh_toan) 
+                 VALUES (?, ?, ?, ?, 'success', NOW())`,
+                [orderId, newDonHangId, paymentMethod || 'cash', order[0].tong_tien]
+            );
+        }
         
         await connection.commit();
         
@@ -693,7 +954,9 @@ const updateOrderStatus = async (req, res) => {
 
 module.exports = {
     createPOSOrder,
+    sendToKitchen,
     getTables,
+    getTableOrderDetail,
     getTableOrders,
     completeTableOrder,
     getDailySalesStats,

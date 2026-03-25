@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Món (POS) - Admin Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        body { background: #f0f4f8; overflow: hidden; /* Màn hình Order thường fix chiều cao */ }
+        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 12px 28px; }
+        
+        /* POS custom layout classes */
+        .pos-container { height: calc(100vh - 64px); display: flex; }
+        .pos-left { flex: 1; display: flex; flex-direction: column; background: white; border-right: 1px solid #e2e8f0; }
+        .pos-right { width: 400px; display: flex; flex-direction: column; background: #f8fafc; }
+        
+        /* Menu Section */
+        .menu-header { padding: 16px; border-bottom: 1px solid #e2e8f0; background: white; }
+        .search-container { position: relative; margin-bottom: 12px; }
+        .search-container input { width: 100%; padding: 10px 16px 10px 40px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
+        .search-container input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .search-container i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        
+        .category-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .category-tabs::-webkit-scrollbar { height: 4px; }
+        .category-tabs::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .category-tab { padding: 6px 16px; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: all 0.2s; }
+        .category-tab.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .category-tab:not(.active):hover { background: #f1f5f9; }
+
+        .menu-grid { flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; align-content: start; }
+        .menu-grid::-webkit-scrollbar { width: 6px; }
+        .menu-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .menu-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
+        .menu-item:hover { border-color: #3b82f6; box-shadow: 0 4px 12px rgba(59,130,246,0.15); transform: translateY(-2px); }
+        .menu-item.out-of-stock { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+        .menu-item.out-of-stock:hover { transform: none; box-shadow: none; border-color: #e2e8f0; }
+        
+        .item-img { width: 100%; height: 120px; object-fit: cover; }
+        .item-info { padding: 12px; }
+        .item-name { font-weight: 600; font-size: 14px; color: #1e293b; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 40px; }
+        .item-price { font-weight: bold; color: #3b82f6; font-size: 15px; }
+        .item-stock { font-size: 11px; color: #64748b; margin-top: 4px; }
+
+        /* Order Section */
+        .order-header { padding: 16px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .order-title { font-size: 16px; font-weight: bold; color: #1e293b; }
+        .order-time { font-size: 13px; color: #64748b; }
+        
+        .order-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .order-list::-webkit-scrollbar { width: 6px; }
+        .order-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .cart-item { background: white; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .cart-item-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; }
+        .cart-item-name { font-weight: 600; font-size: 14px; color: #1e293b; flex: 1; padding-right: 8px; }
+        .cart-item-del { color: #ef4444; cursor: pointer; padding: 4px; }
+        
+        .cart-item-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .qty-controls { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px; border-radius: 6px; }
+        .qty-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 4px; font-weight: bold; color: #3b82f6; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .qty-val { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+        .cart-item-price { font-weight: bold; color: #1e293b; }
+        
+        .cart-item-note { width: 100%; padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; }
+        .cart-item-note:focus { border-color: #3b82f6; outline: none; }
+        
+        .order-summary { padding: 16px; background: white; border-top: 2px dashed #e2e8f0; box-shadow: 0 -4px 10px rgba(0,0,0,0.02); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #475569; }
+        .summary-total { font-size: 20px; font-weight: bold; color: #1e293b; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
+        .summary-total .val { color: #3b82f6; }
+        
+        .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+        .btn-send { background: #3b82f6; color: white; padding: 12px; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; }
+        .btn-send:hover:not(:disabled) { background: #2563eb; }
+        .btn-send:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-checkout { background: #10b981; color: white; padding: 12px; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; }
+        .btn-checkout:hover { background: #059669; }
+
+        .admin-card { background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; }
+        
+        /* Modal Styles */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 32px; border-radius: 16px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-icon { font-size: 64px; margin-bottom: 16px; }
+        .modal-title { font-size: 20px; font-weight: bold; color: #1e293b; margin-bottom: 8px; }
+        .modal-desc { color: #64748b; margin-bottom: 24px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0 transition-all duration-300">
+            <!-- (Giống hệt admin-pos-tables.html) -->
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div>
+                            <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                            <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="flex-1 overflow-y-auto p-4" id="admin-menu">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-dashboard"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="admin-pos-tables.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos"><i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-products"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-inventory">
+                            <i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span>
+                        </a>
+                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-recipe">
+                            <i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span>
+                        </a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-orders"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-reservations"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-tables"><i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-customers"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
+                    </div>
+                </nav>
+
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="User" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0">
+                                <p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p>
+                                <p id="admin-email" class="text-xs text-blue-300 truncate">user@example.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Bar -->
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div class="flex items-center gap-3">
+                        <button onclick="goBack()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm transition">
+                            <i class="fas fa-arrow-left mr-1"></i> Trở lại
+                        </button>
+                        <h2 class="text-base sm:text-xl font-bold">Order: <span id="tableName" class="text-amber-300">Đang tải...</span></h2>
+                    </div>
+                </div>
+            </header>
+
+            <!-- POS Area -->
+            <div class="pos-container">
+                <!-- Left: Menu Grid -->
+                <div class="pos-left">
+                    <div class="menu-header">
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchMenu" placeholder="Tìm kiếm món ăn...">
+                        </div>
+                        <div class="category-tabs" id="categoryTabs">
+                            <!-- JS load tabs -->
+                        </div>
+                    </div>
+                    
+                    <div class="menu-grid" id="menuList">
+                        <!-- JS load menu items -->
+                    </div>
+                </div>
+
+                <!-- Right: Order / Cart -->
+                <div class="pos-right">
+                    <div class="order-header">
+                        <div class="order-title"><i class="fas fa-clipboard-list mr-2"></i>Chi tiết Order</div>
+                        <div class="order-time" id="orderTime">--:--</div>
+                    </div>
+                    
+                    <div class="order-list" id="orderContent">
+                        <div class="flex flex-col items-center justify-center h-full text-slate-400">
+                            <i class="fas fa-utensils text-5xl mb-3 opacity-50"></i>
+                            <p>Chưa có món nào</p>
+                            <p class="text-xs mt-1">Chọn món từ danh sách bên trái</p>
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Số lượng món:</span>
+                            <span id="itemCount" class="font-bold text-slate-800">0</span>
+                        </div>
+                        <div class="summary-row summary-total">
+                            <span>Tổng cộng:</span>
+                            <span id="totalAmount" class="val">0đ</span>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-send" id="btnSendKitchen" onclick="sendToKitchen()" disabled>
+                                <i class="fas fa-paper-plane mr-1"></i> Gửi bếp
+                            </button>
+                            <button class="btn-checkout hidden" id="btnCheckout" onclick="showCheckoutModal()">
+                                <i class="fas fa-money-bill-wave mr-1"></i> Thanh toán
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon text-emerald-500"><i class="fas fa-check-circle"></i></div>
+            <h3 class="modal-title">Gửi bếp thành công!</h3>
+            <p class="modal-desc">Order đã được xác nhận và chuyển đến bộ phận bếp.</p>
+            <div class="flex gap-3">
+                <button onclick="continueOrder()" class="flex-1 bg-emerald-500 text-white py-2.5 rounded-lg font-medium hover:bg-emerald-600 transition">Tiếp tục Order</button>
+                <button onclick="goBack()" class="flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-200 transition">Về Sơ đồ bàn</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content text-left">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h3 class="modal-title mb-0">Thanh toán</h3>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="bg-blue-50 p-4 rounded-xl mb-4 text-center">
+                <p class="text-sm text-blue-600 font-medium mb-1">Tổng tiền cần thanh toán</p>
+                <p class="text-3xl font-bold text-blue-800" id="checkoutTotalAmount">0đ</p>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Phương thức thanh toán</label>
+                <select id="checkoutPaymentMethod" class="w-full padding-3 py-3 px-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="cash">Tiền mặt</option>
+                    <option value="transfer">Chuyển khoản</option>
+                    <option value="card">Quẹt thẻ</option>
+                </select>
+            </div>
+            
+            <button onclick="confirmCheckout()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
+                Xác nhận thanh toán
+            </button>
+        </div>
+    </div>
+    <!-- Bill Modal -->
+    <div id="billModal" class="modal">
+        <div class="modal-content bill-modal-wrapper">
+            <div class="bill-actions no-print">
+                <button onclick="printBill()" class="bill-btn bill-btn-print">
+                    <i class="fas fa-print mr-2"></i> In Bill
+                </button>
+                <button onclick="closeBillAndRedirect()" class="bill-btn bill-btn-close">
+                    <i class="fas fa-check mr-2"></i> Hoàn tất
+                </button>
+            </div>
+            <div id="billContent" class="bill-paper">
+                <!-- Bill Header -->
+                <div class="bill-header">
+                    <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="bill-logo">
+                    <h1 class="bill-restaurant-name">ẨM THỰC PHƯƠNG NAM</h1>
+                    <p class="bill-slogan">Hương vị miền Tây sông nước</p>
+                    <p class="bill-address">160, Ấp Phú Hòa, Phường Long Đức, Tỉnh Vĩnh Long</p>
+                    <p class="bill-phone">Hotline: 0388.853.044</p>
+                </div>
+
+                <!-- Bill Info -->
+                <div class="bill-info-section">
+                    <div class="bill-info-row">
+                        <span class="bill-table-badge" id="billTableName">---</span>
+                        <div class="bill-title-group">
+                            <h2 class="bill-title">HÓA ĐƠN TÍNH TIỀN</h2>
+                            <p class="bill-code" id="billCode">HD------</p>
+                        </div>
+                    </div>
+                    <div class="bill-meta">
+                        <div class="bill-meta-item">
+                            <span class="bill-meta-label">Giờ vào:</span>
+                            <span class="bill-meta-value" id="billTimeIn">--:--</span>
+                        </div>
+                        <div class="bill-meta-item">
+                            <span class="bill-meta-label">Giờ ra:</span>
+                            <span class="bill-meta-value" id="billTimeOut">--:--</span>
+                        </div>
+                    </div>
+                    <div class="bill-meta">
+                        <div class="bill-meta-item">
+                            <span class="bill-meta-label">Nhân viên:</span>
+                            <span class="bill-meta-value" id="billStaff">Admin</span>
+                        </div>
+                        <div class="bill-meta-item">
+                            <span class="bill-meta-label">Thanh toán:</span>
+                            <span class="bill-meta-value" id="billPaymentMethod">Tiền mặt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bill Table -->
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th class="bill-th-name">Tên Hàng</th>
+                            <th class="bill-th-price">Đ.Giá</th>
+                            <th class="bill-th-qty">SL</th>
+                            <th class="bill-th-total">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billItems">
+                        <!-- JS renders items -->
+                    </tbody>
+                </table>
+
+                <!-- Bill Summary -->
+                <div class="bill-summary">
+                    <div class="bill-summary-row">
+                        <span>Tổng tiền hàng:</span>
+                        <span class="bill-summary-val" id="billSubtotal">0 đ</span>
+                    </div>
+                    <div class="bill-summary-row bill-total-row">
+                        <span>Tổng cộng:</span>
+                        <span class="bill-total-val" id="billTotal">0 đ</span>
+                    </div>
+                </div>
+
+                <!-- Bill Footer -->
+                <div class="bill-footer">
+                    <div class="bill-divider-dashed"></div>
+                    <p class="bill-thankyou">Ẩm thực Phương Nam cảm ơn Quý Khách!</p>
+                    <p class="bill-note">Hẹn gặp lại quý khách lần sau ❤️</p>
+                    <div class="bill-divider-dashed"></div>
+                    <div class="bill-qr-section">
+                        <p class="bill-qr-title">Quét mã QR để chuyển khoản</p>
+                        <img id="billQRCode" class="bill-qr-img" src="" alt="QR Chuyển khoản">
+                        <p class="bill-bank-name">Vietcombank</p>
+                        <p class="bill-bank-owner">NGUYEN HUYNH KY THUAT</p>
+                        <p class="bill-bank-stk">STK: 1052053578</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* ==================== BILL PRINT STYLES ==================== */
+        .bill-modal-wrapper {
+            max-width: 420px !important;
+            width: 95% !important;
+            padding: 0 !important;
+            border-radius: 16px !important;
+            overflow: hidden;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .bill-actions {
+            display: flex;
+            gap: 10px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .bill-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bill-btn-print {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .bill-btn-print:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
+        .bill-btn-close {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        }
+        .bill-btn-close:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
+
+        .bill-paper {
+            background: white;
+            padding: 28px 24px;
+            overflow-y: auto;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        /* Bill Header */
+        .bill-header {
+            text-align: center;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #1e3a5f;
+            margin-bottom: 16px;
+        }
+        .bill-logo {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: contain;
+            margin: 0 auto 8px;
+            border: 3px solid #1e3a5f;
+            padding: 4px;
+            background: white;
+        }
+        .bill-restaurant-name {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1e3a5f;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+        .bill-slogan {
+            font-size: 12px;
+            font-style: italic;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .bill-address {
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.4;
+        }
+        .bill-phone {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 4px;
+        }
+
+        /* Bill Info */
+        .bill-info-section {
+            margin-bottom: 14px;
+        }
+        .bill-info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .bill-table-badge {
+            background: linear-gradient(135deg, #1e3a5f, #2d4a6f);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        .bill-title-group {
+            flex: 1;
+        }
+        .bill-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: 1px;
+        }
+        .bill-code {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .bill-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .bill-meta-item {
+            font-size: 11px;
+        }
+        .bill-meta-label {
+            color: #64748b;
+            font-style: italic;
+        }
+        .bill-meta-value {
+            color: #1e293b;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        /* Bill Table */
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 12px;
+        }
+        .bill-table thead {
+            background: #f1f5f9;
+        }
+        .bill-table th {
+            padding: 8px 6px;
+            text-align: left;
+            font-weight: 700;
+            color: #1e293b;
+            border-top: 2px solid #1e3a5f;
+            border-bottom: 2px solid #1e3a5f;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bill-th-name { width: 40%; }
+        .bill-th-price { width: 22%; text-align: right; }
+        .bill-th-qty { width: 12%; text-align: center; }
+        .bill-th-total { width: 26%; text-align: right; }
+        
+        .bill-table td {
+            padding: 7px 6px;
+            border-bottom: 1px dashed #e2e8f0;
+            vertical-align: top;
+        }
+        .bill-table td.bill-td-name {
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .bill-table td.bill-td-price {
+            text-align: right;
+            color: #475569;
+        }
+        .bill-table td.bill-td-qty {
+            text-align: center;
+            color: #475569;
+        }
+        .bill-table td.bill-td-total {
+            text-align: right;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Bill Summary */
+        .bill-summary {
+            border-top: 2px solid #1e3a5f;
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+        .bill-summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #475569;
+            padding: 4px 0;
+        }
+        .bill-summary-val {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .bill-total-row {
+            font-size: 18px;
+            font-weight: 900;
+            color: #1e293b;
+            padding: 10px 0 4px;
+            border-top: 1px dashed #94a3b8;
+            margin-top: 6px;
+        }
+        .bill-total-val {
+            color: #dc2626;
+            font-weight: 900;
+        }
+
+        /* Bill Footer */
+        .bill-footer {
+            text-align: center;
+            padding-top: 16px;
+            margin-top: 12px;
+        }
+        .bill-divider-dashed {
+            border-top: 1px dashed #94a3b8;
+            margin: 10px 0;
+        }
+        .bill-thankyou {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e3a5f;
+            font-style: italic;
+        }
+        .bill-note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        /* QR Section */
+        .bill-qr-section {
+            margin-top: 14px;
+            padding: 14px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+        .bill-qr-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bill-qr-img {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 10px;
+            display: block;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            padding: 4px;
+        }
+        .bill-bank-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1e3a5f;
+            letter-spacing: 1px;
+        }
+        .bill-bank-owner {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 2px;
+        }
+        .bill-bank-stk {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* ==================== PRINT ONLY ==================== */
+        @media print {
+            * { margin: 0; padding: 0; }
+            body * { visibility: hidden !important; }
+            #billContent, #billContent * { visibility: visible !important; }
+            #billContent {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm;
+                padding: 8mm 5mm;
+                font-size: 11px;
+                background: white !important;
+            }
+            .no-print { display: none !important; }
+            .bill-modal-wrapper { box-shadow: none !important; }
+            .modal { background: white !important; }
+            .bill-logo { width: 50px; height: 50px; }
+            .bill-restaurant-name { font-size: 18px; }
+            .bill-table th, .bill-table td { padding: 4px 3px; font-size: 10px; }
+            .bill-total-row { font-size: 14px; }
+            .bill-summary-row { font-size: 11px; }
+        }
+    </style>
+
+    <script src="admin-layout.js"></script>
+    <script src="admin-pos.js"></script>
+</body>
+</html>

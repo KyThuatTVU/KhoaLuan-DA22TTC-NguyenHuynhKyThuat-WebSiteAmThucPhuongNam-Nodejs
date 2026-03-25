@@ -152,13 +152,37 @@ router.post('/create', authenticateToken, async (req, res) => {
             });
         }
 
-        // Kiểm tra tồn kho cho từng món
+        // Kiểm tra tồn kho cho từng món (sử dụng logic nguyên liệu tập trung)
+        const ingredientRequirement = {};
         for (const item of cartItems) {
-            if (item.so_luong_ton < item.so_luong) {
+            // Lấy công thức của món này
+            const [recipes] = await connection.query(
+                'SELECT ma_nguyen_lieu, so_luong_can FROM cong_thuc WHERE ma_mon = ?',
+                [item.ma_mon]
+            );
+            
+            for (const r of recipes) {
+                const totalNeeded = r.so_luong_can * item.so_luong;
+                if (!ingredientRequirement[r.ma_nguyen_lieu]) {
+                    ingredientRequirement[r.ma_nguyen_lieu] = { needed: 0, mon_ans: [] };
+                }
+                ingredientRequirement[r.ma_nguyen_lieu].needed += totalNeeded;
+                ingredientRequirement[r.ma_nguyen_lieu].mon_ans.push(item.ten_mon);
+            }
+        }
+
+        // 2. Kiểm tra tồn kho của nguyên liệu
+        for (const ma_nglieu in ingredientRequirement) {
+            const reqData = ingredientRequirement[ma_nglieu];
+            const [inv] = await connection.query(
+                'SELECT ten_nguyen_lieu, so_luong_ton FROM nguyen_lieu WHERE ma_nguyen_lieu = ?',
+                [ma_nglieu]
+            );
+            if (inv.length === 0 || inv[0].so_luong_ton < reqData.needed) {
                 await connection.rollback();
                 return res.status(400).json({
                     success: false,
-                    message: `Món "${item.ten_mon}" không đủ số lượng trong kho (còn ${item.so_luong_ton})`
+                    message: `Không đủ nguyên liệu "${inv.length > 0 ? inv[0].ten_nguyen_lieu : 'Không rõ'}" để phục vụ món: ${[...new Set(reqData.mon_ans)].join(', ')}.`
                 });
             }
         }
@@ -271,12 +295,24 @@ router.post('/create', authenticateToken, async (req, res) => {
                 [ma_don_hang, item.ma_mon, item.so_luong, item.gia_tai_thoi_diem]
             );
 
-            // Giảm số lượng tồn kho
+            // Loại bỏ logic trừ kho cũ trực tiếp lên bảng mon_an
+            // await connection.query(
+            //    'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
+            //    [item.so_luong, item.ma_mon]
+            // );
+        }
+
+        // Thực hiện trừ kho tập trung
+        for (const ma_nglieu in ingredientRequirement) {
             await connection.query(
-                'UPDATE mon_an SET so_luong_ton = so_luong_ton - ? WHERE ma_mon = ?',
-                [item.so_luong, item.ma_mon]
+                'UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton - ? WHERE ma_nguyen_lieu = ?',
+                [ingredientRequirement[ma_nglieu].needed, ma_nglieu]
             );
         }
+        
+        // Đồng bộ lại sức chứa của tất cả các món ăn dựa trên kho vừa rồi
+        const inventoryController = require('../controllers/inventoryController');
+        await inventoryController.updateAllDishMaxPortions();
 
         // Tạo bản ghi thanh toán
         const [paymentResult] = await connection.query(

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ Đồ Bàn (POS) - Admin Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        body { background: #f0f4f8; }
+        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
+        
+        /* POS custom classes */
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid #e2e8f0;
+            position: relative;
+        }
+
+        .table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .table-card.available {
+            border-color: #10b981;
+        }
+        .table-card.available:hover {
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .table-card.occupied {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+        .table-card.occupied:hover {
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .table-card.reserved {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .table-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .table-card.available .table-icon { color: #10b981; }
+        .table-card.occupied .table-icon { color: #f59e0b; }
+        .table-card.reserved .table-icon { color: #3b82f6; }
+
+        .table-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .table-capacity {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .table-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .table-card.available .table-status { background: #d1fae5; color: #047857; }
+        .table-card.occupied .table-status { background: #fef3c7; color: #b45309; }
+        .table-card.reserved .table-status { background: #dbeafe; color: #1d4ed8; }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.available { background: #d1fae5; color: #10b981; }
+        .stat-icon.occupied { background: #fef3c7; color: #f59e0b; }
+        .stat-icon.reserved { background: #dbeafe; color: #3b82f6; }
+
+        .admin-card { background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0 transition-all duration-300">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div>
+                            <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                            <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 overflow-y-auto p-4" id="admin-menu">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-dashboard">
+                            <i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span>
+                        </a>
+                        <a href="admin-pos-tables.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos">
+                            <i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span>
+                        </a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-products">
+                            <i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span>
+                        </a>
+                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-inventory">
+                            <i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span>
+                        </a>
+                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-recipe">
+                            <i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span>
+                        </a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-orders">
+                            <i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span>
+                        </a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-reservations">
+                            <i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span>
+                        </a>
+                        <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-tables">
+                            <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
+                        </a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-customers">
+                            <i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span>
+                        </a>
+                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff">
+                            <i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span>
+                        </a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-contacts">
+                            <i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span>
+                        </a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-chatbot">
+                            <i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span>
+                        </a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-reviews">
+                            <i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span>
+                        </a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-promotions">
+                            <i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span>
+                        </a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3 menu-content-group">Nội dung</p>
+                    <div class="space-y-1 menu-content-group">
+                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span>
+                        </a>
+                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận</span>
+                        </a>
+                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions</span>
+                        </a>
+                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span>
+                        </a>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3 menu-system-group">Hệ thống</p>
+                    <div class="space-y-1 menu-system-group">
+                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span>
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Admin Profile Card -->
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="User" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0">
+                                <p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p>
+                                <p id="admin-email" class="text-xs text-blue-300 truncate">user@example.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300" id="user-role-badge"><i class="fas fa-id-badge mr-1"></i>Vai trò</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 transition flex items-center">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div>
+                        <h2 class="text-base sm:text-xl font-bold">Bán hàng (Chọn bàn)</h2>
+                        <p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Lựa chọn bàn để order món</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" target="_blank" class="text-white hover:text-blue-200 transition" title="Xem website">
+                        <i class="fas fa-external-link-alt text-lg"></i>
+                    </a>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6 bg-slate-50">
+                <!-- Stats Bar -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="stat-card">
+                        <div class="stat-icon available"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <h3 id="availableCount" class="text-2xl font-bold text-slate-800">0</h3>
+                            <p class="text-sm text-slate-500 font-medium">Bàn trống</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon occupied"><i class="fas fa-utensils"></i></div>
+                        <div>
+                            <h3 id="occupiedCount" class="text-2xl font-bold text-slate-800">0</h3>
+                            <p class="text-sm text-slate-500 font-medium">Đang phục vụ</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon reserved"><i class="fas fa-calendar-check"></i></div>
+                        <div>
+                            <h3 id="reservedCount" class="text-2xl font-bold text-slate-800">0</h3>
+                            <p class="text-sm text-slate-500 font-medium">Đã đặt trước</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="mb-4 md:mb-0">
+                        <h2 class="text-lg font-bold text-slate-800">Danh sách bàn</h2>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-btn active" data-filter="all" onclick="filterTables('all')">
+                            <i class="fas fa-th"></i> Tất cả
+                        </button>
+                        <button class="filter-btn" data-filter="trong" onclick="filterTables('trong')">
+                            <i class="fas fa-check-circle"></i> Trống
+                        </button>
+                        <button class="filter-btn" data-filter="dang_phuc_vu" onclick="filterTables('dang_phuc_vu')">
+                            <i class="fas fa-utensils"></i> Đang phục vụ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tables Grid -->
+                <div class="tables-grid" id="tablesGrid">
+                    <!-- Tables will be loaded here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Cần load file RBAC kiểm tra role trước -> Tạm thời code logic phân quyền ở dây luôn hoặc admin-layout -->
+    <script src="admin-layout.js"></script>
+    <script src="admin-pos.js"></script> <!-- Chứa logic chung cho POS -->
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let allTables = [];
+        let currentFilter = 'all';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initAdminLayout(); // Đợi auth hoàn tất hiển thị giao diện chung
+            
+            setTimeout(() => {
+                loadTables();
+                setInterval(loadTables, 30000);
+            }, 800);
+        });
+
+        async function loadTables() {
+            try {
+                const response = await fetch(`${API_BASE}/pos/tables`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    allTables = data.data;
+                    updateStats();
+                    renderTables();
+                }
+            } catch (error) {
+                console.error('Error loading tables:', error);
+            }
+        }
+
+        function updateStats() {
+            const available = allTables.filter(t => t.trang_thai === 'trong').length;
+            const occupied = allTables.filter(t => t.trang_thai === 'dang_phuc_vu').length;
+            const reserved = allTables.filter(t => t.trang_thai === 'da_dat').length;
+            
+            document.getElementById('availableCount').textContent = available;
+            document.getElementById('occupiedCount').textContent = occupied;
+            document.getElementById('reservedCount').textContent = reserved;
+        }
+
+        function filterTables(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.filter-btn').classList.add('active');
+            renderTables();
+        }
+
+        function renderTables() {
+            const grid = document.getElementById('tablesGrid');
+            let filteredTables = allTables;
+            if (currentFilter !== 'all') {
+                filteredTables = allTables.filter(t => t.trang_thai === currentFilter);
+            }
+            
+            if (filteredTables.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
+                        <i class="fas fa-inbox text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-500">Không có bàn nào phù hợp</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = filteredTables.map(table => {
+                const statusClass = table.trang_thai === 'trong' ? 'available' : 
+                                   table.trang_thai === 'dang_phuc_vu' ? 'occupied' : 'reserved';
+                const statusText = table.trang_thai === 'trong' ? 'Trống' : 
+                                  table.trang_thai === 'dang_phuc_vu' ? 'Đang phục vụ' : 'Đã đặt';
+                
+                return `
+                    <div class="table-card ${statusClass}" onclick="selectTable(${table.ma_ban}, '${table.ten_ban}', '${table.trang_thai}')">
+                        <div class="table-icon"><i class="fas fa-chair"></i></div>
+                        <div class="table-name">${table.ten_ban}</div>
+                        <div class="table-capacity"><i class="fas fa-users"></i> ${table.so_cho} chỗ</div>
+                        <div class="table-status">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectTable(tableId, tableName, status) {
+            localStorage.setItem('selected_table', JSON.stringify({ id: tableId, name: tableName, status: status }));
+            window.location.href = `admin-pos-order.html?table=${tableId}`;
+        }
+    </script>
+</body>
+</html>

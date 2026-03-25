@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nguyên Liệu - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div>
+                            <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                            <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navbar Area -->
+                <nav class="flex-1 overflow-y-auto p-4" id="main-nav">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm font-medium">Món ăn</span></a>
+                        <a href="nguyen-lieu.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
+                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                            <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
+                        </a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                </nav>
+
+                <!-- Admin Profile Card -->
+                <div class="p-4 border-t border-white/10">
+                    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px;">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0">
+                                <p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p>
+                                <p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 transition flex items-center">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div>
+                        <h2 class="text-base sm:text-xl font-bold">Quản lý Kho Nguyên Liệu</h2>
+                        <p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Theo dõi và bổ sung nguyên liệu tập trung</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <button onclick="openAddModal()" class="btn-primary flex items-center space-x-1 sm:space-x-2">
+                        <i class="fas fa-plus"></i><span class="hidden sm:inline">Thêm nguyên liệu mới</span>
+                    </button>
+                    <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm kiếm nguyên liệu..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="status-filter" onchange="applyFilters()" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="con_hang">Còn hàng (> Cảnh báo)</option>
+                            <option value="sap_het">Sắp hết (<= Cảnh báo)</option>
+                            <option value="het_hang">Hết hàng (0)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mã NL</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Tên nguyên liệu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Đơn vị</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Tồn kho / Cảnh báo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Trạng thái</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ingredients-container" class="bg-white divide-y divide-slate-200">
+                            <tr><td colspan="6" class="px-6 py-8 text-center text-slate-500"><i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>Đang tải dữ liệu...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="ingredient-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold" id="modal-title">Thêm nguyên liệu mới</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="ingredient-form" class="p-6 space-y-4">
+                <input type="hidden" id="ingredient-id">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Tên nguyên liệu *</label>
+                    <input type="text" id="ten_nguyen_lieu" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Đơn vị nhập (Nhập kho) *</label>
+                        <select id="don_vi_nhap" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                            <option value="g">Gram (g)</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="ml">Mililit (ml)</option>
+                            <option value="l">Lít (L)</option>
+                            <option value="cai">Cái/Quả</option>
+                            <option value="thung">Thùng</option>
+                            <option value="hop">Hộp</option>
+                            <option value="bao">Bao</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Đơn vị xuất (Món ăn) *</label>
+                        <select id="don_vi_tinh" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                            <option value="g">Gram (g)</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="ml">Mililit (ml)</option>
+                            <option value="l">Lít (L)</option>
+                            <option value="cai">Cái/Quả/Bịch</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Tỉ lệ quy đổi (1 Nhập = ? Xuất) *</label>
+                        <input type="number" id="ti_le_chuyen_doi" required min="0.01" step="0.01" value="1" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div id="so-luong-group">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Tồn kho ban đầu (Quy ra ĐV Xuất) *</label>
+                        <input type="number" id="so_luong_ton" required min="0" value="0" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Mức cảnh báo sắp hết *</label>
+                    <input type="number" id="muc_canh_bao" required min="1" value="1000" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500">
+                    <p class="text-xs text-slate-500 mt-1"><i class="fas fa-info-circle text-blue-500"></i> Sẽ cảnh báo lên hệ thống nếu tồn kho rớt xuống dưới mức này.</p>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Nhập Kho Modal -->
+    <div id="add-stock-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full">
+            <div class="p-6 border-b flex items-center justify-between bg-emerald-600 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Nhập Khôi/Bổ Sung</h3>
+                <button onclick="closeAddStockModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="add-stock-form" class="p-6 space-y-4">
+                <input type="hidden" id="stock-ingredient-id">
+                <p id="stock-ingredient-name" class="font-bold text-center text-lg text-slate-800"></p>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Số lượng nhập thêm (<span id="stock-unit"></span>) *</label>
+                    <input type="number" id="stock-amount" required min="1" placeholder="Nhập số lượng..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-center text-xl focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-600">
+                    <p class="text-xs text-slate-500 mt-2 text-center">Hệ thống sẽ cộng thêm <span class="font-bold text-emerald-600" id="stock-hint">0</span> <span id="stock-base-unit"></span> vào tồn kho<br>(<span id="stock-rate-calc">Quy đổi: 1 đơn vị nhập = x đơn vị xuất</span>).</p>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeAddStockModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                    <button type="submit" class="bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700 shadow-md transform hover:-translate-y-0.5 px-6 py-2.5 rounded-xl transition">Nhập Kho</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script>
+        // Các đơn vị đếm nguyên (trái, cái, bịch...) -> hiển thị số nguyên
+        const INTEGER_UNITS = ['cai', 'bich', 'trai', 'qua', 'thung', 'hop', 'bao', 'chai', 'lon', 'goi', 'cay', 'bo', 'mieng', 'lat', 'khuc'];
+
+        function isIntegerUnit(unit) {
+            if (!unit) return false;
+            const normalized = unit.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0111/g, 'd').replace(/\u0110/g, 'D');
+            return INTEGER_UNITS.some(u => normalized.includes(u));
+        }
+
+        function formatStock(value, unit) {
+            if (isIntegerUnit(unit)) {
+                return Math.round(value).toLocaleString('vi-VN');
+            }
+            return Number(value).toLocaleString('vi-VN');
+        }
+
+        let ingredients = [];
+
+        async function loadIngredients() {
+            try {
+                const response = await fetch(`${API_URL}/inventory`, { credentials: 'include' });
+                const data = await response.json();
+                ingredients = data.data || [];
+                renderIngredients(ingredients);
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                document.getElementById('ingredients-container').innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Lỗi kết nối đến máy chủ!</td></tr>`;
+            }
+        }
+
+        function renderIngredients(items) {
+            const container = document.getElementById('ingredients-container');
+            if (items.length === 0) {
+                container.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Không có dữ liệu nguyên liệu.</td></tr>`;
+                return;
+            }
+            container.innerHTML = items.map(item => {
+                const stockWarning = item.so_luong_ton <= item.muc_canh_bao;
+                const outOfStock = item.so_luong_ton <= 0;
+                
+                let badgeHTML = '';
+                if(outOfStock) badgeHTML = '<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">Hết hàng</span>';
+                else if(stockWarning) badgeHTML = '<span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Sắp hết</span>';
+                else badgeHTML = '<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Tốt</span>';
+
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#${item.ma_nguyen_lieu}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-800">${item.ten_nguyen_lieu}</td>
+                        <td class="px-6 py-4 text-sm text-slate-500">${item.don_vi_tinh}</td>
+                        <td class="px-6 py-4 text-sm font-bold ${outOfStock ? 'text-red-600' : stockWarning ? 'text-amber-500' : 'text-slate-800'}">
+                            ${formatStock(item.so_luong_ton, item.don_vi_tinh)} / <span class="text-xs font-normal text-slate-400">Cảnh báo: ${formatStock(item.muc_canh_bao, item.don_vi_tinh)}</span>
+                        </td>
+                        <td class="px-6 py-4">${badgeHTML}</td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="openAddStockModal(${item.ma_nguyen_lieu})" class="text-emerald-600 hover:bg-emerald-50 px-3 py-1 rounded border border-emerald-200 mr-2 text-sm font-medium"><i class="fas fa-plus-circle mr-1"></i>Nhập</button>
+                            <button onclick="editIngredient(${item.ma_nguyen_lieu})" class="text-blue-600 hover:bg-blue-50 px-3 py-1 rounded border border-blue-200 text-sm font-medium"><i class="fas fa-edit"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            let filtered = ingredients.filter(i => {
+                const isMatchSearch = i.ten_nguyen_lieu.toLowerCase().includes(search);
+                let isMatchStatus = true;
+                if(status === 'con_hang') isMatchStatus = i.so_luong_ton > i.muc_canh_bao;
+                else if(status === 'sap_het') isMatchStatus = i.so_luong_ton <= i.muc_canh_bao && i.so_luong_ton > 0;
+                else if(status === 'het_hang') isMatchStatus = i.so_luong_ton <= 0;
+                return isMatchSearch && isMatchStatus;
+            });
+            renderIngredients(filtered);
+        }
+
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Thêm nguyên liệu mới';
+            document.getElementById('ingredient-form').reset();
+            document.getElementById('ingredient-id').value = '';
+            document.getElementById('so-luong-group').classList.remove('hidden');
+            document.getElementById('ingredient-modal').classList.remove('hidden');
+            updateFormStepByUnit();
+        }
+
+        function closeModal() {
+            document.getElementById('ingredient-modal').classList.add('hidden');
+        }
+
+        function editIngredient(id) {
+            const item = ingredients.find(i => i.ma_nguyen_lieu === id);
+            if (!item) return;
+            document.getElementById('modal-title').textContent = 'Chỉnh sửa nguyên liệu';
+            document.getElementById('ingredient-id').value = item.ma_nguyen_lieu;
+            document.getElementById('ten_nguyen_lieu').value = item.ten_nguyen_lieu;
+            document.getElementById('don_vi_tinh').value = item.don_vi_tinh;
+            document.getElementById('don_vi_nhap').value = item.don_vi_nhap || item.don_vi_tinh;
+            document.getElementById('ti_le_chuyen_doi').value = item.ti_le_chuyen_doi || 1;
+            document.getElementById('so_luong_ton').value = item.so_luong_ton;
+            document.getElementById('muc_canh_bao').value = item.muc_canh_bao;
+            
+            // Hiện disabled phần số lượng tồn vì nên update kho qua nút Nhập kho cho minh bạch, nhưng vẫn cho phép ở form sửa
+            document.getElementById('so-luong-group').classList.remove('hidden');
+            document.getElementById('ingredient-modal').classList.remove('hidden');
+            updateFormStepByUnit();
+        }
+
+        // Cập nhật step cho input số lượng dựa trên đơn vị
+        function updateFormStepByUnit() {
+            const unit = document.getElementById('don_vi_tinh').value;
+            const sltInput = document.getElementById('so_luong_ton');
+            const mcbInput = document.getElementById('muc_canh_bao');
+            if (isIntegerUnit(unit)) {
+                sltInput.step = '1';
+                mcbInput.step = '1';
+                sltInput.value = Math.round(parseFloat(sltInput.value) || 0);
+                mcbInput.value = Math.round(parseFloat(mcbInput.value) || 0);
+            } else {
+                sltInput.step = 'any';
+                mcbInput.step = 'any';
+            }
+        }
+
+        // Lắng nghe thay đổi đơn vị xuất
+        document.getElementById('don_vi_tinh').addEventListener('change', updateFormStepByUnit);
+
+        document.getElementById('ingredient-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('ingredient-id').value;
+            const dataObj = {
+                ten_nguyen_lieu: document.getElementById('ten_nguyen_lieu').value,
+                so_luong_ton: parseInt(document.getElementById('so_luong_ton').value),
+                don_vi_tinh: document.getElementById('don_vi_tinh').value,
+                don_vi_nhap: document.getElementById('don_vi_nhap').value,
+                ti_le_chuyen_doi: parseFloat(document.getElementById('ti_le_chuyen_doi').value),
+                muc_canh_bao: parseInt(document.getElementById('muc_canh_bao').value),
+                trang_thai: 1
+            };
+
+            const url = id ? `${API_URL}/inventory/${id}` : `${API_URL}/inventory`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataObj),
+                    credentials: 'include'
+                });
+                const resData = await response.json();
+                if(resData.success) {
+                    alert('Lưu thành công!');
+                    closeModal();
+                    loadIngredients();
+                } else {
+                    alert('Lỗi: ' + resData.message);
+                }
+            } catch(e) {
+                alert('Lỗi máy chủ');
+            }
+        });
+
+        // Add Stock Modal Handling
+        let currentSelectedRate = 1;
+
+        function openAddStockModal(id) {
+            const item = ingredients.find(i => i.ma_nguyen_lieu === id);
+            if (!item) return;
+            document.getElementById('stock-ingredient-id').value = id;
+            document.getElementById('stock-ingredient-name').textContent = item.ten_nguyen_lieu;
+            
+            const importUnit = item.don_vi_nhap || item.don_vi_tinh;
+            const conversionRate = item.ti_le_chuyen_doi || 1;
+            
+            document.getElementById('stock-unit').textContent = importUnit;
+            currentSelectedRate = parseFloat(conversionRate);
+            document.getElementById('stock-hint').textContent = '0';
+            document.getElementById('stock-base-unit').textContent = item.don_vi_tinh;
+            document.getElementById('stock-rate-calc').textContent = `1 ${importUnit} = ${conversionRate} ${item.don_vi_tinh}`;
+            
+            document.getElementById('stock-amount').value = '';
+            document.getElementById('add-stock-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('stock-amount').focus(), 100);
+        }
+
+        document.getElementById('stock-amount').addEventListener('input', (e) => {
+             const amt = parseFloat(e.target.value) || 0;
+             const total = amt * currentSelectedRate;
+             const unit = document.getElementById('stock-base-unit').textContent;
+             document.getElementById('stock-hint').textContent = formatStock(total, unit);
+        });
+
+        function closeAddStockModal() {
+            document.getElementById('add-stock-modal').classList.add('hidden');
+        }
+
+        document.getElementById('add-stock-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('stock-ingredient-id').value;
+            const amount = parseInt(document.getElementById('stock-amount').value);
+            if(amount <= 0 || isNaN(amount)) {
+                alert('Số lượng không hợp lệ');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/inventory/${id}/add-stock`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount }),
+                    credentials: 'include'
+                });
+                const resData = await response.json();
+                if(resData.success) {
+                    closeAddStockModal();
+                    alert('Nhập kho thành công!');
+                    loadIngredients();
+                } else {
+                    alert('Lỗi: ' + resData.message);
+                }
+            } catch(e) {
+                alert('Lỗi máy chủ');
+            }
+        });
+
+        loadIngredients();
+    </script>
+</body>
+</html>

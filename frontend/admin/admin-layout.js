@@ -37,7 +37,7 @@ async function loadAdminInfo(retryCount = 0) {
 
             console.log('✅ Admin info loaded and updated');
 
-            return { name: adminName, avatar: adminAvatar, email: adminEmail };
+            return { name: adminName, avatar: adminAvatar, email: adminEmail, role: admin.role, quyen: admin.quyen };
         } else {
             // Retry nếu chưa đến giới hạn (tối đa 3 lần)
             if (retryCount < 2) {
@@ -209,17 +209,90 @@ function toggleSidebar() {
     }
 }
 
+// Function to enforce Role-Based Access Control (RBAC) and inject POS link
+function applyRBAC(adminUser) {
+    if (!adminUser) return;
+    
+    // 1. Inject POS link right after dashboard
+    const dashboardLink = document.querySelector('a[href="dashboard.html"]');
+    if (dashboardLink && !document.querySelector('a[href="admin-pos-tables.html"]') && !document.querySelector('a[href*="admin-pos"]')) {
+        const posLink = document.createElement('a');
+        posLink.href = 'admin-pos-tables.html';
+        posLink.className = 'sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos';
+        posLink.innerHTML = '<i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span>';
+        dashboardLink.parentNode.insertBefore(posLink, dashboardLink.nextSibling);
+    }
+
+    // 2. Hide specific items based on role
+    const hideLinks = (hrefs) => {
+        hrefs.forEach(href => {
+            const link = document.querySelector(`a[href="${href}"]`);
+            if (link) link.style.display = 'none';
+        });
+    };
+    
+    // Hide content groups
+    const hideGroup = (titleText) => {
+        const pTags = document.querySelectorAll('nav p');
+        pTags.forEach(p => {
+            if (p.textContent.includes(titleText)) {
+                p.style.display = 'none';
+                if (p.nextElementSibling && p.nextElementSibling.tagName === 'DIV') {
+                    p.nextElementSibling.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    const currentRole = adminUser.role || adminUser.quyen || 'admin';
+
+    // Staff: Only POS, Orders, Tables, Reservations
+    if (currentRole === 'staff') {
+        hideLinks([
+            'dashboard.html', 
+            'products.html', 
+            'customers.html', 
+            'staff.html', 
+            'contacts.html',
+            'chatbot-history.html',
+            'reviews.html',
+            'promotions.html'
+        ]);
+        hideGroup('Nội dung');
+        hideGroup('Hệ thống');
+    } 
+    // Manager: No Staff, No Settings
+    else if (currentRole === 'manager') {
+        hideLinks([
+            'staff.html',
+            'settings.html'
+        ]);
+        hideGroup('Hệ thống');
+    }
+    
+    // Render role badge if element exists
+    const roleBadge = document.getElementById('user-role-badge');
+    if (roleBadge) {
+        let roleName = currentRole === 'admin' ? 'Quản trị viên' : (currentRole === 'manager' ? 'Quản lý' : 'Nhân viên');
+        roleBadge.innerHTML = `<i class="fas fa-id-badge mr-1"></i>${roleName}`;
+    }
+}
+
 // Set active nav link
 function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('.nav-link');
+    const currentPage = window.location.pathname.split('/').pop().split('?')[0];
+    // Fix: the HTML uses .sidebar-item not .nav-link
+    const navLinks = document.querySelectorAll('.sidebar-item, .nav-link');
 
     navLinks.forEach(link => {
         const linkPage = link.getAttribute('href');
-        if (linkPage === currentPage) {
-            link.classList.add('active', 'bg-orange-50', 'text-orange-600', 'font-medium');
+        // Match base logic for POS pages also
+        if (linkPage === currentPage || (currentPage.includes('admin-pos') && linkPage.includes('admin-pos'))) {
+            // Apply active styles to generic theme items
+            link.classList.remove('text-slate-500');
+            link.classList.add('active'); // active comes with css styling
         } else {
-            link.classList.remove('active', 'bg-orange-50', 'text-orange-600', 'font-medium');
+            link.classList.remove('active');
         }
     });
 }
@@ -228,12 +301,15 @@ function setActiveNavLink() {
 function initAdminLayout() {
     console.log('🔧 Initializing admin layout...');
 
-    // Wait for session to be ready (tăng delay lên 500ms)
+    // Wait for session to be ready
     setTimeout(async () => {
         console.log('📋 Loading admin info...');
-        await loadAdminInfo();
+        const adminData = await loadAdminInfo();
+        if (adminData) {
+            applyRBAC(adminData);
+        }
         setActiveNavLink();
-    }, 500);
+    }, 200);
 }
 
 // Auto-initialize when DOM is ready
@@ -249,3 +325,4 @@ window.loadAdminInfo = loadAdminInfo;
 window.logout = logout;
 window.toggleSidebar = toggleSidebar;
 window.initAdminLayout = initAdminLayout;
+
