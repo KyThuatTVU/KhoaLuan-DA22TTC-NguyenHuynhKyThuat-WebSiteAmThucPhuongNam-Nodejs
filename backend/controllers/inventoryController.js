@@ -157,10 +157,49 @@ const addStock = async (req, res) => {
     }
 };
 
+// Xóa nguyên liệu
+const deleteIngredient = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Kiểm tra nguyên liệu có đang được sử dụng trong công thức nào không
+        const [recipes] = await db.query(
+            `SELECT c.ma_mon, m.ten_mon 
+             FROM cong_thuc c 
+             JOIN mon_an m ON c.ma_mon = m.ma_mon 
+             WHERE c.ma_nguyen_lieu = ?`,
+            [id]
+        );
+
+        if (recipes.length > 0) {
+            const dishNames = recipes.map(r => r.ten_mon).join(', ');
+            return res.status(400).json({
+                success: false,
+                message: `Không thể xóa nguyên liệu này vì đang được sử dụng trong công thức của: ${dishNames}. Vui lòng xóa công thức liên quan trước.`
+            });
+        }
+
+        const [result] = await db.query('DELETE FROM nguyen_lieu WHERE ma_nguyen_lieu = ?', [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy nguyên liệu' });
+        }
+
+        // Cập nhật lại số lượng tồn kho của các món ăn
+        await updateAllDishMaxPortions();
+
+        res.json({ success: true, message: 'Xóa nguyên liệu thành công' });
+    } catch (error) {
+        console.error('Error deleting ingredient:', error);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
+    }
+};
+
 module.exports = {
     getAllIngredients,
     createIngredient,
     updateIngredient,
     addStock,
+    deleteIngredient,
     updateAllDishMaxPortions
 };

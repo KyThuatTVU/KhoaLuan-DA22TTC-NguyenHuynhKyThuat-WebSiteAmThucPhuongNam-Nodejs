@@ -15,5 +15,6 @@ router.get('/', requireAdmin, inventoryController.getAllIngredients);
 router.post('/', requireAdmin, inventoryController.createIngredient);
 router.put('/:id', requireAdmin, inventoryController.updateIngredient);
 router.post('/:id/add-stock', requireAdmin, inventoryController.addStock);
+router.delete('/:id', requireAdmin, inventoryController.deleteIngredient);
 
 module.exports = router;

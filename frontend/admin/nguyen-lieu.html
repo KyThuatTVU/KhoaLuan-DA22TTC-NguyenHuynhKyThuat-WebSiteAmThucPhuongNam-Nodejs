@@ -263,7 +263,8 @@
                         <td class="px-6 py-4">${badgeHTML}</td>
                         <td class="px-6 py-4 text-center">
                             <button onclick="openAddStockModal(${item.ma_nguyen_lieu})" class="text-emerald-600 hover:bg-emerald-50 px-3 py-1 rounded border border-emerald-200 mr-2 text-sm font-medium"><i class="fas fa-plus-circle mr-1"></i>Nhập</button>
-                            <button onclick="editIngredient(${item.ma_nguyen_lieu})" class="text-blue-600 hover:bg-blue-50 px-3 py-1 rounded border border-blue-200 text-sm font-medium"><i class="fas fa-edit"></i></button>
+                            <button onclick="editIngredient(${item.ma_nguyen_lieu})" class="text-blue-600 hover:bg-blue-50 px-3 py-1 rounded border border-blue-200 mr-2 text-sm font-medium"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteIngredient(${item.ma_nguyen_lieu}, '${item.ten_nguyen_lieu.replace(/'/g, "\\'")}')" class="text-red-600 hover:bg-red-50 px-3 py-1 rounded border border-red-200 text-sm font-medium"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -432,6 +433,25 @@
                 alert('Lỗi máy chủ');
             }
         });
+
+        async function deleteIngredient(id, name) {
+            if (!confirm(`Bạn có chắc chắn muốn xóa nguyên liệu "${name}"?\nHành động này không thể hoàn tác!`)) return;
+            try {
+                const response = await fetch(`${API_URL}/inventory/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const resData = await response.json();
+                if (resData.success) {
+                    alert('Xóa nguyên liệu thành công!');
+                    loadIngredients();
+                } else {
+                    alert('Lỗi: ' + resData.message);
+                }
+            } catch(e) {
+                alert('Lỗi máy chủ');
+            }
+        }
 
         loadIngredients();
     </script>
