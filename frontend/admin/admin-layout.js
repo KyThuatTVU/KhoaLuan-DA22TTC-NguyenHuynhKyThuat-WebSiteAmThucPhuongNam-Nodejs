@@ -217,7 +217,7 @@ function applyRBAC(adminUser) {
     const dashboardLink = document.querySelector('a[href="dashboard.html"]');
     if (dashboardLink && !document.querySelector('a[href="admin-pos-tables.html"]') && !document.querySelector('a[href*="admin-pos"]')) {
         const posLink = document.createElement('a');
-        posLink.href = 'admin-pos-tables.html';
+        posLink.href = 'admin-pos-new.html';
         posLink.className = 'sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos';
         posLink.innerHTML = '<i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span>';
         dashboardLink.parentNode.insertBefore(posLink, dashboardLink.nextSibling);

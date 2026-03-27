@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -417,6 +417,46 @@
             .status-step-btn { width: 28px; height: 28px; font-size: 0.6rem; }
             .modal-header-gradient { padding: 20px 24px; }
         }
+        /* ===== ORDER TYPE TABS ===== */
+        .order-type-tabs {
+            display: flex;
+            gap: 8px;
+            background: #fff;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: 0 4px 20px rgba(30,58,95,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+        }
+        .order-tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .order-tab-btn.active {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a8e);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(30,58,95,0.3);
+        }
+        .order-tab-btn:hover:not(.active) { background: #f1f5f9; color: #1e3a5f; }
+        .tab-badge { background: rgba(255,255,255,0.25); border-radius: 20px; padding: 1px 8px; font-size: 0.7rem; }
+        .order-tab-btn:not(.active) .tab-badge { background: #e2e8f0; color: #64748b; }
+        /* Source badge in table */
+        .source-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+        .source-online { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+        .source-pos { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+        .source-live { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
     </style>
 </head>
 <body>
@@ -437,7 +477,7 @@
                         <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
                         <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
                         <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
-                        <a href="orders.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
                         <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
                         <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                             <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
@@ -474,7 +514,17 @@
                     </div>
                 </div>
             </div>
-        </aside>
+        <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            if (item.getAttribute('href') === currentPage) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
+</aside>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
@@ -548,6 +598,19 @@
                     </div>
                 </div>
 
+                <!-- Order Type Tabs -->
+                <div class="order-type-tabs">
+                    <button class="order-tab-btn active" id="tab-all" onclick="switchOrderTab('all')">
+                        <i class="fas fa-list"></i> Tất cả <span class="tab-badge" id="count-all">0</span>
+                    </button>
+                    <button class="order-tab-btn" id="tab-online" onclick="switchOrderTab('online')">
+                        <i class="fas fa-globe"></i> Trực tuyến <span class="tab-badge" id="count-online">0</span>
+                    </button>
+                    <button class="order-tab-btn" id="tab-pos" onclick="switchOrderTab('pos')">
+                        <i class="fas fa-cash-register"></i> Tại nhà hàng (POS) <span class="tab-badge" id="count-pos">0</span>
+                    </button>
+                </div>
+
                 <!-- Filters -->
                 <div class="filter-bar mb-5 sm:mb-7">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
@@ -585,6 +648,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-left">Mã đơn</th>
+                                    <th class="text-left">Nguồn</th>
                                     <th class="text-left">Khách hàng</th>
                                     <th class="text-left">Ngày đặt</th>
                                     <th class="text-left">Tổng tiền</th>
@@ -636,8 +700,28 @@
     <script src="admin-mobile.js"></script>
 
     <script>
-        // API_URL đã được khai báo trong admin-layout.js
+        // API_URL declared in admin-layout.js
         let orders = [];
+        let currentTab = 'all';
+
+        // Classify a don_hang record as online or pos
+        function classifyOrder(o) {
+            // POS completed orders cloned into don_hang have ghi_chu = 'Đơn hàng tại bàn POS'
+            // Also check ten_khach_vang_lai ending with '(Tại bàn)'
+            if (o.ghi_chu === 'Đơn hàng tại bàn POS' ||
+                (o.ten_khach_vang_lai && o.ten_khach_vang_lai.includes('(Tại bàn)'))) {
+                return 'pos';
+            }
+            // Online orders: have a delivery address or a linked user account
+            return 'online';
+        }
+
+        function switchOrderTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.order-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            applyFilters();
+        }
 
         // ===== TOAST SYSTEM =====
         function showToast(message, type = 'info') {
@@ -657,11 +741,17 @@
             try {
                 const response = await fetch(`${API_URL}/orders/all`, { credentials: 'include' });
                 const data = await response.json();
-                if (data.success) { orders = data.data || []; renderOrders(orders); updateStats(orders); }
+                if (data.success) {
+                    // Tag each order with its type
+                    orders = (data.data || []).map(o => ({ ...o, _type: classifyOrder(o) }));
+                    updateStats(orders);
+                    updateTabCounts(orders);
+                    filterAndRender();
+                }
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('orders-tbody').innerHTML = `
-                    <tr><td colspan="7">
+                    <tr><td colspan="8">
                         <div class="empty-state">
                             <div class="empty-state-icon" style="background: #fef2f2; color: #ef4444;">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -671,6 +761,12 @@
                         </div>
                     </td></tr>`;
             }
+        }
+
+        function updateTabCounts(list) {
+            document.getElementById('count-all').textContent = list.length;
+            document.getElementById('count-online').textContent = list.filter(o => o._type === 'online').length;
+            document.getElementById('count-pos').textContent = list.filter(o => o._type === 'pos').length;
         }
 
         function updateStats(ordersList) {
@@ -687,11 +783,25 @@
             document.getElementById('stat-delivered').textContent = stats.delivered;
         }
 
+        function filterAndRender() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            const payment = document.getElementById('payment-filter').value;
+            let filtered = orders.filter(o => {
+                const matchTab = currentTab === 'all' || o._type === currentTab;
+                const matchSearch = o.ma_don_hang.toString().includes(search) || (o.ten_khach_hang || o.ten_khach_vang_lai || '').toLowerCase().includes(search);
+                const matchStatus = !status || o.trang_thai === status;
+                const matchPayment = !payment || o.trang_thai_thanh_toan === payment;
+                return matchTab && matchSearch && matchStatus && matchPayment;
+            });
+            renderOrders(filtered);
+        }
+
         function renderOrders(items) {
             const tbody = document.getElementById('orders-tbody');
             if (items.length === 0) {
                 tbody.innerHTML = `
-                    <tr><td colspan="7">
+                    <tr><td colspan="8">
                         <div class="empty-state">
                             <div class="empty-state-icon" style="background: #f8fafc; color: #94a3b8;">
                                 <i class="fas fa-inbox"></i>
@@ -734,9 +844,14 @@
                     </button>`;
                 }).join('');
 
+                const sourceHtml = order._type === 'pos'
+                    ? `<span class="source-badge source-pos"><i class="fas fa-cash-register"></i> POS</span>`
+                    : `<span class="source-badge source-online"><i class="fas fa-globe"></i> Trực tuyến</span>`;
+
                 return `
                     <tr>
                         <td><span class="order-code">#DH${String(order.ma_don_hang).padStart(6, '0')}</span></td>
+                        <td>${sourceHtml}</td>
                         <td>
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-xs font-bold flex-shrink-0">
@@ -817,13 +932,14 @@
                         </div>
                         <div class="info-card">
                             <div class="info-card-icon" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #db2777;">
-                                <i class="fas fa-user"></i>
+                                <i class="fas ${order._type === 'pos' ? 'fa-chair' : 'fa-user'}"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 font-medium">Khách hàng</p>
+                                <p class="text-xs text-slate-500 font-medium">${order._type === 'pos' ? 'Khách ăn tại nhà hàng' : 'Khách hàng'}</p>
                                 <p class="font-bold text-slate-800 mt-0.5">${order.ten_khach_hang || order.ten_khach_vang_lai || 'Khách hàng'}</p>
                             </div>
                         </div>
+                        ${order._type === 'online' ? `
                         <div class="info-card">
                             <div class="info-card-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #059669;">
                                 <i class="fas fa-phone"></i>
@@ -832,10 +948,11 @@
                                 <p class="text-xs text-slate-500 font-medium">Số điện thoại</p>
                                 <p class="font-bold text-slate-800 mt-0.5">${order.so_dt_khach || 'N/A'}</p>
                             </div>
-                        </div>
+                        </div>` : ''}
                     </div>
 
-                    <!-- Address -->
+                    <!-- Address / Note -->
+                    ${order._type === 'online' ? `
                     <div class="info-card">
                         <div class="info-card-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706;">
                             <i class="fas fa-map-marker-alt"></i>
@@ -844,9 +961,20 @@
                             <p class="text-xs text-slate-500 font-medium">Địa chỉ giao hàng</p>
                             <p class="font-medium text-slate-800 mt-0.5">${order.dia_chi_giao || 'N/A'}</p>
                         </div>
+                    </div>` : `
+                    <div class="info-card">
+                        <div class="info-card-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706;">
+                            <i class="fas fa-cash-register"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs text-slate-500 font-medium">Loại đơn hàng</p>
+                            <p class="font-medium text-slate-800 mt-0.5">Thanh toán tại quầy (POS)</p>
+                        </div>
                     </div>
+                    `}
 
                     <!-- Status -->
+
                     <div class="flex items-center gap-3">
                         <span class="text-sm text-slate-500 font-medium">Trạng thái:</span>
                         <span class="status-badge ${sc.badge}"><i class="fas ${sc.icon}"></i>${sc.text}</span>
@@ -902,18 +1030,8 @@
         function closeModal() { document.getElementById('order-modal').classList.remove('show'); }
         function formatPrice(price) { return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price); }
         function formatDate(date) { return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); }
-        function applyFilters() {
-            const search = document.getElementById('search').value.toLowerCase();
-            const status = document.getElementById('status-filter').value;
-            const payment = document.getElementById('payment-filter').value;
-            let filtered = orders.filter(o => {
-                const matchSearch = o.ma_don_hang.toString().includes(search) || (o.ten_khach_hang || '').toLowerCase().includes(search);
-                const matchStatus = !status || o.trang_thai === status;
-                const matchPayment = !payment || o.trang_thai_thanh_toan === payment;
-                return matchSearch && matchStatus && matchPayment;
-            });
-            renderOrders(filtered);
-        }
+        // Replace old applyFilters to use new filterAndRender
+        function applyFilters() { filterAndRender(); }
         
         // Kiểm tra nếu có order ID trong URL thì mở modal chi tiết
         function checkUrlForOrderId() {

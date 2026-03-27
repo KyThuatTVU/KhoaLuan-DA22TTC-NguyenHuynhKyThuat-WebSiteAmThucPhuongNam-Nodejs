@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bán hàng (POS) - Hệ thống Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-pos-new.css">
+    <style>
+        body { background: #f0f4f8; }
+        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
+        .admin-card { background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; }
+    </style>
+</head>
+<body>
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar w-72 flex-shrink-0 transition-all duration-300">
+        <div class="h-full flex flex-col">
+            <!-- Logo -->
+            <div class="p-5 border-b border-white/10">
+                <div class="flex items-center space-x-3">
+                    <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                    <div>
+                        <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                        <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto p-4" id="admin-menu">
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                <div class="space-y-1">
+                    <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span>
+                    </a>
+                    <a href="admin-pos-new.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos">
+                        <i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span>
+                    </a>
+                    <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span>
+                    </a>
+                    <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
+                    <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
+                    <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span>
+                    </a>
+                    <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span>
+                    </a>
+                    <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span>
+                    </a>
+                    <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span>
+                    </a>
+                    <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span>
+                    </a>
+                    <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span>
+                    </a>
+                    <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span>
+                    </a>
+                    <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span>
+                    </a>
+                </div>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
+                <div class="space-y-1">
+                    <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span>
+                    </a>
+                    <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span>
+                    </a>
+                    <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span>
+                    </a>
+                    <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span>
+                    </a>
+                </div>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
+                <div class="space-y-1">
+                    <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                        <i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Admin Profile Card -->
+            <div class="p-4 border-t border-white/10">
+                <div class="admin-card">
+                    <div class="flex items-center space-x-3">
+                        <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                        <div class="flex-1 min-w-0">
+                            <p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p>
+                            <p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                        <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google Account</span>
+                        <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 transition flex items-center">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Header Bar -->
+        <header class="header-bar flex items-center justify-between">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                <div>
+                    <div class="flex items-center space-x-3">
+                        <h2 class="text-base sm:text-xl font-bold">Bán hàng (POS)</h2>
+                        <div id="active-table-title" class="px-3 py-1 bg-amber-400 text-blue-900 rounded-lg font-bold text-xs uppercase">
+                            CHƯA CHỌN BÀN
+                        </div>
+                    </div>
+                    <p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Hệ thống xử lý đơn hàng tại quầy</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="far fa-clock"></i>
+                    <span id="current-time">00:00:00</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-3 pl-4 border-l border-white/20">
+                    <img id="admin-avatar-header" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    <div>
+                        <p id="admin-name-header" class="font-semibold text-sm text-white">Admin</p>
+                        <p class="text-xs text-blue-200">Quản trị viên</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- POS Main -->
+        <div class="pos-main">
+            <!-- Left Panel: Tabs & Grids -->
+            <div class="pos-left-panel">
+                <nav class="pos-tabs-nav">
+                    <button class="pos-tab-btn active" onclick="switchTab('tables')">
+                        <i class="fas fa-th-large"></i> Phòng/Bàn
+                    </button>
+                    <button class="pos-tab-btn" onclick="switchTab('menu')">
+                        <i class="fas fa-utensils"></i> Thực đơn
+                    </button>
+                    <button class="pos-tab-btn" onclick="switchTab('search')">
+                        <i class="fas fa-search"></i> Tìm món (F3)
+                    </button>
+                </nav>
+
+                <div class="pos-tab-content">
+                    <!-- Tables View -->
+                    <div id="tab-tables" class="tab-pane active">
+                        <div class="category-filter" id="area-filters">
+                            <span class="cat-pill active" onclick="filterTablesByArea('all')">Tất cả</span>
+                        </div>
+                        <div id="tables-container" class="space-y-8"></div>
+                    </div>
+
+                    <!-- Menu View -->
+                    <div id="tab-menu" class="tab-pane hidden">
+                        <div class="category-filter" id="category-filters">
+                            <span class="cat-pill active" onclick="filterMenuByCategory('all')">Tất cả</span>
+                        </div>
+                        <div id="menu-container" class="menu-grid"></div>
+                    </div>
+
+                    <!-- Search View -->
+                    <div id="tab-search" class="tab-pane hidden">
+                        <div class="customer-search mb-6">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="global-search" placeholder="Nhập tên món ăn..." oninput="handleGlobalSearch(this.value)">
+                        </div>
+                        <div id="search-results" class="menu-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Order Execution -->
+            <div class="pos-right-panel">
+                <!-- No table selected placeholder -->
+                <div id="no-table-placeholder" class="flex flex-col items-center justify-center h-full text-center p-8">
+                    <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-chair text-4xl text-blue-300"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-600 mb-2">Chưa chọn bàn</h3>
+                    <p class="text-sm text-slate-400 mb-6">Vui lòng chọn một bàn từ danh sách bên trái để bắt đầu gọi món</p>
+                    <button onclick="switchTab('tables')" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold text-sm hover:bg-blue-700 transition">
+                        <i class="fas fa-th-large mr-2"></i>Chọn bàn
+                    </button>
+                </div>
+
+                <!-- Order panel (hidden until table selected) -->
+                <div id="order-panel-content" class="hidden flex flex-col h-full overflow-hidden">
+                    <div class="order-panel-header">
+                        <div class="customer-search">
+                            <i class="fas fa-user-tag"></i>
+                            <input type="text" id="customer-search" placeholder="Tìm khách hàng (F4)..." readonly>
+                        </div>
+                        <div class="active-table-info">
+                            <div>
+                                <span class="text-[10px] text-slate-500 font-bold uppercase block">Bàn đang chọn</span>
+                                <span id="selected-table-name" class="font-bold text-blue-700 text-sm">-</span>
+                            </div>
+                            <div class="text-right">
+                                <span id="order-start-time" class="text-[10px] text-slate-500 block">--:--</span>
+                                <span id="order-status-badge" class="px-2 py-0.5 rounded-full text-[9px] bg-slate-100 font-bold">CHƯA CÓ ĐƠN</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="order-items" class="order-items-list">
+                        <div class="flex flex-col items-center justify-center h-full opacity-20">
+                            <i class="fas fa-shopping-basket text-6xl mb-4"></i>
+                            <p class="font-bold">Chưa có món</p>
+                        </div>
+                    </div>
+
+                    <div class="order-panel-footer">
+                        <div class="total-row">
+                            <span class="total-label">Tổng tiền:</span>
+                            <span id="total-amount" class="total-value text-xl">0đ</span>
+                        </div>
+                        
+                        <div class="pos-actions">
+                            <button id="btn-save-order" onclick="saveOrder()" class="pos-btn border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-sm">
+                                <i class="fas fa-print mr-1"></i> THÔNG BÁO (F10)
+                            </button>
+                            <button id="btn-checkout" onclick="openCheckout()" class="pos-btn btn-primary text-sm shadow-lg shadow-blue-600/20">
+                                <i class="fas fa-credit-card mr-1"></i> THANH TOÁN (F9)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal fixed inset-0 bg-black/50 z-[100] hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl max-width-[450px] w-[90%] shadow-2xl">
+            <h3 class="text-xl font-bold mb-4 border-b pb-3">Thanh toán</h3>
+            <div class="bg-blue-50 p-6 rounded-xl mb-6 text-center">
+                <p class="text-sm text-blue-600 font-bold mb-1 uppercase">Tổng tiền thanh toán</p>
+                <p id="checkout-total" class="text-4xl font-black text-blue-800">0đ</p>
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-slate-700 mb-2">Phương thức</label>
+                <select id="payment-method" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-semibold">
+                    <option value="cash">Tiền mặt</option>
+                    <option value="transfer">Chuyển khoản (VietQR)</option>
+                    <option value="card">Quẹt thẻ</option>
+                </select>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="closeCheckout()" class="flex-1 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200">HỦY</button>
+                <button onclick="confirmPayment()" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/30">XÁC NHẬN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill Modal -->
+    <div id="billModal" class="modal fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-[400px] max-h-[90vh] flex flex-col shadow-2xl relative">
+            <div class="flex items-center justify-between px-5 py-3 border-b flex-shrink-0">
+                <span class="font-bold text-slate-700 text-sm">🧾 Hóa đơn thanh toán</span>
+                <button onclick="closeBill()" class="text-slate-400 hover:text-slate-600 no-print">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <div id="bill-content" class="overflow-y-auto flex-1 px-5 py-4 bill-print-area">
+                <!-- Bill content here -->
+            </div>
+            <div class="px-5 py-3 border-t flex gap-3 no-print flex-shrink-0">
+                <button onclick="window.print()" class="flex-1 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm"><i class="fas fa-print mr-2"></i>IN HÓA ĐƠN</button>
+                <button onclick="closeBill()" class="px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kitchen Ticket Modal (Hidden) -->
+    <div id="kitchenModal" class="modal fixed inset-0 bg-black/50 z-[101] hidden items-center justify-center">
+        <div class="bg-white p-6 rounded-2xl w-[350px] shadow-2xl relative">
+            <div id="kitchen-ticket-content" class="kitchen-print-area text-black font-mono">
+                <!-- Kitchen ticket content -->
+            </div>
+            <div class="mt-4 no-print flex gap-2">
+                <button onclick="window.print()" class="flex-1 py-2 bg-blue-600 text-white rounded-lg font-bold">IN PHIẾU BẾP</button>
+                <button onclick="closeKitchenTicket()" class="flex-1 py-2 bg-slate-100 rounded-lg">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal.flex { display: flex; }
+        @media print {
+            .no-print { display: none !important; }
+            body * { visibility: hidden; }
+            #billModal, #billModal *, #kitchenModal, #kitchenModal * { visibility: visible; }
+            .modal { position: fixed; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white !important; }
+        }
+    </style>
+
+    <script src="admin-layout.js"></script> <!-- For RBAC and Session -->
+    <script src="admin-pos-new.js"></script>
+</body>
+</html>
