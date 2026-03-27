@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh mục - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
+            <div class="h-full flex flex-col">
+                <div class="p-5 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <div>
+                            <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                            <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                        </div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                        <!-- Danh mục link will be injected here by admin-layout.js but placing it for reference if needed -->
+                        <a href="categories.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-tags w-5"></i><span class="text-sm font-medium">Danh mục</span></a>
+                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
+                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
+                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm">Đơn hàng</span></a>
+                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
+                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+                    </div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <div class="admin-card">
+                        <div class="flex items-center space-x-3">
+                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                            <div class="flex-1 min-w-0">
+                                <p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p>
+                                <p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <header class="header-bar flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
+                    <div>
+                        <h2 class="text-base sm:text-xl font-bold">Quản lý Danh mục</h2>
+                        <p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Quản lý các nhóm món ăn</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <button onclick="openAddModal()" class="btn-primary flex items-center space-x-1 sm:space-x-2">
+                        <i class="fas fa-plus"></i><span class="hidden sm:inline">Thêm danh mục</span>
+                    </button>
+                    <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="search" placeholder="Tìm kiếm danh mục..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <button onclick="applyFilters()" class="bg-slate-800 text-white px-4 py-2.5 rounded-xl hover:bg-slate-900 transition flex items-center justify-center">
+                            <i class="fas fa-filter mr-2"></i>Lọc
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categories Grid -->
+                <div id="categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-spinner fa-spin text-4xl text-slate-400 mb-4"></i>
+                        <p class="text-slate-500">Đang tải dữ liệu...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="category-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold" id="modal-title">Thêm danh mục mới</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="category-form" class="p-6 space-y-4">
+                <input type="hidden" id="category-id">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Tên danh mục *</label>
+                    <input type="text" id="ten_danh_muc" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Mô tả</label>
+                    <textarea id="mo_ta" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Trạng thái *</label>
+                    <select id="trang_thai" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <option value="1">Hiển thị</option>
+                        <option value="0">Ẩn</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script src="admin-mobile.js"></script>
+
+    <script>
+        let categories = [];
+
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_URL}/categories`);
+                const data = await response.json();
+                categories = data.data || [];
+                renderCategories(categories);
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                document.getElementById('categories-container').innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-exclamation-circle text-4xl text-red-400 mb-4"></i><p class="text-slate-500">Không thể tải dữ liệu</p></div>`;
+            }
+        }
+
+        function renderCategories(items) {
+            const container = document.getElementById('categories-container');
+            if (items.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-tags text-4xl text-slate-300 mb-4"></i><p class="text-slate-500">Chưa có danh mục nào</p></div>`;
+                return;
+            }
+            container.innerHTML = items.map(cat => {
+                const isActive = cat.trang_thai == 1;
+                return `
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition border border-slate-100 p-5 ${!isActive ? 'opacity-60' : ''}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+                                <i class="fas fa-tags text-xl"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                                ${isActive ? 'Đang hiển thị' : 'Đã ẩn'}
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2 text-slate-800">${cat.ten_danh_muc}</h4>
+                        <p class="text-sm text-slate-500 mb-4 line-clamp-2">${cat.mo_ta || 'Chưa có mô tả'}</p>
+                        <div class="flex space-x-2">
+                            <button onclick="editCategory(${cat.ma_danh_muc})" class="flex-1 bg-blue-50 text-blue-600 py-2.5 rounded-xl hover:bg-blue-100 transition text-sm font-medium"><i class="fas fa-edit mr-1"></i>Sửa</button>
+                            <button onclick="deleteCategory(${cat.ma_danh_muc})" class="flex-1 bg-red-50 text-red-600 py-2.5 rounded-xl hover:bg-red-100 transition text-sm font-medium"><i class="fas fa-trash mr-1"></i>Xóa</button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Thêm danh mục mới';
+            document.getElementById('category-form').reset();
+            document.getElementById('category-id').value = '';
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('category-modal').classList.add('hidden');
+        }
+
+        function editCategory(id) {
+            const cat = categories.find(c => c.ma_danh_muc === id);
+            if (!cat) return;
+            document.getElementById('modal-title').textContent = 'Chỉnh sửa danh mục';
+            document.getElementById('category-id').value = cat.ma_danh_muc;
+            document.getElementById('ten_danh_muc').value = cat.ten_danh_muc;
+            document.getElementById('mo_ta').value = cat.mo_ta || '';
+            document.getElementById('trang_thai').value = cat.trang_thai;
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('Bạn có chắc muốn xóa danh mục này?')) return;
+            try {
+                const response = await fetch(`${API_URL}/categories/${id}`, { method: 'DELETE', credentials: 'include' });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Xóa thành công!', 'success');
+                    loadCategories();
+                } else {
+                    showToast(data.message || 'Có lỗi xảy ra!', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Có lỗi xảy ra!', 'error');
+            }
+        }
+
+        document.getElementById('category-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('category-id').value;
+            const payload = {
+                ten_danh_muc: document.getElementById('ten_danh_muc').value,
+                mo_ta: document.getElementById('mo_ta').value,
+                trang_thai: parseInt(document.getElementById('trang_thai').value)
+            };
+
+            try {
+                const url = id ? `${API_URL}/categories/${id}` : `${API_URL}/categories`;
+                const response = await fetch(url, {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    closeModal();
+                    loadCategories();
+                } else {
+                    showToast(data.message || 'Có lỗi xảy ra!', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Có lỗi xảy ra!', 'error');
+            }
+        });
+
+        function applyFilters() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const filtered = categories.filter(c => 
+                c.ten_danh_muc.toLowerCase().includes(search) || 
+                (c.mo_ta && c.mo_ta.toLowerCase().includes(search))
+            );
+            renderCategories(filtered);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-xl shadow-lg z-50 transition-all transform translate-y-0 max-w-md ${
+                type === 'success' ? 'bg-emerald-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-slate-800 text-white'
+            }`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-2"></i>${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        loadCategories();
+    </script>
+</body>
+</html>

@@ -161,12 +161,25 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Tỉ lệ quy đổi (1 Nhập = ? Xuất) *</label>
-                        <input type="number" id="ti_le_chuyen_doi" required min="0.01" step="0.01" value="1" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm font-medium text-slate-700">Tỉ lệ quy đổi (1 Nhập = ? Xuất) *</label>
+                            <button type="button" id="btn-unlock-rate" class="text-xs text-blue-600 hover:text-blue-800 flex items-center hidden" title="Mở khóa để tự nhập số"><i class="fas fa-unlock mr-1"></i>Tự nhập</button>
+                        </div>
+                        <input type="number" id="ti_le_chuyen_doi" required min="0.01" step="0.01" value="1" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 transition-colors">
+                        <p id="ti_le_hint" class="text-xs font-medium text-emerald-600 mt-1 hidden"></p>
                     </div>
-                    <div id="so-luong-group">
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Tồn kho ban đầu (Quy ra ĐV Xuất) *</label>
-                        <input type="number" id="so_luong_ton" required min="0" value="0" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl">
+                    <div id="so-luong-group" class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 mt-2">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Nhập số lượng ban đầu (<span id="lbl_dv_nhap" class="text-blue-600 font-bold">đơn vị</span>)</label>
+                            <input type="number" id="so_luong_nhap_ban_dau" min="0" value="0" step="any" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-sm font-medium text-slate-700">Tồn kho thực tế (<span id="lbl_dv_xuat" class="text-emerald-600 font-bold">đơn vị</span>) *</label>
+                                <button type="button" id="btn-unlock-ton-kho" class="text-xs text-blue-600 hover:text-blue-800 flex items-center" title="Điền tay số lẻ"><i class="fas fa-pen mr-1"></i>Sửa</button>
+                            </div>
+                            <input type="number" id="so_luong_ton" required min="0" value="0" step="any" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-100 text-slate-500 cursor-not-allowed transition-colors" readonly>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -290,8 +303,19 @@
             document.getElementById('ingredient-form').reset();
             document.getElementById('ingredient-id').value = '';
             document.getElementById('so-luong-group').classList.remove('hidden');
+            document.getElementById('ti_le_chuyen_doi').dataset.manualOverride = 'false';
+            
+            document.getElementById('so_luong_nhap_ban_dau').value = 0;
+            const sltInput = document.getElementById('so_luong_ton');
+            sltInput.dataset.manualOverride = 'false';
+            sltInput.readOnly = true;
+            sltInput.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+            const unlockBtn = document.getElementById('btn-unlock-ton-kho');
+            if(unlockBtn) unlockBtn.classList.remove('hidden');
+            
             document.getElementById('ingredient-modal').classList.remove('hidden');
             updateFormStepByUnit();
+            if (typeof updateConversionRateLogic === 'function') updateConversionRateLogic();
         }
 
         function closeModal() {
@@ -305,15 +329,37 @@
             document.getElementById('ingredient-id').value = item.ma_nguyen_lieu;
             document.getElementById('ten_nguyen_lieu').value = item.ten_nguyen_lieu;
             document.getElementById('don_vi_tinh').value = item.don_vi_tinh;
-            document.getElementById('don_vi_nhap').value = item.don_vi_nhap || item.don_vi_tinh;
-            document.getElementById('ti_le_chuyen_doi').value = item.ti_le_chuyen_doi || 1;
-            document.getElementById('so_luong_ton').value = item.so_luong_ton;
+            
+            const donViNhap = item.don_vi_nhap || item.don_vi_tinh;
+            document.getElementById('don_vi_nhap').value = donViNhap;
+            
+            const rate = item.ti_le_chuyen_doi || 1;
+            document.getElementById('ti_le_chuyen_doi').value = rate;
+            
+            let isStandard = false;
+            if (donViNhap === 'kg' && item.don_vi_tinh === 'g' && rate === 1000) isStandard = true;
+            else if (donViNhap === 'l' && item.don_vi_tinh === 'ml' && rate === 1000) isStandard = true;
+            else if (donViNhap === item.don_vi_tinh && rate === 1) isStandard = true;
+            
+            document.getElementById('ti_le_chuyen_doi').dataset.manualOverride = isStandard ? 'false' : 'true';
+            
+            const sltInput = document.getElementById('so_luong_ton');
+            sltInput.value = item.so_luong_ton;
+            document.getElementById('so_luong_nhap_ban_dau').value = rate > 0 ? (item.so_luong_ton / rate) : 0;
+            
+            sltInput.dataset.manualOverride = 'false';
+            sltInput.readOnly = true;
+            sltInput.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+            const unlockBtn = document.getElementById('btn-unlock-ton-kho');
+            if(unlockBtn) unlockBtn.classList.remove('hidden');
+            
             document.getElementById('muc_canh_bao').value = item.muc_canh_bao;
             
             // Hiện disabled phần số lượng tồn vì nên update kho qua nút Nhập kho cho minh bạch, nhưng vẫn cho phép ở form sửa
             document.getElementById('so-luong-group').classList.remove('hidden');
             document.getElementById('ingredient-modal').classList.remove('hidden');
             updateFormStepByUnit();
+            if (typeof updateConversionRateLogic === 'function') updateConversionRateLogic();
         }
 
         // Cập nhật step cho input số lượng dựa trên đơn vị
@@ -333,10 +379,107 @@
         }
 
         // Lắng nghe thay đổi đơn vị xuất
-        document.getElementById('don_vi_tinh').addEventListener('change', updateFormStepByUnit);
+        document.getElementById('don_vi_tinh').addEventListener('change', () => {
+            updateFormStepByUnit();
+            updateConversionRateLogic();
+        });
+
+        document.getElementById('don_vi_nhap').addEventListener('change', () => {
+            document.getElementById('ti_le_chuyen_doi').dataset.manualOverride = 'false';
+            updateConversionRateLogic();
+        });
+
+        document.getElementById('ti_le_chuyen_doi').addEventListener('input', () => {
+            document.getElementById('ti_le_chuyen_doi').dataset.manualOverride = 'true';
+            updateConversionRateLogic();
+        });
+
+        document.getElementById('btn-unlock-rate')?.addEventListener('click', function() {
+            const rateInput = document.getElementById('ti_le_chuyen_doi');
+            rateInput.dataset.manualOverride = 'true';
+            updateConversionRateLogic();
+            rateInput.focus();
+        });
+
+        function updateConversionRateLogic() {
+            const donViNhap = document.getElementById('don_vi_nhap');
+            const donViXuat = document.getElementById('don_vi_tinh');
+            const rateInput = document.getElementById('ti_le_chuyen_doi');
+            const unlockBtn = document.getElementById('btn-unlock-rate');
+            const hint = document.getElementById('ti_le_hint');
+
+            const nhapVal = donViNhap.value;
+            const xuatVal = donViXuat.value;
+            const nhapText = donViNhap.options[donViNhap.selectedIndex]?.text || '';
+            const xuatText = donViXuat.options[donViXuat.selectedIndex]?.text || '';
+
+            let autoRate = null;
+            if (nhapVal === 'kg' && xuatVal === 'g') autoRate = 1000;
+            else if (nhapVal === 'l' && xuatVal === 'ml') autoRate = 1000;
+            else if (nhapVal === xuatVal && nhapVal) autoRate = 1;
+
+            if (autoRate !== null && rateInput.dataset.manualOverride !== 'true') {
+                rateInput.value = autoRate;
+                rateInput.readOnly = true;
+                rateInput.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+                if(unlockBtn) unlockBtn.classList.remove('hidden');
+            } else {
+                rateInput.readOnly = false;
+                rateInput.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+                if(unlockBtn) unlockBtn.classList.add('hidden');
+            }
+
+            const currentRate = parseFloat(rateInput.value) || 0;
+            if (nhapText && xuatText && currentRate > 0) {
+                if(hint) {
+                    hint.classList.remove('hidden');
+                    hint.textContent = `💡 Quy đổi: 1 ${nhapText} = Bằng ${currentRate.toLocaleString('vi-VN')} ${xuatText} (để tính món ăn)`;
+                }
+                const lblNhap = document.getElementById('lbl_dv_nhap');
+                const lblXuat = document.getElementById('lbl_dv_xuat');
+                if(lblNhap) lblNhap.textContent = nhapText;
+                if(lblXuat) lblXuat.textContent = xuatText;
+                
+                if (typeof calculateTonKho === 'function') calculateTonKho();
+            } else {
+                if(hint) hint.classList.add('hidden');
+            }
+        }
+
+        function calculateTonKho() {
+            const tonKhoInput = document.getElementById('so_luong_ton');
+            if (tonKhoInput.dataset.manualOverride === 'true') return;
+            
+            const slNhap = parseFloat(document.getElementById('so_luong_nhap_ban_dau').value) || 0;
+            const rate = parseFloat(document.getElementById('ti_le_chuyen_doi').value) || 0;
+            
+            tonKhoInput.value = slNhap * rate;
+        }
+
+        document.getElementById('so_luong_nhap_ban_dau')?.addEventListener('input', calculateTonKho);
+        document.getElementById('ti_le_chuyen_doi')?.addEventListener('input', calculateTonKho);
+        
+        document.getElementById('btn-unlock-ton-kho')?.addEventListener('click', function() {
+            const tonKhoInput = document.getElementById('so_luong_ton');
+            tonKhoInput.readOnly = false;
+            tonKhoInput.dataset.manualOverride = 'true';
+            tonKhoInput.classList.remove('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
+            this.classList.add('hidden');
+            tonKhoInput.focus();
+        });
 
         document.getElementById('ingredient-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const slt = parseInt(document.getElementById('so_luong_ton').value) || 0;
+            const mcb = parseInt(document.getElementById('muc_canh_bao').value) || 0;
+            
+            if (mcb > slt && slt > 0) {
+                alert('Mức cảnh báo sắp hết không được lớn hơn số lượng Tồn kho thực tế!');
+                document.getElementById('muc_canh_bao').focus();
+                return;
+            }
+
             const id = document.getElementById('ingredient-id').value;
             const dataObj = {
                 ten_nguyen_lieu: document.getElementById('ten_nguyen_lieu').value,

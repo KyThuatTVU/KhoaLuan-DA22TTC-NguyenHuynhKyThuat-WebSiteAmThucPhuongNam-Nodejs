@@ -223,7 +223,17 @@ function applyRBAC(adminUser) {
         dashboardLink.parentNode.insertBefore(posLink, dashboardLink.nextSibling);
     }
 
-    // 2. Hide specific items based on role
+    // 2. Inject Category link after Products
+    const productsLink = document.querySelector('a[href="products.html"]');
+    if (productsLink && !document.querySelector('a[href="categories.html"]')) {
+        const categoryLink = document.createElement('a');
+        categoryLink.href = 'categories.html';
+        categoryLink.className = 'sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-categories';
+        categoryLink.innerHTML = '<i class="fas fa-tags w-5"></i><span class="text-sm font-medium">Danh mục</span>';
+        productsLink.parentNode.insertBefore(categoryLink, productsLink.nextSibling);
+    }
+
+    // 3. Hide specific items based on role
     const hideLinks = (hrefs) => {
         hrefs.forEach(href => {
             const link = document.querySelector(`a[href="${href}"]`);
