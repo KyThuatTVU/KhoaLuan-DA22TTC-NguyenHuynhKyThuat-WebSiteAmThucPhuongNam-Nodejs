@@ -17,7 +17,7 @@
             <div class="h-full flex flex-col">
                 <div class="p-5 border-b border-white/10">
                     <div class="flex items-center space-x-3">
-                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-full border-2 border-blue-400">
                         <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
                 <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="product-form" class="p-6 space-y-4">
-                <input type="hidden" id="product-id">
+                <input type="hidden" id="product-id" class="no-draft">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-2">Tên món ăn *</label>
@@ -196,8 +196,13 @@
 
     <script src="admin-layout.js"></script>
     <script src="admin-mobile.js"></script>
+    <script src="../js/form-draft-manager.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.productDraftManager = new FormDraftManager('product-form', { excludeClasses: ['no-draft'] });
+        });
+        
         // API_URL đã được khai báo trong admin-layout.js
         let products = [];
         let categories = [];
@@ -285,9 +290,29 @@
                 const data = await response.json();
                 products = data.data || [];
                 renderProducts(products);
+                
+                // Tự động khôi phục lại trạng thái giao diện UI (nếu có form đang mở)
+                restoreUiState();
             } catch (error) {
                 console.error('Error loading products:', error);
                 document.getElementById('products-container').innerHTML = `<div class="col-span-full text-center py-12"><i class="fas fa-exclamation-circle text-4xl text-red-400 mb-4"></i><p class="text-slate-500">Không thể tải dữ liệu</p></div>`;
+            }
+        }
+
+        // Khôi phục trạng thái form đang mở khi mới load trang
+        function restoreUiState() {
+            const stateStr = sessionStorage.getItem('adminUiState_products');
+            if (stateStr) {
+                try {
+                    const state = JSON.parse(stateStr);
+                    if (state.action === 'add') {
+                        openAddModal(true);
+                    } else if (state.action === 'edit' && state.id) {
+                        editProduct(state.id, true);
+                    }
+                } catch (e) {
+                    console.error('Error restoring UI state', e);
+                }
             }
         }
 
@@ -346,26 +371,48 @@
 
         function formatPrice(price) { return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price); }
         
-        function openAddModal() { 
+        function openAddModal(isAutoOpen = false) { 
             document.getElementById('modal-title').textContent = 'Thêm món mới'; 
             document.getElementById('product-form').reset(); 
+            if (window.productDraftManager) {
+                window.productDraftManager.setContext('new');
+                if (window.productDraftManager.hasDraft()) {
+                    window.productDraftManager.restore();
+                }
+            }
             document.getElementById('product-id').value = ''; 
             document.getElementById('price-in-words').classList.add('hidden');
             document.getElementById('stock-warning').classList.add('hidden');
             document.getElementById('product-modal').classList.remove('hidden'); 
+            
+            // Lưu trạng thái đang mở form Thêm mới
+            if (!isAutoOpen) {
+                sessionStorage.setItem('adminUiState_products', JSON.stringify({ action: 'add' }));
+            }
         }
         
         function closeModal() { 
             document.getElementById('product-modal').classList.add('hidden'); 
             document.getElementById('price-in-words').classList.add('hidden');
             document.getElementById('stock-warning').classList.add('hidden');
+            // Xoá trạng thái UI ghi nhớ (vì người dùng chủ động đóng Form)
+            sessionStorage.removeItem('adminUiState_products');
         }
 
-        async function editProduct(id) {
+        async function editProduct(id, isAutoOpen = false) {
             const product = products.find(p => p.ma_mon === id);
-            if (!product) return;
+            if (!product) {
+                sessionStorage.removeItem('adminUiState_products');
+                return;
+            }
             document.getElementById('modal-title').textContent = 'Chỉnh sửa món ăn';
             document.getElementById('product-id').value = product.ma_mon;
+            
+            // Cập nhật context draft cho ID cụ thể
+            if (window.productDraftManager) {
+                window.productDraftManager.setContext(id);
+            }
+            
             document.getElementById('ten_mon').value = product.ten_mon || '';
             document.getElementById('ma_danh_muc').value = product.ma_danh_muc || '';
             const price = product.gia_tien || product.gia || '';
@@ -377,6 +424,16 @@
             document.getElementById('mo_ta').value = product.mo_ta_chi_tiet || product.mo_ta || '';
             document.getElementById('trang_thai').value = product.trang_thai == 1 ? 'con_hang' : 'het_hang';
             document.getElementById('product-modal').classList.remove('hidden');
+
+            // Lưu trạng thái đang mở form Sửa
+            if (!isAutoOpen) {
+                sessionStorage.setItem('adminUiState_products', JSON.stringify({ action: 'edit', id: id }));
+            }
+
+            // Tự động dán lại các đoạn text gõ dở dang chưa lưu
+            if (window.productDraftManager && window.productDraftManager.hasDraft()) {
+                window.productDraftManager.restore();
+            }
         }
 
         async function deleteProduct(id) {
@@ -419,6 +476,7 @@
                 const response = await fetch(url, { method: id ? 'PUT' : 'POST', body: formData, credentials: 'include' });
                 const data = await response.json();
                 if (data.success) { 
+                    if (window.productDraftManager) window.productDraftManager.clear();
                     showToast(data.message, data.outOfStock ? 'warning' : 'success');
                     closeModal(); 
                     loadProducts(); 

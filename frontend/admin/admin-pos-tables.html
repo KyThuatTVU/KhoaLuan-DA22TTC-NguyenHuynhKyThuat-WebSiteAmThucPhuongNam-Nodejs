@@ -265,11 +265,17 @@
                 </div>
 
                 <!-- Section Header -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                    <div class="mb-4 md:mb-0">
-                        <h2 class="text-lg font-bold text-slate-800">Danh sách bàn</h2>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-100 gap-4">
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <h2 class="text-lg font-bold text-slate-800 flex-shrink-0">Danh sách bàn</h2>
+                        <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 border border-slate-200 rounded-lg">
+                            <i class="fas fa-map-marker-alt text-blue-500"></i>
+                            <select id="area-filter" class="bg-transparent border-none text-sm font-semibold text-slate-700 outline-none cursor-pointer" onchange="filterTablesByArea(this.value)">
+                                <option value="all">Tất cả khu vực</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 md:w-auto">
                         <button class="filter-btn active" data-filter="all" onclick="filterTables('all')">
                             <i class="fas fa-th"></i> Tất cả
                         </button>
@@ -297,6 +303,7 @@
         const API_BASE = 'http://localhost:3000/api';
         let allTables = [];
         let currentFilter = 'all';
+        let currentArea = 'all';
 
         window.addEventListener('DOMContentLoaded', () => {
             initAdminLayout(); // Đợi auth hoàn tất hiển thị giao diện chung
@@ -314,12 +321,28 @@
                 
                 if (data.success) {
                     allTables = data.data;
+                    updateAreaOptions();
                     updateStats();
                     renderTables();
                 }
             } catch (error) {
                 console.error('Error loading tables:', error);
             }
+        }
+
+        function updateStatsArea(filteredTables) {
+            // Update stats based on filtered area
+            let tablesToStat = allTables;
+            if (currentArea !== 'all') {
+                tablesToStat = allTables.filter(t => (t.vi_tri || 'Khu chung') === currentArea);
+            }
+            const available = tablesToStat.filter(t => t.trang_thai === 'trong').length;
+            const occupied = tablesToStat.filter(t => t.trang_thai === 'dang_phuc_vu').length;
+            const reserved = tablesToStat.filter(t => t.trang_thai === 'da_dat').length;
+            
+            document.getElementById('availableCount').textContent = available;
+            document.getElementById('occupiedCount').textContent = occupied;
+            document.getElementById('reservedCount').textContent = reserved;
         }
 
         function updateStats() {
@@ -341,12 +364,38 @@
             renderTables();
         }
 
+        function updateAreaOptions() {
+            const select = document.getElementById('area-filter');
+            if(!select) return;
+            const areas = [...new Set(allTables.map(t => t.vi_tri || 'Khu chung'))];
+            const currentVal = select.value;
+            
+            select.innerHTML = '<option value="all">Tất cả khu vực</option>' + 
+                areas.map(area => `<option value="${area}">${area}</option>`).join('');
+                
+            if (areas.includes(currentVal) || currentVal === 'all') {
+                select.value = currentVal;
+            } else {
+                currentArea = 'all';
+            }
+        }
+
+        function filterTablesByArea(area) {
+            currentArea = area;
+            renderTables();
+        }
+
         function renderTables() {
             const grid = document.getElementById('tablesGrid');
             let filteredTables = allTables;
-            if (currentFilter !== 'all') {
-                filteredTables = allTables.filter(t => t.trang_thai === currentFilter);
+            
+            if (currentArea !== 'all') {
+                filteredTables = filteredTables.filter(t => (t.vi_tri || 'Khu chung') === currentArea);
             }
+            if (currentFilter !== 'all') {
+                filteredTables = filteredTables.filter(t => t.trang_thai === currentFilter);
+            }
+            updateStatsArea(filteredTables);
             
             if (filteredTables.length === 0) {
                 grid.innerHTML = `

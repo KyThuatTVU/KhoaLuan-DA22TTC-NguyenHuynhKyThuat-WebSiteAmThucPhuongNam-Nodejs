@@ -27,7 +27,7 @@
                         <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
                         <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
                         <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
-                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
+                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl active"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
                         <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
                         <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
                         <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
@@ -136,7 +136,7 @@
                 
                 <div class="mb-4 flex justify-between items-center">
                     <h4 class="font-semibold text-slate-800">Danh sách nguyên liệu</h4>
-                    <button onclick="addIngredientRow()" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-200 transition">
+                    <button onclick="addIngredientRow('', '', true)" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-200 transition">
                         <i class="fas fa-plus mr-1"></i> Thêm thành phần
                     </button>
                 </div>
@@ -171,6 +171,18 @@
             return INTEGER_UNITS.some(u => normalized.includes(u));
         }
 
+        function restoreUiState() {
+            const stateStr = sessionStorage.getItem('adminUiState_cong_thuc');
+            if (stateStr) {
+                try {
+                    const state = JSON.parse(stateStr);
+                    if (state.action === 'edit' && state.dishId && state.dishName) {
+                        openRecipeModal(state.dishId, state.dishName, true);
+                    }
+                } catch(e) {}
+            }
+        }
+
         async function loadData() {
             try {
                 // Load Products
@@ -183,6 +195,8 @@
                 const resIngredients = await fetch(`${API_URL}/inventory`, { credentials: 'include' });
                 const dataIngredients = await resIngredients.json();
                 allIngredients = dataIngredients.data || [];
+
+                restoreUiState();
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -221,7 +235,26 @@
         }
 
         // --- Recipe Modal Logic --- //
-        async function openRecipeModal(dishId, dishName) {
+        
+        // Draft persistence for dynamic fields
+        const recipeListEl = document.getElementById('recipe-ingredients-list');
+        recipeListEl.addEventListener('input', fireDraftUpdate);
+        
+        function fireDraftUpdate() {
+            const dishId = document.getElementById('recipe-dish-id').value;
+            if(!dishId) return;
+            const rows = document.querySelectorAll('.recipe-row');
+            const draft = [];
+            rows.forEach(row => {
+                draft.push({
+                    ma_nguyen_lieu: row.querySelector('.ing-select').value,
+                    so_luong_can: row.querySelector('.ing-qty').value
+                });
+            });
+            sessionStorage.setItem(`recipe_draft_${dishId}`, JSON.stringify(draft));
+        }
+
+        async function openRecipeModal(dishId, dishName, isAutoOpen = false) {
             document.getElementById('recipe-dish-id').value = dishId;
             document.getElementById('recipe-dish-name').textContent = `Món: ${dishName}`;
             document.getElementById('recipe-ingredients-list').innerHTML = '';
@@ -229,15 +262,31 @@
             
             // Show modal
             document.getElementById('recipe-modal').classList.remove('hidden');
+            
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_cong_thuc', JSON.stringify({ action: 'edit', dishId: dishId, dishName: dishName }));
 
             try {
+                // Determine if there is a draft
+                const draftStr = sessionStorage.getItem(`recipe_draft_${dishId}`);
+                if (draftStr) {
+                    try {
+                        const draftData = JSON.parse(draftStr);
+                        if (draftData && draftData.length > 0) {
+                            draftData.forEach(item => {
+                                addIngredientRow(item.ma_nguyen_lieu, item.so_luong_can, false);
+                            });
+                            return; // Mở nháp thành công, không gọi fetch nữa
+                        }
+                    } catch (e) {}
+                }
+
                 // Fetch existing recipe
                 const res = await fetch(`${API_URL}/recipe/dish/${dishId}`, { credentials: 'include' });
                 const data = await res.json();
                 
                 if (data.success && data.data && data.data.length > 0) {
                     data.data.forEach(item => {
-                        addIngredientRow(item.ma_nguyen_lieu, item.so_luong_can);
+                        addIngredientRow(item.ma_nguyen_lieu, item.so_luong_can, false);
                     });
                 } else {
                     document.getElementById('empty-recipe').classList.remove('hidden');
@@ -249,9 +298,10 @@
 
         function closeRecipeModal() {
             document.getElementById('recipe-modal').classList.add('hidden');
+            sessionStorage.removeItem('adminUiState_cong_thuc');
         }
 
-        function addIngredientRow(ma_nguyen_lieu = '', so_luong_can = '') {
+        function addIngredientRow(ma_nguyen_lieu = '', so_luong_can = '', triggerUpdate = true) {
             document.getElementById('empty-recipe').classList.add('hidden');
             const list = document.getElementById('recipe-ingredients-list');
             
@@ -276,18 +326,20 @@
 
             row.innerHTML = `
                 <div class="flex-1">
-                    <select class="ing-select w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" onchange="updateQtyStep(this)">
+                    <select class="ing-select w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" onchange="updateQtyStep(this); fireDraftUpdate()">
                         ${optionsHTML}
                     </select>
                 </div>
                 <div class="w-32">
-                    <input type="number" class="ing-qty w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="Số lượng..." value="${displayQty}" min="${minVal}" step="${stepVal}">
+                    <input type="number" class="ing-qty w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="Số lượng..." value="${displayQty}" min="${minVal}" step="${stepVal}" oninput="fireDraftUpdate()">
                 </div>
-                <button type="button" onclick="this.closest('.recipe-row').remove()" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition">
+                <button type="button" onclick="this.closest('.recipe-row').remove(); fireDraftUpdate()" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition">
                     <i class="fas fa-trash"></i>
                 </button>
             `;
             list.appendChild(row);
+
+            if (triggerUpdate) fireDraftUpdate();
         }
 
         function updateQtyStep(selectEl) {
@@ -342,6 +394,7 @@
                 
                 const data = await response.json();
                 if (data.success) {
+                    sessionStorage.removeItem(`recipe_draft_${dishId}`);
                     alert('Lưu công thức thành công!');
                     closeRecipeModal();
                 } else {

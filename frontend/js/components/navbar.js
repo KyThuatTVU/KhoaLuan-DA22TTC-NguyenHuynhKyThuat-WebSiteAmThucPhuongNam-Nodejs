@@ -107,8 +107,8 @@ window.renderUserMenu = function() {
     }
 
     // Check if user is logged in
-    const userStr = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const userStr = (localStorage.getItem('user') || sessionStorage.getItem('user'));
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
     
     console.log('📦 LocalStorage:', { 
         hasUser: !!userStr, 
@@ -252,8 +252,8 @@ window.renderGuestMenu = function() {
 // Handle logout (global function)
 window.handleLogout = function() {
     if (confirm('Bạn có chắc muốn đăng xuất?')) {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        localStorage.removeItem('user'); sessionStorage.removeItem('user');
+        localStorage.removeItem('token'); sessionStorage.removeItem('token');
         window.location.href = 'index.html';
     }
 }

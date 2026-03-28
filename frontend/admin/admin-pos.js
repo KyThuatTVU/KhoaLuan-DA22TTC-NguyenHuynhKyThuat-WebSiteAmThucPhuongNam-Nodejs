@@ -291,6 +291,15 @@ function renderCart() {
     const btnSend = document.getElementById('btnSendKitchen');
     const btnCheckout = document.getElementById('btnCheckout');
     
+    // Auto-save draft items locally so it survives reloads if not sent to kitchen yet
+    if (currentTable) {
+        if (!currentOrderId && orderItems.length > 0) {
+            localStorage.setItem(`draft_pos_${currentTable.id}`, JSON.stringify(orderItems));
+        } else if (!currentOrderId && orderItems.length === 0) {
+            localStorage.removeItem(`draft_pos_${currentTable.id}`);
+        }
+    }
+    
     if(!content) return;
 
     if (orderItems.length === 0) {
@@ -373,7 +382,16 @@ async function loadExistingOrder() {
                 max_quantity: item.so_luong + (item.so_luong_ton || 0)
             }));
             originalOrderJson = JSON.stringify(orderItems);
+            localStorage.removeItem(`draft_pos_${currentTable.id}`);
             renderCart();
+        } else {
+            const draft = localStorage.getItem(`draft_pos_${currentTable.id}`);
+            if (draft) {
+                try {
+                    orderItems = JSON.parse(draft);
+                    renderCart();
+                } catch(e){}
+            }
         }
     } catch (e) { console.error('Lỗi load order:', e); }
 }
@@ -415,6 +433,7 @@ async function sendToKitchen() {
         if (data.success) {
             currentOrderId = data.data.orderId;
             originalOrderJson = JSON.stringify(orderItems);
+            localStorage.removeItem(`draft_pos_${currentTable.id}`);
             renderCart();
             if(!currentOrderId) {
                 alert('Đã hủy order thành công!');
@@ -549,6 +568,7 @@ function printBill() {
 }
 
 function closeBillAndRedirect() {
+    if (currentTable) localStorage.removeItem(`draft_pos_${currentTable.id}`);
     document.getElementById('billModal').classList.remove('show');
     window.location.href = 'admin-pos-tables.html';
 }

@@ -291,7 +291,7 @@ async function updateUserMenu() {
         return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
     
     console.log('🔄 Updating user menu...', { hasToken: !!token });
 
@@ -314,8 +314,8 @@ async function updateUserMenu() {
         if (!result.success || !result.data) {
             console.log('❌ Token invalid or user not found');
             // Token không hợp lệ, xóa và hiển thị guest menu
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            localStorage.removeItem('token'); sessionStorage.removeItem('token');
+            localStorage.removeItem('user'); sessionStorage.removeItem('user');
             renderGuestMenu(userMenuContainer, mobileUserMenu);
             return;
         }
@@ -327,7 +327,7 @@ async function updateUserMenu() {
         });
 
         // Cập nhật localStorage với data mới từ DB
-        const localUser = localStorage.getItem('user');
+        const localUser = (localStorage.getItem('user') || sessionStorage.getItem('user'));
         if (localUser) {
             const parsedUser = JSON.parse(localUser);
             parsedUser.ten_nguoi_dung = user.ten_nguoi_dung;
@@ -354,7 +354,7 @@ async function updateUserMenu() {
     } catch (error) {
         console.error('❌ Error fetching user data:', error);
         // Fallback: sử dụng localStorage nếu API lỗi
-        const userStr = localStorage.getItem('user');
+        const userStr = (localStorage.getItem('user') || sessionStorage.getItem('user'));
         if (userStr) {
             try {
                 const user = JSON.parse(userStr);
@@ -470,8 +470,8 @@ function renderGuestMenu(userMenuContainer, mobileUserMenu) {
 // Handle logout (global function)
 window.handleLogout = function() {
     if (confirm('Bạn có chắc muốn đăng xuất?')) {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        localStorage.removeItem('user'); sessionStorage.removeItem('user');
+        localStorage.removeItem('token'); sessionStorage.removeItem('token');
         window.location.href = 'index.html';
     }
 }
@@ -606,8 +606,8 @@ function showChatbotGreeting() {
     if (!messages) return;
     
     // Lấy thông tin user từ localStorage
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
+    const userStr = (localStorage.getItem('user') || sessionStorage.getItem('user'));
     let greeting = '';
     
     if (token && userStr) {
@@ -673,7 +673,7 @@ document.addEventListener('click', function(e) {
 async function loadChatHistory() {
     const historyList = document.getElementById('historyList');
     const loginPrompt = document.getElementById('historyLoginPrompt');
-    const token = localStorage.getItem('token');
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
     
     if (!token) {
         // Khách vãng lai - hiển thị prompt đăng nhập
@@ -749,7 +749,7 @@ function renderHistoryList() {
 
 // Tải một session chat cụ thể
 window.loadChatSession = async function(sessionId) {
-    const token = localStorage.getItem('token');
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
     const messages = document.getElementById('chatbotMessages');
     
     try {
@@ -972,7 +972,7 @@ window.chatbotSendMessage = async function() {
     
     try {
         // Lấy token nếu user đã đăng nhập
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const headers = { 'Content-Type': 'application/json' };
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -1120,7 +1120,7 @@ function renderGraphQLDishCards(dishes) {
 // Thêm món vào giỏ hàng từ chatbot
 window.addDishToCart = async function(ma_mon) {
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (!token) {
             if (confirm('Bạn cần đăng nhập để thêm vào giỏ hàng. Đăng nhập ngay?')) {
                 window.location.href = 'dang-nhap.html';

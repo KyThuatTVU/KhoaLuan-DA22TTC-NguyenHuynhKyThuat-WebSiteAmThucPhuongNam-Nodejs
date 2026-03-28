@@ -79,6 +79,15 @@ async function loadInitialData() {
         renderTables();
         renderCategories();
         renderMenu();
+
+        // Restore saved state
+        const savedTab = localStorage.getItem('pos_current_tab') || 'tables';
+        const savedTableId = localStorage.getItem('pos_current_table_id');
+        
+        if (savedTableId) {
+            await selectTable(Number(savedTableId), false);
+        }
+        switchTab(savedTab);
     } catch (e) {
         console.error("Data load error", e);
     }
@@ -88,6 +97,9 @@ async function loadInitialData() {
 function switchTab(tabId) {
     document.querySelectorAll('.pos-tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+    
+    // Save current tab
+    localStorage.setItem('pos_current_tab', tabId);
     
     const activeBtn = document.querySelector(`.pos-tab-btn[onclick="switchTab('${tabId}')"]`);
     if (activeBtn) activeBtn.classList.add('active');
@@ -144,11 +156,12 @@ function renderTables(areaFilter = null) {
     });
 }
 
-async function selectTable(tableId) {
+async function selectTable(tableId, autoSwitch = true) {
     const table = allTables.find(t => t.ma_ban === tableId);
     if (!table) return;
 
     currentTable = table;
+    localStorage.setItem('pos_current_table_id', tableId);
     document.getElementById('active-table-title').textContent = table.ten_ban.toUpperCase();
     document.getElementById('selected-table-name').textContent = table.ten_ban;
     
@@ -156,10 +169,10 @@ async function selectTable(tableId) {
     renderTables(); // Re-render to show active state
     
     // Load existing order for this table
-    await loadTableOrder(tableId);
+    await loadTableOrder(tableId, autoSwitch);
 }
 
-async function loadTableOrder(tableId) {
+async function loadTableOrder(tableId, autoSwitch = true) {
     try {
         orderItems = [];
         activeOrderId = null;
@@ -178,14 +191,21 @@ async function loadTableOrder(tableId) {
                 ghi_chu: i.ghi_chu || ''
             }));
             
+            localStorage.removeItem(`draft_pos_${tableId}`);
             document.getElementById('order-status-badge').textContent = 'ĐANG PHỤC VỤ';
             document.getElementById('order-status-badge').className = 'px-2 py-0.5 rounded-full text-[10px] bg-orange-100 text-orange-700 font-bold';
             // Switch to menu tab for convenience after selecting table
-            if (activeOrderId) switchTab('menu');
+            if (activeOrderId && autoSwitch) switchTab('menu');
         } else {
+            const draft = localStorage.getItem(`draft_pos_${tableId}`);
+            if (draft) {
+                try {
+                    orderItems = JSON.parse(draft);
+                } catch(e){}
+            }
             document.getElementById('order-status-badge').textContent = 'CHƯA CÓ ĐƠN';
             document.getElementById('order-status-badge').className = 'px-2 py-0.5 rounded-full text-[10px] bg-slate-100 font-bold';
-            switchTab('menu');
+            if (autoSwitch) switchTab('menu');
         }
         updateOrderUI();
     } catch (e) {
@@ -282,6 +302,14 @@ function updateQuantity(itemId, change) {
 }
 
 function updateOrderUI() {
+    if (currentTable) {
+        if (!activeOrderId && orderItems.length > 0) {
+            localStorage.setItem(`draft_pos_${currentTable.ma_ban}`, JSON.stringify(orderItems));
+        } else if (!activeOrderId && orderItems.length === 0) {
+            localStorage.removeItem(`draft_pos_${currentTable.ma_ban}`);
+        }
+    }
+
     const container = document.getElementById('order-items');
     if (orderItems.length === 0) {
         container.innerHTML = `<div class="flex flex-col items-center justify-center h-full opacity-30"><i class="fas fa-shopping-basket text-6xl mb-4"></i><p class="font-bold">Đơn hàng trống</p></div>`;
@@ -370,6 +398,7 @@ async function saveOrder() {
         const data = await res.json();
         if (data.success) {
             activeOrderId = data.data.orderId;
+            localStorage.removeItem(`draft_pos_${currentTable.ma_ban}`);
             showKitchenTicket(); // Trigger printing ticket
             await loadInitialData(); // Refresh table status
             await loadTableOrder(currentTable.ma_ban);
@@ -544,6 +573,10 @@ function closeBill() {
     document.getElementById('billModal').classList.add('hidden');
     document.getElementById('billModal').classList.remove('flex');
     // Reset state after checkout
+    if (currentTable) {
+        localStorage.removeItem(`draft_pos_${currentTable.ma_ban}`);
+        localStorage.removeItem('pos_current_table_id');
+    }
     currentTable = null;
     orderItems = [];
     activeOrderId = null;

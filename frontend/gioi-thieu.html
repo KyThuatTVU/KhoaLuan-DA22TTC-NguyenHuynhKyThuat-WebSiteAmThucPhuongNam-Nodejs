@@ -1199,19 +1199,19 @@
     <!-- Chatbot Container -->
     <div id="chatbot-container"></div>
 
-    <!-- Scroll to Top Button -->
-    <button id="scroll-to-top" 
-        class="fixed bottom-32 right-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
+    <!-- Back to Top Button -->
+    <button id="back-to-top" 
+        class="fixed bottom-4 left-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white w-14 h-14 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center border-2 border-white opacity-0 invisible transition-all duration-300 hover:scale-110"
         style="z-index: 99999 !important;"
-        aria-label="Scroll to top">
+        aria-label="Back to top">
         <i class="fas fa-arrow-up text-xl"></i>
     </button>
 
     <style>
         @media (max-width: 640px) {
-            #scroll-to-top {
-                bottom: 8rem !important;
-                right: 1rem !important;
+            #back-to-top {
+                bottom: 1.5rem !important;
+                left: 1rem !important;
                 width: 3rem !important;
                 height: 3rem !important;
             }
@@ -1225,7 +1225,7 @@
     <script>
         // Scroll to Top functionality
         (function() {
-            const scrollBtn = document.getElementById('scroll-to-top');
+            const scrollBtn = document.getElementById('back-to-top');
             
             if (!scrollBtn) {
                 console.error('Scroll button not found!');

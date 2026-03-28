@@ -4,7 +4,7 @@ const API_URL = window.API_URL || 'http://localhost:3000/api';
 // Show payment QR modal for reservation
 async function showReservationPaymentQR(maDatBan) {
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         if (!token) {
             showNotification('Vui lòng đăng nhập', 'error');
             return;
@@ -141,7 +141,7 @@ function startReservationPaymentTimer(expiryTime, maDatBan) {
             
             // Gọi API hủy thanh toán do hết hạn
             try {
-                const token = localStorage.getItem('token');
+                const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
                 await fetch(`${API_URL}/reservation-payment/cancel-payment`, {
                     method: 'POST',
                     headers: {
@@ -178,7 +178,7 @@ function startReservationPaymentTimer(expiryTime, maDatBan) {
 // Confirm reservation payment
 async function confirmReservationPayment(maDatBan) {
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const response = await fetch(`${API_URL}/reservation-payment/confirm-payment`, {
             method: 'POST',
             headers: {
@@ -219,7 +219,7 @@ async function closeReservationPaymentModal() {
     // Gọi API hủy thanh toán nếu người dùng đóng modal
     if (currentPaymentMaDatBan) {
         try {
-            const token = localStorage.getItem('token');
+            const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
             await fetch(`${API_URL}/reservation-payment/cancel-payment`, {
                 method: 'POST',
                 headers: {

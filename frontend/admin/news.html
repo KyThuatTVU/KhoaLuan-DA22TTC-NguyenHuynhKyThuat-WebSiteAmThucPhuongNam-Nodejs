@@ -136,7 +136,7 @@
                 <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="news-form" class="p-6 space-y-4">
-                <input type="hidden" id="news-id">
+                <input type="hidden" id="news-id" class="no-draft">
                 <div><label class="block text-sm font-medium text-slate-700 mb-2">Tiêu đề *</label><input type="text" id="tieu_de" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-sm font-medium text-slate-700 mb-2">Tóm tắt</label><textarea id="tom_tat" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></textarea></div>
@@ -154,8 +154,14 @@
 
     <script src="admin-layout.js"></script>
     <script src="admin-mobile.js"></script>
+    <script src="../js/form-draft-manager.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('news-id').classList.add('no-draft');
+            window.newsDraftManager = new FormDraftManager('news-form');
+        });
+
         // API_URL đã được khai báo trong admin-layout.js
         let newsList = [];
 
@@ -178,6 +184,7 @@
                 console.log('News data:', data);
                 newsList = data.data || [];
                 renderNews(newsList);
+                restoreUiState();
             } catch (error) {
                 console.error('Error loading news:', error);
                 document.getElementById('news-container').innerHTML = `<div class="text-center py-12"><i class="fas fa-exclamation-circle text-4xl text-red-400 mb-4"></i><p class="text-slate-500">Không thể tải dữ liệu: ${error.message}</p></div>`;
@@ -218,19 +225,56 @@
             `).join('');
         }
 
-        function openAddModal() { document.getElementById('modal-title').textContent = 'Thêm bài viết mới'; document.getElementById('news-form').reset(); document.getElementById('news-id').value = ''; document.getElementById('news-modal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('news-modal').classList.add('hidden'); }
+        function restoreUiState() {
+            const stateStr = sessionStorage.getItem('adminUiState_news');
+            if (stateStr) {
+                try {
+                    const state = JSON.parse(stateStr);
+                    if (state.action === 'add') openAddModal(true);
+                    else if (state.action === 'edit' && state.id) editNews(state.id, true);
+                } catch (e) {}
+            }
+        }
 
-        async function editNews(id) {
+        function openAddModal(isAutoOpen = false) { 
+            document.getElementById('modal-title').textContent = 'Thêm bài viết mới'; 
+            document.getElementById('news-form').reset(); 
+            if (window.newsDraftManager) {
+                window.newsDraftManager.setContext('new');
+                if (window.newsDraftManager.hasDraft()) window.newsDraftManager.restore();
+            }
+            document.getElementById('news-id').value = ''; 
+            document.getElementById('news-modal').classList.remove('hidden'); 
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'add' }));
+        }
+
+        function closeModal() { 
+            document.getElementById('news-modal').classList.add('hidden'); 
+            sessionStorage.removeItem('adminUiState_news');
+        }
+
+        async function editNews(id, isAutoOpen = false) {
             const news = newsList.find(n => n.ma_tin_tuc === id);
-            if (!news) return;
+            if (!news) {
+                sessionStorage.removeItem('adminUiState_news');
+                return;
+            }
             document.getElementById('modal-title').textContent = 'Chỉnh sửa bài viết';
             document.getElementById('news-id').value = news.ma_tin_tuc;
+            
+            if (window.newsDraftManager) window.newsDraftManager.setContext(id);
+            
             document.getElementById('tieu_de').value = news.tieu_de || '';
             document.getElementById('tom_tat').value = news.tom_tat || '';
             document.getElementById('noi_dung').value = news.noi_dung || '';
             document.getElementById('trang_thai').value = news.trang_thai != null ? news.trang_thai : 1;
             document.getElementById('news-modal').classList.remove('hidden');
+
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'edit', id: id }));
+            
+            if (window.newsDraftManager && window.newsDraftManager.hasDraft()) {
+                window.newsDraftManager.restore();
+            }
         }
 
         async function deleteNews(id) {
@@ -254,7 +298,12 @@
             try {
                 const url = id ? `${API_URL}/news/${id}` : `${API_URL}/news`;
                 const response = await fetch(url, { method: id ? 'PUT' : 'POST', body: formData, credentials: 'include' });
-                if (response.ok) { alert(id ? 'Cập nhật thành công!' : 'Thêm mới thành công!'); closeModal(); loadNews(); } else { alert('Có lỗi xảy ra!'); }
+                if (response.ok) { 
+                    if (window.newsDraftManager) window.newsDraftManager.clear();
+                    alert(id ? 'Cập nhật thành công!' : 'Thêm mới thành công!'); 
+                    closeModal(); 
+                    loadNews(); 
+                } else { alert('Có lỗi xảy ra!'); }
             } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
         });
 

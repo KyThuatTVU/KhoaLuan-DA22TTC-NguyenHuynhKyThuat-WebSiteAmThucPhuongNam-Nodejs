@@ -627,6 +627,60 @@ CREATE TABLE IF NOT EXISTS `cong_thuc` (
   UNIQUE KEY `unique_mon_nguyen_lieu` (`ma_mon`, `ma_nguyen_lieu`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 1. Bảng nha_cung_cap
+CREATE TABLE IF NOT EXISTS `nha_cung_cap` (
+  `ma_nha_cung_cap` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `ten_nha_cung_cap` varchar(255) NOT NULL,
+  `so_dien_thoai` varchar(20),
+  `dia_chi` text,
+  `ghi_chu` text,
+  `ngay_tao` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Cập nhật bảng nguyen_lieu để quản lý giá và nhà cung cấp
+-- 2. Thủ tục kiểm tra và thêm cột nếu chưa tồn tại
+DELIMITER //
+
+CREATE PROCEDURE AddColumnsIfNotExist()
+BEGIN
+    -- Kiểm tra cột ma_nha_cung_cap
+    IF NOT EXISTS (
+        SELECT * FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = DATABASE() 
+        AND TABLE_NAME = 'nguyen_lieu' 
+        AND COLUMN_NAME = 'ma_nha_cung_cap'
+    ) THEN
+        ALTER TABLE `nguyen_lieu` ADD COLUMN `ma_nha_cung_cap` int DEFAULT NULL;
+        ALTER TABLE `nguyen_lieu` ADD CONSTRAINT `fk_nguyen_lieu_ncc` 
+            FOREIGN KEY (`ma_nha_cung_cap`) REFERENCES `nha_cung_cap` (`ma_nha_cung_cap`) ON DELETE SET NULL;
+    END IF;
+
+    -- Kiểm tra cột gia_nhap_gan_nhat
+    IF NOT EXISTS (
+        SELECT * FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = DATABASE() 
+        AND TABLE_NAME = 'nguyen_lieu' 
+        AND COLUMN_NAME = 'gia_nhap_gan_nhat'
+    ) THEN
+        ALTER TABLE `nguyen_lieu` ADD COLUMN `gia_nhap_gan_nhat` decimal(12, 2) DEFAULT 0;
+    END IF;
+END //
+
+DELIMITER ;
+
+-- Chạy thủ tục
+CALL AddColumnsIfNotExist();
+
+-- Xóa thủ tục sau khi chạy
+DROP PROCEDURE IF EXISTS AddColumnsIfNotExist;
+
+-- 3. Chèn dữ liệu mẫu nhà cung cấp
+INSERT IGNORE INTO `nha_cung_cap` (`ten_nha_cung_cap`, `so_dien_thoai`, `dia_chi`, `ghi_chu`) VALUES
+('Đại lý Thực phẩm Sạch Việt', '0901234567', '123 Đường ABC, Q1, TP.HCM', 'Cung cấp sườn, tôm, thịt'),
+('Công ty Nông sản Xanh', '0987654321', '456 Đường XYZ, Q.Bình Tân, TP.HCM', 'Cung cấp bún, gạo, rau'),
+('Nhà phân phối Cà phê Cao Nguyên', '0912345678', '789 Đường LMN, Q3, TP.HCM', 'Cung cấp cà phê rang xay');
+
+
 -- Chèn dữ liệu mẫu cho nguyên liệu
 INSERT IGNORE INTO `nguyen_lieu` (`ma_nguyen_lieu`, `ten_nguyen_lieu`, `so_luong_ton`, `don_vi_tinh`, `muc_canh_bao`) VALUES
 (1, 'Sườn non', 50000.00, 'gram', 5000.00),

@@ -352,7 +352,7 @@ function showError(message) {
 // Load comments for news
 async function loadComments(newsId) {
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const headers = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -592,7 +592,7 @@ async function submitReply(commentId) {
         return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
     if (!token) {
         alert('Vui lòng đăng nhập để trả lời');
         return;
@@ -627,7 +627,7 @@ async function submitReply(commentId) {
 
 // React to comment
 async function reactToComment(commentId, reactionType) {
-    const token = localStorage.getItem('token');
+    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
     if (!token) {
         alert('Vui lòng đăng nhập để thả cảm xúc');
         return;
@@ -820,7 +820,7 @@ async function submitComment(event) {
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang gửi...';
 
         // Lấy token từ localStorage
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const headers = {
             'Content-Type': 'application/json'
         };
@@ -866,7 +866,7 @@ async function setupCommentForm() {
         console.log('🔍 Checking login status...');
         
         // Lấy token từ localStorage
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const headers = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -1087,7 +1087,7 @@ async function toggleReaction(reactionType) {
 
     try {
         // Lấy token từ localStorage
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         console.log('🔑 Token:', token ? 'exists' : 'not found');
         
         const headers = {

@@ -26,7 +26,7 @@
                     <div class="space-y-1">
                         <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
                         <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
-                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
+                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl active"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
                         <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
                         <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
                         <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
@@ -151,7 +151,7 @@
                 <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="ingredient-form" class="p-6 space-y-4">
-                <input type="hidden" id="ingredient-id">
+                <input type="hidden" id="ingredient-id" class="no-draft">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Tên nguyên liệu *</label>
                     <input type="text" id="ten_nguyen_lieu" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
@@ -225,11 +225,11 @@
                 <button onclick="closeAddStockModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="add-stock-form" class="p-6 space-y-4">
-                <input type="hidden" id="stock-ingredient-id">
+                <input type="hidden" id="stock-ingredient-id" class="no-draft">
                 <p id="stock-ingredient-name" class="font-bold text-center text-lg text-slate-800"></p>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Số lượng nhập thêm (<span id="stock-unit"></span>) *</label>
-                    <input type="number" id="stock-amount" required min="1" placeholder="Nhập số lượng..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-center text-xl focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-600">
+                    <input type="number" id="stock-amount" required min="1" placeholder="Nhập số lượng..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-center text-xl focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-600 no-draft">
                     <p class="text-xs text-slate-500 mt-2 text-center">Hệ thống sẽ cộng thêm <span class="font-bold text-emerald-600" id="stock-hint">0</span> <span id="stock-base-unit"></span> vào tồn kho<br>(<span id="stock-rate-calc">Quy đổi: 1 đơn vị nhập = x đơn vị xuất</span>).</p>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
@@ -241,7 +241,12 @@
     </div>
 
     <script src="admin-layout.js"></script>
+    <script src="../js/form-draft-manager.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ingredientDraftManager = new FormDraftManager('ingredient-form');
+        });
+
         // Các đơn vị đếm nguyên (trái, cái, bịch...) -> hiển thị số nguyên
         const INTEGER_UNITS = ['cai', 'bich', 'trai', 'qua', 'thung', 'hop', 'bao', 'chai', 'lon', 'goi', 'cay', 'bo', 'mieng', 'lat', 'khuc'];
 
@@ -260,12 +265,25 @@
 
         let ingredients = [];
 
+        function restoreUiState() {
+            const stateStr = sessionStorage.getItem('adminUiState_nguyen_lieu');
+            if (stateStr) {
+                try {
+                    const state = JSON.parse(stateStr);
+                    if (state.action === 'add') openAddModal(true);
+                    else if (state.action === 'edit' && state.id) editIngredient(state.id, true);
+                    else if (state.action === 'stock' && state.id) openAddStockModal(state.id, true);
+                } catch (e) {}
+            }
+        }
+
         async function loadIngredients() {
             try {
                 const response = await fetch(`${API_URL}/inventory`, { credentials: 'include' });
                 const data = await response.json();
                 ingredients = data.data || [];
                 renderIngredients(ingredients);
+                restoreUiState();
             } catch (error) {
                 console.error('Error loading inventory:', error);
                 document.getElementById('ingredients-container').innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Lỗi kết nối đến máy chủ!</td></tr>`;
@@ -320,9 +338,15 @@
             renderIngredients(filtered);
         }
 
-        function openAddModal() {
+        function openAddModal(isAutoOpen = false) {
             document.getElementById('modal-title').textContent = 'Thêm nguyên liệu mới';
             document.getElementById('ingredient-form').reset();
+            
+            if (window.ingredientDraftManager) {
+                window.ingredientDraftManager.setContext('new');
+                if (window.ingredientDraftManager.hasDraft()) window.ingredientDraftManager.restore();
+            }
+            
             document.getElementById('ingredient-id').value = '';
             document.getElementById('so-luong-group').classList.remove('hidden');
             document.getElementById('ti_le_chuyen_doi').dataset.manualOverride = 'false';
@@ -338,17 +362,26 @@
             document.getElementById('ingredient-modal').classList.remove('hidden');
             updateFormStepByUnit();
             if (typeof updateConversionRateLogic === 'function') updateConversionRateLogic();
+
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_nguyen_lieu', JSON.stringify({ action: 'add' }));
         }
 
         function closeModal() {
             document.getElementById('ingredient-modal').classList.add('hidden');
+            sessionStorage.removeItem('adminUiState_nguyen_lieu');
         }
 
-        function editIngredient(id) {
+        function editIngredient(id, isAutoOpen = false) {
             const item = ingredients.find(i => i.ma_nguyen_lieu === id);
-            if (!item) return;
+            if (!item) {
+                sessionStorage.removeItem('adminUiState_nguyen_lieu');
+                return;
+            }
             document.getElementById('modal-title').textContent = 'Chỉnh sửa nguyên liệu';
             document.getElementById('ingredient-id').value = item.ma_nguyen_lieu;
+            
+            if (window.ingredientDraftManager) window.ingredientDraftManager.setContext(id);
+            
             document.getElementById('ten_nguyen_lieu').value = item.ten_nguyen_lieu;
             document.getElementById('don_vi_tinh').value = item.don_vi_tinh;
             
@@ -382,6 +415,12 @@
             document.getElementById('ingredient-modal').classList.remove('hidden');
             updateFormStepByUnit();
             if (typeof updateConversionRateLogic === 'function') updateConversionRateLogic();
+
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_nguyen_lieu', JSON.stringify({ action: 'edit', id: id }));
+            
+            if (window.ingredientDraftManager && window.ingredientDraftManager.hasDraft()) {
+                window.ingredientDraftManager.restore();
+            }
         }
 
         // Cập nhật step cho input số lượng dựa trên đơn vị
@@ -525,6 +564,7 @@
                 });
                 const resData = await response.json();
                 if(resData.success) {
+                    if (window.ingredientDraftManager) window.ingredientDraftManager.clear();
                     alert('Lưu thành công!');
                     closeModal();
                     loadIngredients();
@@ -539,9 +579,12 @@
         // Add Stock Modal Handling
         let currentSelectedRate = 1;
 
-        function openAddStockModal(id) {
+        function openAddStockModal(id, isAutoOpen = false) {
             const item = ingredients.find(i => i.ma_nguyen_lieu === id);
-            if (!item) return;
+            if (!item) {
+                sessionStorage.removeItem('adminUiState_nguyen_lieu');
+                return;
+            }
             document.getElementById('stock-ingredient-id').value = id;
             document.getElementById('stock-ingredient-name').textContent = item.ten_nguyen_lieu;
             
@@ -557,6 +600,8 @@
             document.getElementById('stock-amount').value = '';
             document.getElementById('add-stock-modal').classList.remove('hidden');
             setTimeout(() => document.getElementById('stock-amount').focus(), 100);
+
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_nguyen_lieu', JSON.stringify({ action: 'stock', id: id }));
         }
 
         document.getElementById('stock-amount').addEventListener('input', (e) => {
@@ -568,6 +613,7 @@
 
         function closeAddStockModal() {
             document.getElementById('add-stock-modal').classList.add('hidden');
+            sessionStorage.removeItem('adminUiState_nguyen_lieu');
         }
 
         document.getElementById('add-stock-form').addEventListener('submit', async (e) => {

@@ -496,7 +496,7 @@ let selectedRating = 0;
 // Fetch reviews for product
 async function fetchReviews() {
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const headers = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -680,7 +680,7 @@ function formatDate(dateStr) {
 // Check if user can review (chỉ cho phép khi đã mua sản phẩm)
 async function checkCanReview() {
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const headers = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
@@ -748,7 +748,7 @@ function setupReviewForm() {
         const imageInput = document.getElementById('review-images');
         
         try {
-            const token = localStorage.getItem('token');
+            const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
             
             // Sử dụng FormData để gửi cả ảnh
             const formData = new FormData();
@@ -865,7 +865,7 @@ async function submitEditReview(reviewId) {
     }
     
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const response = await fetch(`${window.API_URL}/reviews/${reviewId}`, {
             method: 'PUT',
             headers: {
@@ -895,7 +895,7 @@ async function deleteReview(reviewId) {
     if (!confirm('Bạn có chắc muốn xóa bình luận này?')) return;
     
     try {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         const response = await fetch(`${window.API_URL}/reviews/${reviewId}`, {
             method: 'DELETE',
             headers: {

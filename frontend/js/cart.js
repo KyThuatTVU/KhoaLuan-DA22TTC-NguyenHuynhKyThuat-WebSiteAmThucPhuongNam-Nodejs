@@ -32,7 +32,7 @@ class CartManager {
 
     // Get authentication token
     getToken() {
-        return localStorage.getItem('token') || sessionStorage.getItem('token');
+        return (localStorage.getItem('token') || sessionStorage.getItem('token')) || sessionStorage.getItem('token');
     }
 
     // Check if user is authenticated
@@ -369,7 +369,7 @@ class CartManager {
     // Save cart to localStorage for persistence (only when authenticated)
     saveCartToStorage() {
         if (this.isAuthenticated()) {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
             const userId = user.ma_nguoi_dung;
             if (userId) {
                 const cartKey = `cart_${userId}`;
@@ -381,7 +381,7 @@ class CartManager {
     // Load cart from localStorage (only when authenticated)
     loadCartFromStorage() {
         if (this.isAuthenticated()) {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
             const userId = user.ma_nguoi_dung;
             if (userId) {
                 const cartKey = `cart_${userId}`;
@@ -404,7 +404,7 @@ class CartManager {
     // Clear cart from localStorage for current user
     clearCartFromStorage() {
         if (this.isAuthenticated()) {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
             const userId = user.ma_nguoi_dung;
             if (userId) {
                 const cartKey = `cart_${userId}`;

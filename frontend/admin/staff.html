@@ -182,7 +182,7 @@
             </div>
             <div class="modal-body">
                 <form id="staffForm">
-                    <input type="hidden" id="staff-id">
+                    <input type="hidden" id="staff-id" class="no-draft">
                     
                     <div class="form-group">
                         <label class="form-label">Tên nhân viên <span class="text-red-500">*</span></label>
@@ -196,7 +196,7 @@
 
                     <div class="form-group" id="password-group">
                         <label class="form-label">Mật khẩu <span class="text-red-500">*</span></label>
-                        <input type="password" id="staff-password" class="form-input" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" required>
+                        <input type="password" id="staff-password" class="form-input no-draft" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" required>
                     </div>
 
                     <div class="form-group">
@@ -244,16 +244,16 @@
             </div>
             <div class="modal-body">
                 <form id="passwordForm">
-                    <input type="hidden" id="password-staff-id">
+                    <input type="hidden" id="password-staff-id" class="no-draft">
                     
                     <div class="form-group">
                         <label class="form-label">Mật khẩu mới <span class="text-red-500">*</span></label>
-                        <input type="password" id="new-password" class="form-input" placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)" required>
+                        <input type="password" id="new-password" class="form-input no-draft" placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Xác nhận mật khẩu <span class="text-red-500">*</span></label>
-                        <input type="password" id="confirm-password" class="form-input" placeholder="Nhập lại mật khẩu mới" required>
+                        <input type="password" id="confirm-password" class="form-input no-draft" placeholder="Nhập lại mật khẩu mới" required>
                     </div>
 
                     <div class="flex justify-end space-x-3 mt-6">
@@ -271,9 +271,25 @@
 
     <script src="check-auth.js"></script>
     <script src="admin-layout.js"></script>
+    <script src="../js/form-draft-manager.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.staffDraftManager = new FormDraftManager('staffForm');
+        });
+
         const STAFF_API_URL = 'http://localhost:3000/api/staff';
         let isEditMode = false;
+
+        function restoreUiState() {
+            const stateStr = sessionStorage.getItem('adminUiState_staff');
+            if (stateStr) {
+                try {
+                    const state = JSON.parse(stateStr);
+                    if (state.action === 'add') openAddModal(true);
+                    else if (state.action === 'edit' && state.id) openEditModal(state.id, true);
+                } catch (e) {}
+            }
+        }
 
         // Load staff list
         async function loadStaff() {
@@ -283,6 +299,7 @@
                 
                 if (result.success) {
                     displayStaff(result.data);
+                    restoreUiState();
                 } else {
                     showError('Không thể tải danh sách nhân viên');
                 }
@@ -343,19 +360,27 @@
         }
 
         // Open add modal
-        function openAddModal() {
+        function openAddModal(isAutoOpen = false) {
             isEditMode = false;
             document.getElementById('modal-title').textContent = 'Thêm nhân viên mới';
             document.getElementById('staffForm').reset();
+            
+            if (window.staffDraftManager) {
+                window.staffDraftManager.setContext('new');
+                if (window.staffDraftManager.hasDraft()) window.staffDraftManager.restore();
+            }
+
             document.getElementById('staff-id').value = '';
             document.getElementById('staff-username').disabled = false;
             document.getElementById('password-group').style.display = 'block';
             document.getElementById('staff-password').required = true;
             document.getElementById('staffModal').style.display = 'block';
+
+            if (!isAutoOpen) sessionStorage.setItem('adminUiState_staff', JSON.stringify({ action: 'add' }));
         }
 
         // Open edit modal
-        async function openEditModal(id) {
+        async function openEditModal(id, isAutoOpen = false) {
             isEditMode = true;
             document.getElementById('modal-title').textContent = 'Chỉnh sửa nhân viên';
             
@@ -366,6 +391,9 @@
                 
                 if (staff) {
                     document.getElementById('staff-id').value = staff.ma_nhan_vien;
+                    
+                    if (window.staffDraftManager) window.staffDraftManager.setContext(id);
+                    
                     document.getElementById('staff-name').value = staff.ten_nhan_vien;
                     document.getElementById('staff-username').value = staff.tai_khoan;
                     document.getElementById('staff-username').disabled = true;
@@ -375,6 +403,14 @@
                     document.getElementById('password-group').style.display = 'none';
                     document.getElementById('staff-password').required = false;
                     document.getElementById('staffModal').style.display = 'block';
+
+                    if (!isAutoOpen) sessionStorage.setItem('adminUiState_staff', JSON.stringify({ action: 'edit', id: id }));
+                    
+                    if (window.staffDraftManager && window.staffDraftManager.hasDraft()) {
+                        window.staffDraftManager.restore();
+                    }
+                } else {
+                    sessionStorage.removeItem('adminUiState_staff');
                 }
             } catch (error) {
                 console.error('Error loading staff:', error);
@@ -385,6 +421,7 @@
         // Close modal
         function closeModal() {
             document.getElementById('staffModal').style.display = 'none';
+            sessionStorage.removeItem('adminUiState_staff');
         }
 
         // Handle form submit
@@ -417,6 +454,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
+                    if (window.staffDraftManager) window.staffDraftManager.clear();
                     showSuccess(result.message);
                     closeModal();
                     loadStaff();

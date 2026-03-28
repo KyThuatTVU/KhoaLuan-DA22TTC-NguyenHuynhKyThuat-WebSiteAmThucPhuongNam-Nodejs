@@ -271,10 +271,16 @@
                 </div>
 
                 <!-- Section Header -->
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                     <div>
                         <h3 class="text-xl font-800 text-slate-800">Sơ đồ bàn ăn</h3>
                         <p class="text-sm text-slate-500 font-medium">Click vào bàn để chỉnh sửa thông tin</p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white px-4 py-2 border border-slate-200 rounded-xl shadow-sm">
+                        <label class="text-sm font-bold text-slate-600 whitespace-nowrap"><i class="fas fa-filter text-blue-500 mr-1"></i>Khu vực:</label>
+                        <select id="area-filter" class="bg-transparent border-none text-sm font-semibold text-slate-700 outline-none cursor-pointer pr-4" onchange="filterManagementTables()">
+                            <option value="all">Tất cả khu vực</option>
+                        </select>
                     </div>
                 </div>
 
@@ -353,6 +359,8 @@
     <script>
         const TABLE_API_URL = 'http://localhost:3000/api/tables';
         let isEditMode = false;
+        let allManagementTables = [];
+        let currentAreaFilter = 'all';
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -376,13 +384,73 @@
                 const response = await fetch(TABLE_API_URL);
                 const result = await response.json();
                 if (result.success) {
-                    displayTables(result.data);
-                    updateKPI(result.data);
+                    allManagementTables = result.data;
+                    updateAreaFilterOptions(result.data);
+                    
+                    const filtered = currentAreaFilter === 'all' 
+                        ? result.data 
+                        : result.data.filter(t => (t.vi_tri || 'Khu chung') === currentAreaFilter);
+                        
+                    displayTables(filtered);
+                    updateKPI(filtered);
                 }
             } catch (error) {
                 console.error('Error loading tables:', error);
                 showToast('Không thể kết nối server', 'error');
             }
+        }
+
+        function updateAreaFilterOptions(tableList) {
+            const select = document.getElementById('area-filter');
+            const areas = [...new Set(tableList.map(t => t.vi_tri || 'Khu chung'))];
+            const currentVal = select.value;
+            
+            select.innerHTML = '<option value="all">Tất cả khu vực</option>' + 
+                areas.map(area => `<option value="${area}">${area}</option>`).join('');
+                
+            if (areas.includes(currentVal) || currentVal === 'all') {
+                select.value = currentVal;
+            } else {
+                currentAreaFilter = 'all';
+                select.value = 'all';
+            }
+        }
+
+        function filterManagementTables() {
+            currentAreaFilter = document.getElementById('area-filter').value;
+            let filtered = allManagementTables;
+            if (currentAreaFilter !== 'all') {
+                filtered = allManagementTables.filter(t => (t.vi_tri || 'Khu chung') === currentAreaFilter);
+            }
+            displayTables(filtered);
+            updateKPI(filtered);
+        }
+
+        function updateAreaFilterOptions(tableList) {
+            const select = document.getElementById('area-filter');
+            if(!select) return;
+            const areas = [...new Set(tableList.map(t => t.vi_tri || 'Khu chung'))];
+            const currentVal = select.value;
+            
+            select.innerHTML = '<option value="all">Tất cả khu vực</option>' + 
+                areas.map(area => `<option value="${area}">${area}</option>`).join('');
+                
+            if (areas.includes(currentVal) || currentVal === 'all') {
+                select.value = currentVal;
+            } else {
+                currentAreaFilter = 'all';
+                select.value = 'all';
+            }
+        }
+
+        function filterManagementTables() {
+            currentAreaFilter = document.getElementById('area-filter').value;
+            let filtered = allManagementTables;
+            if (currentAreaFilter !== 'all') {
+                filtered = allManagementTables.filter(t => (t.vi_tri || 'Khu chung') === currentAreaFilter);
+            }
+            displayTables(filtered);
+            updateKPI(filtered);
         }
 
         function displayTables(tableList) {

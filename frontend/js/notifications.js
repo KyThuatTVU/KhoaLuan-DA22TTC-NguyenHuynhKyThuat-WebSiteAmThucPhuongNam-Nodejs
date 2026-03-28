@@ -6,7 +6,7 @@ const NotificationManager = {
     // Khởi tạo
     init() {
         console.log('🔔 NotificationManager.init() called');
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         console.log('🔔 Token exists:', !!token);
         
         if (!token) {
@@ -107,7 +107,7 @@ const NotificationManager = {
     
     // Lấy headers với token
     getHeaders() {
-        const token = localStorage.getItem('token');
+        const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
         return {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

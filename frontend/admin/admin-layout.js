@@ -290,21 +290,40 @@ function applyRBAC(adminUser) {
 
 // Set active nav link
 function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop().split('?')[0];
-    // Fix: the HTML uses .sidebar-item not .nav-link
+    const path = window.location.pathname;
+    const currentPage = path.split('/').pop().split('?')[0] || 'dashboard.html';
+    
+    console.log(`📍 Current Page identified: ${currentPage}`);
+
     const navLinks = document.querySelectorAll('.sidebar-item, .nav-link');
 
     navLinks.forEach(link => {
-        const linkPage = link.getAttribute('href');
-        // Match base logic for POS pages also
-        if (linkPage === currentPage || (currentPage.includes('admin-pos') && linkPage.includes('admin-pos'))) {
-            // Apply active styles to generic theme items
-            link.classList.remove('text-slate-500');
-            link.classList.add('active'); // active comes with css styling
+        const href = link.getAttribute('href');
+        if (!href) return;
+        
+        // Extract filename from href for comparison
+        const linkPage = href.split('/').pop().split('?')[0];
+        
+        // Match if direct filename match OR related POS pages OR root path to dashboard
+        const isMatch = (linkPage === currentPage) || 
+                        (currentPage.includes('admin-pos') && linkPage.includes('admin-pos')) ||
+                        (currentPage === '' && linkPage === 'dashboard.html');
+
+        if (isMatch) {
+            link.classList.add('active');
+            link.classList.remove('text-slate-500'); // Ensure it stands out
+            console.log(`✅ Active link set: ${linkPage} (matches ${currentPage})`);
         } else {
+            // Only remove if it's not a sub-match to avoid flickering during loads
             link.classList.remove('active');
         }
     });
+
+    // Special fix for POS if not found in list (e.g. injected menu)
+    if (currentPage.includes('admin-pos')) {
+        const posMenu = document.querySelector('.menu-pos');
+        if (posMenu) posMenu.classList.add('active');
+    }
 }
 
 // Initialize admin layout - with delay to ensure DOM is ready

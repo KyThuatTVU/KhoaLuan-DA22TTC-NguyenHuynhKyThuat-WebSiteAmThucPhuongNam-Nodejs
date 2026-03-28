@@ -152,7 +152,7 @@
         if (!backToTopBtn && window.innerWidth < 1024) {
             backToTopBtn = document.createElement('button');
             backToTopBtn.id = 'back-to-top';
-            backToTopBtn.className = 'fixed bottom-20 right-4 bg-orange-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-orange-700 transition-all opacity-0 pointer-events-none z-40 flex items-center justify-center';
+            backToTopBtn.className = 'fixed bottom-4 left-4 bg-orange-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-orange-700 transition-all opacity-0 pointer-events-none z-[9999] flex items-center justify-center';
             backToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
             backToTopBtn.setAttribute('aria-label', 'Về đầu trang');
             document.body.appendChild(backToTopBtn);

@@ -6,7 +6,7 @@ let appliedPromo = null;
 
 // Get authentication token
 function getToken() {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    return (localStorage.getItem('token') || sessionStorage.getItem('token')) || sessionStorage.getItem('token');
 }
 
 // Check if user is authenticated
@@ -429,7 +429,7 @@ async function submitOrder(event) {
 
                 // Xóa localStorage cart backup
                 localStorage.removeItem('cart');
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
                 if (user.ma_nguoi_dung) {
                     localStorage.removeItem(`cart_${user.ma_nguoi_dung}`);
                 }
@@ -462,7 +462,7 @@ async function submitOrder(event) {
 
 // Prefill user information
 async function prefillUserInfo() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
     const lastShipping = getLastShippingAddress();
     
     console.log('📋 Prefilling user info:', user);
@@ -731,7 +731,7 @@ async function findAndSelectAddressFromText(addressText) {
 
 // Lưu địa chỉ giao hàng cuối cùng để prefill lần sau
 function saveLastShippingAddress(orderData) {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
     if (!user.ma_nguoi_dung) return;
 
     const shippingAddress = {
@@ -750,7 +750,7 @@ function saveLastShippingAddress(orderData) {
 
 // Lấy địa chỉ giao hàng đã lưu
 function getLastShippingAddress() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse((localStorage.getItem('user') || sessionStorage.getItem('user')) || '{}');
     if (!user.ma_nguoi_dung) return null;
 
     const saved = localStorage.getItem(`shipping_${user.ma_nguoi_dung}`);
