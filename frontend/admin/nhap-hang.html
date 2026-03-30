@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nhập Hàng - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Quản lý Nhập Hàng</h1>
+                        <p class="text-slate-500 text-sm">Ghi nhận và theo dõi lịch sử nhập nguyên liệu về kho</p>
+                    </div>
+                    <button onclick="openNewReceiptModal()" class="btn-primary">
+                        <i class="fas fa-plus mr-2"></i> Tạo Phiếu Nhập
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm theo nhà cung cấp, ghi chú..."
+                            class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Receipts Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mã Phiếu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Thời gian</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Nhà cung cấp</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Tổng tiền</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Nhân viên</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receipts-container" class="bg-white divide-y divide-slate-200">
+                            <tr>
+                                <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>Đang tải dữ liệu...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Create Receipt Modal -->
+    <div id="receipt-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-blue-700 to-blue-600 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold" id="modal-title">Tạo Phiếu Nhập Hàng Mới</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+
+            <div class="p-6 flex-1 overflow-y-auto bg-slate-50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nhà cung cấp <span class="text-red-500">*</span></label>
+                        <select id="ma_nha_cung_cap" class="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500">
+                            <option value="">-- Chọn nhà cung cấp --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ghi chú</label>
+                        <input type="text" id="ghi_chu" placeholder="Nhập ghi chú (nếu có)..." class="w-full px-4 py-2 border border-slate-200 rounded-lg">
+                    </div>
+                </div>
+
+                <div class="mb-4 flex justify-between items-center px-1">
+                    <h4 class="font-bold text-slate-800"><i class="fas fa-boxes-stacked mr-2 text-blue-500"></i>Danh sách mặt hàng nhập</h4>
+                    <div class="flex gap-2">
+                        <button onclick="openQuickIngredientModal()" class="text-emerald-600 hover:text-emerald-700 text-sm font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 transition-all flex items-center gap-1">
+                            <i class="fas fa-plus-circle"></i> Thêm NL mới
+                        </button>
+                        <select id="filter-category-modal" onchange="refreshAllRows()" class="text-slate-600 text-sm font-bold bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 outline-none focus:border-blue-500">
+                             <option value="">-- Tất cả loại --</option>
+                        </select>
+                        <button onclick="addItemRow()" class="text-blue-600 hover:text-blue-700 text-sm font-bold bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 transition-all flex items-center gap-1">
+                            <i class="fas fa-plus-circle"></i> Thêm mặt hàng
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden border border-slate-200 rounded-xl">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-slate-600 uppercase">Nguyên liệu</th>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-slate-600 uppercase w-32">Số lượng</th>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-slate-600 uppercase w-32">Đơn giá nhập</th>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-slate-600 uppercase w-32">Thành tiền</th>
+                                <th class="px-4 py-2 text-center text-xs font-bold text-slate-600 uppercase w-16"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-list" class="bg-white divide-y divide-slate-200">
+                            <!-- Dynamic rows here -->
+                        </tbody>
+                        <tfoot class="bg-slate-50">
+                            <tr>
+                                <td colspan="3" class="px-4 py-3 text-right font-bold text-slate-700">Tổng cộng:</td>
+                                <td colspan="2" class="px-4 py-3 font-bold text-blue-600 text-lg" id="total-amount">0đ</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-4 border-t bg-white flex justify-end space-x-3 rounded-b-2xl">
+                <button onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                <button onclick="saveReceipt()" class="btn-primary">Hoàn tất Nhập Hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b flex items-center justify-between bg-slate-800 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Chi tiết phiếu nhập #<span id="detail-id"></span></h3>
+                <button onclick="closeDetailModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 flex-1 overflow-y-auto" id="detail-content">
+                <!-- Content here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script>
+        let allIngredients = [];
+        let allSuppliers = [];
+        let receipts = [];
+
+        async function loadData() {
+            try {
+                // Load Ingredients
+                const resIng = await fetch(`${API_URL}/inventory`, { credentials: 'include' });
+                const dataIng = await resIng.json();
+                allIngredients = dataIng.data || [];
+
+                // Load Suppliers
+                const resSup = await fetch('/api/suppliers', { credentials: 'include' });
+                const dataSup = await resSup.json();
+                allSuppliers = dataSup.data || [];
+                renderSupplierOptions();
+
+                // Load Categories
+                const resCat = await fetch(`${API_URL}/ingredient-categories`, { credentials: 'include' });
+                const dataCat = await resCat.json();
+                const categories = dataCat.data || [];
+                const catFilter = document.getElementById('filter-category-modal');
+                catFilter.innerHTML = '<option value="">-- Tất cả loại --</option>' + 
+                    categories.map(c => `<option value="${c.ma_loai_nglieu}">${c.ten_loai_nglieu}</option>`).join('');
+
+                // Load Receipts
+                loadReceipts();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderSupplierOptions() {
+            const select = document.getElementById('ma_nha_cung_cap');
+            const options = allSuppliers.map(s => 
+                `<option value="${s.ma_nha_cung_cap}">${s.ten_nha_cung_cap}</option>`
+            ).join('');
+            select.innerHTML = '<option value="">-- Chọn nhà cung cấp --</option>' + options;
+        }
+
+        async function loadReceipts() {
+            try {
+                const res = await fetch(`${API_URL}/imports`, { credentials: 'include' });
+                const data = await res.json();
+                receipts = data.data || [];
+                renderReceipts(receipts);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderReceipts(items) {
+            const container = document.getElementById('receipts-container');
+            if (items.length === 0) {
+                container.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Chưa có phiếu nhập nào</td></tr>`;
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4 text-sm font-bold text-blue-600">#${item.ma_phieu_nhap}</td>
+                    <td class="px-6 py-4 text-sm text-slate-500">${new Date(item.thoi_gian_nhap).toLocaleString('vi-VN')}</td>
+                    <td class="px-6 py-4 font-medium text-slate-800">${item.nha_cung_cap || 'N/A'}</td>
+                    <td class="px-6 py-4 font-bold text-slate-800">${parseFloat(item.tong_tien).toLocaleString('vi-VN')}đ</td>
+                    <td class="px-6 py-4 text-sm text-slate-500">${item.ten_nhan_vien || 'Hệ thống'}</td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center gap-3">
+                            <button onclick="viewDetail(${item.ma_phieu_nhap})" class="text-blue-600 hover:text-blue-800" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editReceipt(${item.ma_phieu_nhap})" class="text-emerald-600 hover:text-emerald-800" title="Sửa phiếu">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteReceipt(${item.ma_phieu_nhap})" class="text-red-500 hover:text-red-700" title="Xóa phiếu">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        let isEditing = false;
+        let currentEditId = null;
+
+        function openNewReceiptModal() {
+            isEditing = false;
+            currentEditId = null;
+            document.getElementById('modal-title').textContent = 'Tạo Phiếu Nhập Hàng Mới';
+            document.getElementById('receipt-modal').classList.remove('hidden');
+            document.getElementById('items-list').innerHTML = '';
+            document.getElementById('ma_nha_cung_cap').value = '';
+            document.getElementById('ghi_chu').value = '';
+            addItemRow();
+        }
+
+        function openQuickIngredientModal() {
+            document.getElementById('quick-ingredient-form').reset();
+            // Populate category options in quick modal
+            const catSelect = document.getElementById('q_ma_loai_nglieu');
+            const categories = Array.from(document.getElementById('filter-category-modal').options)
+                .filter(opt => opt.value !== "")
+                .map(opt => `<option value="${opt.value}">${opt.text}</option>`);
+            catSelect.innerHTML = '<option value="">-- Chưa phân loại --</option>' + categories.join('');
+            
+            document.getElementById('quick-ingredient-modal').classList.remove('hidden');
+        }
+
+        function closeQuickIngredientModal() {
+            document.getElementById('quick-ingredient-modal').classList.add('hidden');
+        }
+
+        function addItemRow() {
+            const list = document.getElementById('items-list');
+            const row = document.createElement('tr');
+            row.className = 'item-row';
+            
+            let options = '<option value="">-- Chọn NL --</option>';
+            const currentCatId = document.getElementById('filter-category-modal').value;
+            
+            allIngredients.forEach(ing => {
+                // If filter is active, only show ingredients of that category
+                if (!currentCatId || ing.ma_loai_nglieu == currentCatId) {
+                    options += `<option value="${ing.ma_nguyen_lieu}" data-unit="${ing.don_vi_nhap || ing.don_vi_tinh}">${ing.ten_nguyen_lieu} (${ing.don_vi_nhap || ing.don_vi_tinh})</option>`;
+                }
+            });
+
+            row.innerHTML = `
+                <td class="px-4 py-2">
+                    <select class="item-id w-full px-2 py-1.5 border border-slate-200 rounded text-sm" onchange="updateRowUnit(this)">
+                        ${options}
+                    </select>
+                </td>
+                <td class="px-4 py-2 relative">
+                    <input type="number" class="item-qty w-full px-2 py-1.5 border border-slate-200 rounded text-sm pr-12" placeholder="SL..." oninput="calculateTotal()">
+                    <span class="item-unit-label absolute right-6 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400"></span>
+                </td>
+                <td class="px-4 py-2">
+                    <input type="number" class="item-price w-full px-2 py-1.5 border border-slate-200 rounded text-sm" placeholder="Giá..." oninput="calculateTotal()">
+                </td>
+                <td class="px-4 py-2 text-sm font-bold text-slate-700 row-subtotal">0đ</td>
+                <td class="px-4 py-2 text-center">
+                    <button onclick="this.closest('tr').remove(); calculateTotal()" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            list.appendChild(row);
+        }
+
+        // Cập nhật lại dropdown của tất cả các dòng (giữ nguyên lựa chọn cũ nếu còn trong danh sách)
+        function refreshAllRows() {
+            const rows = document.querySelectorAll('.item-row');
+            const currentCatId = document.getElementById('filter-category-modal').value;
+
+            rows.forEach(row => {
+                const select = row.querySelector('.item-id');
+                const currentVal = select.value;
+                
+                let options = '<option value="">-- Chọn NL --</option>';
+                allIngredients.forEach(ing => {
+                    if (!currentCatId || ing.ma_loai_nglieu == currentCatId || ing.ma_nguyen_lieu == currentVal) {
+                        options += `<option value="${ing.ma_nguyen_lieu}" data-unit="${ing.don_vi_nhap || ing.don_vi_tinh}" ${ing.ma_nguyen_lieu == currentVal ? 'selected' : ''}>${ing.ten_nguyen_lieu} (${ing.don_vi_nhap || ing.don_vi_tinh})</option>`;
+                    }
+                });
+                select.innerHTML = options;
+                updateRowUnit(select);
+            });
+        }
+
+        function updateRowUnit(select) {
+            const unit = select.options[select.selectedIndex].dataset.unit || '';
+            const row = select.closest('tr');
+            const label = row.querySelector('.item-unit-label');
+            if (label) label.textContent = unit;
+        }
+
+        function calculateTotal() {
+            const rows = document.querySelectorAll('.item-row');
+            let total = 0;
+            rows.forEach(row => {
+                const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                const subtotal = qty * price;
+                total += subtotal;
+                row.querySelector('.row-subtotal').textContent = subtotal.toLocaleString('vi-VN') + 'đ';
+            });
+            document.getElementById('total-amount').textContent = total.toLocaleString('vi-VN') + 'đ';
+        }
+
+        async function saveReceipt() {
+            const rows = document.querySelectorAll('.item-row');
+            const items = [];
+            let isValid = true;
+
+            rows.forEach(row => {
+                const id = row.querySelector('.item-id').value;
+                const qty = row.querySelector('.item-qty').value;
+                const price = row.querySelector('.item-price').value;
+
+                if (id && qty > 0 && price >= 0) {
+                    items.push({
+                        ma_nguyen_lieu: parseInt(id),
+                        so_luong_nhap: parseFloat(qty),
+                        don_gia: parseFloat(price),
+                        don_vi_nhap: row.querySelector('.item-id').options[row.querySelector('.item-id').selectedIndex].dataset.unit
+                    });
+                } else if (id || qty || price) {
+                    isValid = false;
+                }
+            });
+
+            if (items.length === 0 || !isValid) {
+                alert('Vui lòng điền đầy đủ thông tin các mặt hàng (số lượng > 0)');
+                return;
+            }
+
+            const supplierSelect = document.getElementById('ma_nha_cung_cap');
+            const data = {
+                ma_nha_cung_cap: supplierSelect.value ? parseInt(supplierSelect.value) : null,
+                nha_cung_cap: supplierSelect.options[supplierSelect.selectedIndex].text,
+                ghi_chu: document.getElementById('ghi_chu').value,
+                items: items
+            };
+
+            try {
+                const url = isEditing ? `${API_URL}/imports/${currentEditId}` : `${API_URL}/imports`;
+                const method = isEditing ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    credentials: 'include'
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert(isEditing ? 'Đã cập nhật phiếu nhập!' : 'Đã nhập hàng thành công!');
+                    closeModal();
+                    loadReceipts();
+                    if (!isEditing) await refreshIngredientDropdowns();
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi khi lưu phiếu');
+            }
+        }
+
+        async function editReceipt(id) {
+            try {
+                // Lấy thông tin chi tiết phiếu (đã có hàm getImportReceiptDetail ở backend)
+                const res = await fetch(`${API_URL}/imports/${id}`, { credentials: 'include' });
+                const result = await res.json();
+                if (!result.success) return alert(result.message);
+
+                const receipt = result.data;
+                isEditing = true;
+                currentEditId = id;
+                document.getElementById('modal-title').textContent = 'Sửa Phiếu Nhập #' + id;
+                document.getElementById('receipt-modal').classList.remove('hidden');
+                
+                // Điền thông tin chung
+                document.getElementById('ma_nha_cung_cap').value = receipt.ma_nha_cung_cap || '';
+                document.getElementById('ghi_chu').value = receipt.ghi_chu || '';
+                
+                // Điền danh sách hàng
+                const list = document.getElementById('items-list');
+                list.innerHTML = '';
+                receipt.items.forEach(item => {
+                    addItemRow();
+                    const lastRow = list.lastElementChild;
+                    const select = lastRow.querySelector('.item-id');
+                    select.value = item.ma_nguyen_lieu;
+                    lastRow.querySelector('.item-qty').value = item.so_luong_nhap;
+                    lastRow.querySelector('.item-price').value = item.don_gia;
+                    updateRowUnit(select);
+                });
+                calculateTotal();
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi khi tải thông tin phiếu để sửa');
+            }
+        }
+
+        async function deleteReceipt(id) {
+            if (!confirm('Bạn có chắc chắn muốn xóa phiếu nhập này? Hệ thống sẽ tự động trừ lại số lượng nguyên liệu trong kho.')) return;
+            
+            try {
+                const res = await fetch(`${API_URL}/imports/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Đã xóa phiếu và cập nhật kho thành công!');
+                    loadReceipts();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi khi xóa phiếu');
+            }
+        }
+
+        async function viewDetail(id) {
+            try {
+                const res = await fetch(`${API_URL}/imports/${id}`, { credentials: 'include' });
+                const result = await res.json();
+                if (result.success) {
+                    const pn = result.data;
+                    document.getElementById('detail-id').textContent = pn.ma_phieu_nhap;
+                    let html = `
+                        <div class="mb-6 grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-bold mb-1">Nhà cung cấp</p>
+                                <p class="font-bold text-slate-800">${pn.nha_cung_cap || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-bold mb-1">Thời gian</p>
+                                <p class="text-slate-800">${new Date(pn.thoi_gian_nhap).toLocaleString('vi-VN')}</p>
+                            </div>
+                            <div class="col-span-2">
+                                <p class="text-xs text-slate-500 uppercase font-bold mb-1">Ghi chú</p>
+                                <p class="text-slate-800">${pn.ghi_chu || 'Không có ghi chú'}</p>
+                            </div>
+                        </div>
+                        <h4 class="font-bold text-slate-800 mb-2">Sản phẩm đã nhập</h4>
+                        <table class="min-w-full border rounded-lg overflow-hidden">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-bold">Nguyên liệu</th>
+                                    <th class="px-4 py-2 text-right text-xs font-bold">Số lượng</th>
+                                    <th class="px-4 py-2 text-right text-xs font-bold">Đơn giá</th>
+                                    <th class="px-4 py-2 text-right text-xs font-bold">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${pn.items.map(it => `
+                                    <tr>
+                                        <td class="px-4 py-2 border-t">${it.ten_nguyen_lieu}</td>
+                                        <td class="px-4 py-2 border-t text-right">${it.so_luong_nhap} ${it.don_vi_nhap}</td>
+                                        <td class="px-4 py-2 border-t text-right">${parseFloat(it.don_gia).toLocaleString('vi-VN')}đ</td>
+                                        <td class="px-4 py-2 border-t text-right font-bold">${(it.so_luong_nhap * it.don_gia).toLocaleString('vi-VN')}đ</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                            <tfoot class="bg-blue-50">
+                                <tr>
+                                    <td colspan="3" class="px-4 py-3 text-right font-bold">Tổng cộng:</td>
+                                    <td class="px-4 py-3 text-right font-bold text-blue-600 text-lg">${parseFloat(pn.tong_tien).toLocaleString('vi-VN')}đ</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    `;
+                    document.getElementById('detail-content').innerHTML = html;
+                    document.getElementById('detail-modal').classList.remove('hidden');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        function applyFilters() {
+            const s = document.getElementById('search').value.toLowerCase();
+            const filtered = receipts.filter(r => 
+                (r.nha_cung_cap && r.nha_cung_cap.toLowerCase().includes(s)) ||
+                (r.ghi_chu && r.ghi_chu.toLowerCase().includes(s))
+            );
+            renderReceipts(filtered);
+        }
+
+
+        async function refreshIngredientDropdowns() {
+            try {
+                const res = await fetch(`${API_URL}/inventory`, { credentials: 'include' });
+                const data = await res.json();
+                if (!data.success) return;
+                
+                allIngredients = data.data || [];
+                
+                // Cập nhật tất cả thẻ select mà không mất giá trị đang chọn
+                const selects = document.querySelectorAll('.item-id');
+                selects.forEach(select => {
+                    const currentVal = select.value;
+                    let options = '<option value="">-- Chọn NL --</option>';
+                    allIngredients.forEach(ing => {
+                        options += `<option value="${ing.ma_nguyen_lieu}" data-unit="${ing.don_vi_nhap || ing.don_vi_tinh}" ${ing.ma_nguyen_lieu == currentVal ? 'selected' : ''}>${ing.ten_nguyen_lieu} (${ing.don_vi_nhap || ing.don_vi_tinh})</option>`;
+                    });
+                    select.innerHTML = options;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        function openQuickIngredientModal() {
+            document.getElementById('quick-ingredient-modal').classList.remove('hidden');
+        }
+
+        function closeQuickIngredientModal() {
+            document.getElementById('quick-ingredient-modal').classList.add('hidden');
+            document.getElementById('quick-ingredient-form').reset();
+        }
+
+        async function saveQuickIngredient(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Đang lưu...';
+            
+            const payload = {
+                ten_nguyen_lieu: document.getElementById('q_ten_nguyen_lieu').value,
+                don_vi_nhap: document.getElementById('q_don_vi_nhap').value,
+                don_vi_tinh: document.getElementById('q_don_vi_tinh').value,
+                ti_le_chuyen_doi: parseFloat(document.getElementById('q_ti_le_chuyen_doi').value) || 1,
+                muc_canh_bao: parseFloat(document.getElementById('q_muc_canh_bao').value) || 100,
+                ma_loai_nglieu: document.getElementById('q_ma_loai_nglieu').value || null,
+                so_luong_ton: 0
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/inventory`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Đã thêm nguyên liệu mới!');
+                    closeQuickIngredientModal();
+                    await refreshIngredientDropdowns();
+                } else { alert('Lỗi: ' + data.message); }
+            } catch (err) { console.error(err); alert('Lỗi máy chủ'); }
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save mr-1"></i> Lưu nguyên liệu';
+            }
+        }
+
+        loadData();
+    </script>
+
+    <!-- Modal Tạo nhanh Nguyên liệu -->
+    <div id="quick-ingredient-modal" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-200">
+            <div class="p-5 border-b flex items-center justify-between bg-gradient-to-r from-emerald-600 to-teal-500 text-white">
+                <h3 class="text-lg font-bold"><i class="fas fa-leaf mr-2"></i>Thêm nhanh nguyên liệu</h3>
+                <button onclick="closeQuickIngredientModal()" class="text-white/70 hover:text-white transition-opacity"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="quick-ingredient-form" onsubmit="saveQuickIngredient(event)" class="p-6 space-y-4 bg-slate-50">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Tên nguyên liệu *</label>
+                    <input type="text" id="q_ten_nguyen_lieu" required placeholder="VD: Bông cải xanh..." 
+                        class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Loại nguyên liệu</label>
+                    <select id="q_ma_loai_nglieu" class="w-full px-4 py-2 border border-slate-200 rounded-xl outline-none focus:border-emerald-500">
+                        <option value="">-- Chưa phân loại --</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Đơn vị nhập *</label>
+                        <select id="q_don_vi_nhap" required class="w-full px-4 py-2 border border-slate-200 rounded-xl">
+                            <option value="kg">kg</option><option value="g">g</option>
+                            <option value="l">Lít</option><option value="ml">ml</option>
+                            <option value="con">Con</option><option value="thùng">Thùng</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Đơn vị chế biến *</label>
+                        <select id="q_don_vi_tinh" required class="w-full px-4 py-2 border border-slate-200 rounded-xl">
+                            <option value="g">Gram (g)</option><option value="kg">kg</option>
+                            <option value="ml">Mililit</option><option value="miếng">Miếng</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 border-t pt-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Tỉ lệ quy đổi</label>
+                        <input type="number" id="q_ti_le_chuyen_doi" value="1000" required class="w-full px-4 py-2 border border-slate-200 rounded-xl shadow-inner">
+                        <p class="text-[10px] text-slate-400 mt-1 italic">1 đơn vị nhập = ? đơn vị chế biến</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Cảnh báo tồn</label>
+                        <input type="number" id="q_muc_canh_bao" value="1000" required class="w-full px-4 py-2 border border-slate-200 rounded-xl shadow-inner">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeQuickIngredientModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-200 transition-colors font-medium">Hủy</button>
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-200 flex items-center gap-2">
+                        <i class="fas fa-save mr-1"></i> Lưu nguyên liệu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

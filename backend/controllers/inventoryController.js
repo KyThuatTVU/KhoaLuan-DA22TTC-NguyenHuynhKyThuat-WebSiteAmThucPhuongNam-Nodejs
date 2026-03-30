@@ -4,7 +4,10 @@ const db = require('../config/database');
 const getAllIngredients = async (req, res) => {
     try {
         const [ingredients] = await db.query(
-            'SELECT * FROM nguyen_lieu ORDER BY ten_nguyen_lieu ASC'
+            `SELECT nl.*, lnl.ten_loai_nglieu 
+             FROM nguyen_lieu nl
+             LEFT JOIN loai_nguyen_lieu lnl ON nl.ma_loai_nglieu = lnl.ma_loai_nglieu
+             ORDER BY nl.ten_nguyen_lieu ASC`
         );
         res.json({ success: true, data: ingredients });
     } catch (error) {
@@ -16,7 +19,7 @@ const getAllIngredients = async (req, res) => {
 // Thêm nguyên liệu mới
 const createIngredient = async (req, res) => {
     try {
-        const { ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, don_vi_nhap, ti_le_chuyen_doi } = req.body;
+        const { ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, don_vi_nhap, ti_le_chuyen_doi, ma_loai_nglieu } = req.body;
         
         if (!ten_nguyen_lieu || !don_vi_tinh) {
             return res.status(400).json({ success: false, message: 'Tên và đơn vị tính là bắt buộc' });
@@ -26,8 +29,8 @@ const createIngredient = async (req, res) => {
         const conversionRate = ti_le_chuyen_doi || 1;
 
         const [result] = await db.query(
-            'INSERT INTO nguyen_lieu (ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, don_vi_nhap, ti_le_chuyen_doi) VALUES (?, ?, ?, ?, ?, ?)',
-            [ten_nguyen_lieu, so_luong_ton || 0, don_vi_tinh, muc_canh_bao || 1000, importUnit, conversionRate]
+            'INSERT INTO nguyen_lieu (ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, don_vi_nhap, ti_le_chuyen_doi, ma_loai_nglieu) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [ten_nguyen_lieu, so_luong_ton || 0, don_vi_tinh, muc_canh_bao || 1000, importUnit, conversionRate, ma_loai_nglieu]
         );
         
         res.json({ 
@@ -45,16 +48,16 @@ const createIngredient = async (req, res) => {
 const updateIngredient = async (req, res) => {
     try {
         const { id } = req.params;
-        const { ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, trang_thai, don_vi_nhap, ti_le_chuyen_doi } = req.body;
+        const { ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, trang_thai, don_vi_nhap, ti_le_chuyen_doi, ma_loai_nglieu } = req.body;
         
         const importUnit = don_vi_nhap || don_vi_tinh;
         const conversionRate = ti_le_chuyen_doi || 1;
 
         await db.query(
             `UPDATE nguyen_lieu 
-             SET ten_nguyen_lieu = ?, so_luong_ton = ?, don_vi_tinh = ?, muc_canh_bao = ?, trang_thai = ?, don_vi_nhap = ?, ti_le_chuyen_doi = ?
+             SET ten_nguyen_lieu = ?, so_luong_ton = ?, don_vi_tinh = ?, muc_canh_bao = ?, trang_thai = ?, don_vi_nhap = ?, ti_le_chuyen_doi = ?, ma_loai_nglieu = ?
              WHERE ma_nguyen_lieu = ?`,
-            [ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, trang_thai, importUnit, conversionRate, id]
+            [ten_nguyen_lieu, so_luong_ton, don_vi_tinh, muc_canh_bao, trang_thai, importUnit, conversionRate, ma_loai_nglieu, id]
         );
         
         // Sau khi update số lượng kho, cập nhật số lượng tồn tối đa của các món ăn

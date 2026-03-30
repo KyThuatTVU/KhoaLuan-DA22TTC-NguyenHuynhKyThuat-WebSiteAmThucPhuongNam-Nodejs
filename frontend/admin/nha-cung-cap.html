@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nhà cung cấp | Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .supplier-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #e2e8f0; }
+        .supplier-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1); border-color: #3b82f6; }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-inactive { background: #fee2e2; color: #991b1b; }
+        .search-box { transition: all 0.3s ease; border: 1px solid #e2e8f0; }
+        .search-box:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; backdrop-filter: blur(4px); }
+        .modal.show { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">Quản lý Nhà cung cấp</h1>
+                    <p class="text-slate-500 text-sm mt-1">Quản lý danh sách đối tác cung ứng nguyên liệu cho nhà hàng</p>
+                </div>
+                <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-200">
+                    <i class="fas fa-plus"></i>
+                    Thêm nhà cung cấp
+                </button>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[300px] relative search-box rounded-xl overflow-hidden">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" oninput="filterSuppliers()" placeholder="Tìm theo tên, SĐT hoặc địa chỉ..." class="w-full pl-11 pr-4 py-2.5 outline-none text-sm text-slate-700">
+                </div>
+                <select id="status-filter" onchange="filterSuppliers()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none bg-white font-medium text-slate-600 focus:border-blue-500">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="dang_hop_tac">Đang hợp tác</option>
+                    <option value="ngung_hop_tac">Ngừng hợp tác</option>
+                </select>
+                <div class="text-sm font-medium text-slate-500">
+                    Tổng số: <span id="total-count" class="text-blue-600">0</span> đối tác
+                </div>
+            </div>
+
+            <!-- Supplier Grid -->
+            <div id="supplier-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Skeleton Loader -->
+                <div class="animate-pulse bg-white rounded-2xl h-48 border border-slate-100"></div>
+                <div class="animate-pulse bg-white rounded-2xl h-48 border border-slate-100"></div>
+                <div class="animate-pulse bg-white rounded-2xl h-48 border border-slate-100"></div>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-slate-400">
+                <i class="fas fa-box-open text-6xl mb-4 opacity-20"></i>
+                <p class="text-lg font-medium">Không tìm thấy nhà cung cấp nào</p>
+            </div>
+        </main>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Supplier -->
+    <div id="supplier-modal" class="modal items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <h3 id="modal-title" class="font-bold text-slate-800 text-lg">Thêm nhà cung cấp mới</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="supplier-form" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="ma_nha_cung_cap">
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Tên nhà cung cấp <span class="text-red-500">*</span></label>
+                        <input type="text" id="ten_nha_cung_cap" required placeholder="Nhập tên đối tác..." class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Số điện thoại <span class="text-red-500">*</span></label>
+                            <input type="tel" id="so_dien_thoai" required placeholder="090..." class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Email</label>
+                            <input type="email" id="email" placeholder="example@food.vn" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Địa chỉ</label>
+                        <input type="text" id="dia_chi" placeholder="Địa chỉ trụ sở..." class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Ghi chú</label>
+                        <textarea id="ghi_chu" rows="3" placeholder="Ghi chú về nguồn hàng, chất lượng..." class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm resize-none"></textarea>
+                    </div>
+
+                    <div id="status-container" class="hidden">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Trạng thái hợp tác</label>
+                        <select id="trang_thai" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm bg-white">
+                            <option value="dang_hop_tac">Đang hợp tác</option>
+                            <option value="ngung_hop_tac">Ngừng hợp tác</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeModal()" class="flex-1 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition-all">Hủy</button>
+                    <button type="submit" class="flex-[2] bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-200 transition-all">Lưu thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script>
+        let allSuppliers = [];
+        const SUPPLIER_API = `${API_URL}/suppliers`;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSuppliers();
+        });
+
+        async function loadSuppliers() {
+            try {
+                const response = await fetch(SUPPLIER_API);
+                const result = await response.json();
+                if (result.success) {
+                    allSuppliers = result.data;
+                    renderSuppliers(allSuppliers);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Không thể kết nối đến máy chủ', 'error');
+            }
+        }
+
+        function renderSuppliers(suppliers) {
+            const grid = document.getElementById('supplier-grid');
+            const totalCount = document.getElementById('total-count');
+            const emptyState = document.getElementById('empty-state');
+            
+            totalCount.textContent = suppliers.length;
+            grid.innerHTML = '';
+
+            if (suppliers.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            suppliers.forEach(s => {
+                const isActive = s.trang_thai === 'dang_hop_tac';
+                const card = `
+                    <div class="supplier-card bg-white p-5 rounded-2xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xl">
+                                ${s.ten_nha_cung_cap.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="text-[10px] font-bold uppercase py-1 px-3 rounded-full ${isActive ? 'status-active' : 'status-inactive'}">
+                                ${isActive ? 'Đang hợp tác' : 'Ngừng hợp tác'}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-1 line-clamp-1">${s.ten_nha_cung_cap}</h3>
+                        <div class="space-y-1.5 mb-4">
+                            <p class="text-xs text-slate-500 flex items-center gap-2">
+                                <i class="fas fa-phone w-4"></i> ${s.so_dien_thoai}
+                            </p>
+                            ${s.email ? `
+                            <p class="text-xs text-slate-500 flex items-center gap-2">
+                                <i class="fas fa-envelope w-4"></i> ${s.email}
+                            </p>` : ''}
+                            <p class="text-xs text-slate-500 flex items-center gap-2 line-clamp-1">
+                                <i class="fas fa-map-marker-alt w-4"></i> ${s.dia_chi || 'Chưa cập nhật địa chỉ'}
+                            </p>
+                        </div>
+                        <div class="flex gap-2 pt-4 border-t border-slate-50">
+                            <button onclick="editSupplier(${s.ma_nha_cung_cap})" class="flex-1 text-xs font-bold text-blue-600 py-2 rounded-lg hover:bg-blue-50 transition-all border border-blue-100">
+                                <i class="fas fa-edit mr-1"></i> Sửa
+                            </button>
+                            <button onclick="deleteSupplier(${s.ma_nha_cung_cap})" class="flex-1 text-xs font-bold text-red-600 py-2 rounded-lg hover:bg-red-50 transition-all border border-red-100">
+                                <i class="fas fa-trash-alt mr-1"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        function filterSuppliers() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const status = document.getElementById('status-filter').value;
+            
+            const filtered = allSuppliers.filter(s => {
+                const matchesSearch = s.ten_nha_cung_cap.toLowerCase().includes(search) || 
+                                     s.so_dien_thoai.includes(search) || 
+                                     (s.dia_chi && s.dia_chi.toLowerCase().includes(search));
+                const matchesStatus = status === 'all' || s.trang_thai === status;
+                return matchesSearch && matchesStatus;
+            });
+            
+            renderSuppliers(filtered);
+        }
+
+        function openModal(id = null) {
+            const modal = document.getElementById('supplier-modal');
+            const form = document.getElementById('supplier-form');
+            const title = document.getElementById('modal-title');
+            const statusContainer = document.getElementById('status-container');
+            
+            form.reset();
+            document.getElementById('ma_nha_cung_cap').value = '';
+            
+            if (id) {
+                const s = allSuppliers.find(x => x.ma_nha_cung_cap === id);
+                if (s) {
+                    title.textContent = 'Chỉnh sửa nhà cung cấp';
+                    document.getElementById('ma_nha_cung_cap').value = s.ma_nha_cung_cap;
+                    document.getElementById('ten_nha_cung_cap').value = s.ten_nha_cung_cap;
+                    document.getElementById('so_dien_thoai').value = s.so_dien_thoai;
+                    document.getElementById('email').value = s.email || '';
+                    document.getElementById('dia_chi').value = s.dia_chi || '';
+                    document.getElementById('ghi_chu').value = s.ghi_chu || '';
+                    document.getElementById('trang_thai').value = s.trang_thai;
+                    statusContainer.classList.remove('hidden');
+                }
+            } else {
+                title.textContent = 'Thêm nhà cung cấp mới';
+                statusContainer.classList.add('hidden');
+                document.getElementById('trang_thai').value = 'dang_hop_tac';
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('supplier-modal').classList.remove('show');
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('ma_nha_cung_cap').value;
+            const data = {
+                ten_nha_cung_cap: document.getElementById('ten_nha_cung_cap').value,
+                so_dien_thoai: document.getElementById('so_dien_thoai').value,
+                email: document.getElementById('email').value,
+                dia_chi: document.getElementById('dia_chi').value,
+                ghi_chu: document.getElementById('ghi_chu').value,
+                trang_thai: document.getElementById('trang_thai').value
+            };
+
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `${SUPPLIER_API}/${id}` : SUPPLIER_API;
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showToast(id ? 'Cập nhật thành công!' : 'Thêm mới thành công!', 'success');
+                    closeModal();
+                    loadSuppliers();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Có lỗi xảy ra', 'error');
+            }
+        }
+
+        async function deleteSupplier(id) {
+            if (!confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này?')) return;
+            
+            try {
+                const response = await fetch(`${SUPPLIER_API}/${id}`, { method: 'DELETE' });
+                const result = await response.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    loadSuppliers();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Không thể xóa nhà cung cấp', 'error');
+            }
+        }
+
+        function editSupplier(id) {
+            openModal(id);
+        }
+
+        function showToast(message, type = 'info') {
+            // Simplified toast for this example
+            alert(message);
+        }
+
+        // Close modal on escape
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

@@ -21,6 +21,9 @@ const SIDEBAR_TEMPLATE = `
                 <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span>
                 </a>
+                <a href="doanh-thu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-wallet w-5"></i><span class="text-sm">Báo cáo Tài chính</span>
+                </a>
             </div>
 
             <!-- 2. Nghiệp vụ bán hàng -->
@@ -52,8 +55,23 @@ const SIDEBAR_TEMPLATE = `
                 <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span>
                 </a>
+                <a href="loai-nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-tags w-5"></i><span class="text-sm">Loại nguyên liệu</span>
+                </a>
                 <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span>
+                </a>
+                <a href="nhap-hang.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-file-import w-5"></i><span class="text-sm">Nhập hàng</span>
+                </a>
+                <a href="nha-cung-cap.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-truck-field w-5"></i><span class="text-sm">Nhà cung cấp</span>
+                </a>
+                <a href="kiem-ke.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-clipboard-check w-5"></i><span class="text-sm">Kiểm kê kho</span>
+                </a>
+                <a href="ke-do-bep.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-kitchen-set w-5"></i><span class="text-sm">Kê đồ bếp</span>
                 </a>
             </div>
 

@@ -432,6 +432,12 @@ const recipeRoutes = require('./routes/recipe');
 const shiftRoutes = require('./routes/shifts');
 const attendanceRoutes = require('./routes/attendance');
 const payrollRoutes = require('./routes/payroll');
+const importRoutes = require('./routes/imports');
+const auditRoutes = require('./routes/audits');
+const supplierRoutes = require('./routes/suppliers');
+const kitchenSlipRoutes = require('./routes/kitchenSlips');
+const ingredientCategoryRoutes = require('./routes/ingredientCategories');
+
 
 // Register routes
 app.use('/api/tts', ttsRoutes);
@@ -465,6 +471,12 @@ app.use('/api/recipe', recipeRoutes);
 app.use('/api/shifts', shiftRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/payroll', payrollRoutes);
+app.use('/api/imports', importRoutes);
+app.use('/api/audits', auditRoutes);
+app.use('/api/suppliers', supplierRoutes);
+app.use('/api/kitchen-slips', kitchenSlipRoutes);
+app.use('/api/ingredient-categories', ingredientCategoryRoutes);
+
 
 // Admin notifications routes
 const adminNotificationRoutes = require('./routes/admin-notifications');

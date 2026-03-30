@@ -446,4 +446,119 @@ router.get('/revenue-daily', requireAdmin, async (req, res) => {
     }
 });
 
+// Báo cáo Tài chính Tổng hợp (Thu - Chi - Lợi Nhuận)
+router.get('/financial-summary', requireAdmin, async (req, res) => {
+    try {
+        const { year, month } = req.query;
+        const targetYear = parseInt(year) || new Date().getFullYear();
+        const targetMonth = parseInt(month) || (new Date().getMonth() + 1);
+
+        // 1. Lấy doanh thu hàng ngày từ tất cả nguồn thanh toán thành công
+        const [revenueData] = await db.query(`
+            SELECT DATE(thoi_gian_thanh_toan) as ngay, SUM(so_tien) as thu
+            FROM thanh_toan
+            WHERE trang_thai = 'success'
+              AND MONTH(thoi_gian_thanh_toan) = ?
+              AND YEAR(thoi_gian_thanh_toan) = ?
+            GROUP BY DATE(thoi_gian_thanh_toan)
+            ORDER BY ngay ASC
+        `, [targetMonth, targetYear]);
+
+        // 2. Lấy chi phí hàng ngày từ phiếu nhập kho hoàn tất
+        const [expenseData] = await db.query(`
+            SELECT DATE(thoi_gian_nhap) as ngay, SUM(tong_tien) as chi
+            FROM phieu_nhap
+            WHERE trang_thai = 'hoan_tat'
+              AND MONTH(thoi_gian_nhap) = ?
+              AND YEAR(thoi_gian_nhap) = ?
+            GROUP BY DATE(thoi_gian_nhap)
+            ORDER BY ngay ASC
+        `, [targetMonth, targetYear]);
+
+        // 3. Kết hợp dữ liệu theo ngày
+        const dailyStats = {};
+        
+        // Khởi tạo các ngày trong tháng
+        const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dateStr = `${targetYear}-${targetMonth.toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+            dailyStats[dateStr] = { date: dateStr, thu: 0, chi: 0, net: 0 };
+        }
+
+        revenueData.forEach(r => {
+            const d = new Date(r.ngay).toISOString().split('T')[0];
+            if (dailyStats[d]) {
+                dailyStats[d].thu = parseFloat(r.thu) || 0;
+            }
+        });
+
+        expenseData.forEach(e => {
+            const d = new Date(e.ngay).toISOString().split('T')[0];
+            if (dailyStats[d]) {
+                dailyStats[d].chi = parseFloat(e.chi) || 0;
+            }
+        });
+
+        // Tính lợi nhuận ròng
+        const result = Object.values(dailyStats).map(day => ({
+            ...day,
+            net: day.thu - day.chi
+        }));
+
+        res.json({
+            success: true,
+            data: result,
+            summary: {
+                totalRevenue: result.reduce((sum, d) => sum + d.thu, 0),
+                totalExpenses: result.reduce((sum, d) => sum + d.chi, 0),
+                netProfit: result.reduce((sum, d) => sum + d.net, 0)
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching financial summary:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+    }
+});
+
+// Chi tiết Thu - Chi trong 1 ngày cụ thể (Dùng cho Modal đối soát)
+router.get('/financial-day-details', requireAdmin, async (req, res) => {
+    try {
+        const { date } = req.query; // Định dạng YYYY-MM-DD
+        if (!date) return res.status(400).json({ success: false, message: 'Thiếu ngày' });
+
+        // 1. Lấy chi tiết các khoản thu (Thanh toán)
+        const [incomeDetails] = await db.query(`
+            SELECT t.ma_thanh_toan as id, t.so_tien as amount, t.phuong_thuc as method, 
+                   t.thoi_gian_thanh_toan as time, t.ma_don_hang, t.ma_order_nha_hang,
+                   COALESCE(d.ten_khach_vang_lai, 'Đơn hàng POS/Tại bàn') as source
+            FROM thanh_toan t
+            LEFT JOIN don_hang d ON t.ma_don_hang = d.ma_don_hang
+            WHERE DATE(t.thoi_gian_thanh_toan) = ? AND t.trang_thai = 'success'
+            ORDER BY t.thoi_gian_thanh_toan ASC
+        `, [date]);
+
+        // 2. Lấy chi tiết các khoản chi (Phiếu nhập)
+        const [expenseDetails] = await db.query(`
+            SELECT p.ma_phieu_nhap as id, p.tong_tien as amount, p.ghi_chu, 
+                   p.thoi_gian_nhap as time, n.ten_nha_cung_cap as source
+            FROM phieu_nhap p
+            LEFT JOIN nha_cung_cap n ON p.ma_nha_cung_cap = n.ma_nha_cung_cap
+            WHERE DATE(p.thoi_gian_nhap) = ? AND p.trang_thai = 'hoan_tat'
+            ORDER BY p.thoi_gian_nhap ASC
+        `, [date]);
+
+        res.json({
+            success: true,
+            date: date,
+            income: incomeDetails,
+            expenses: expenseDetails
+        });
+
+    } catch (error) {
+        console.error('Error fetching financial day details:', error);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
+    }
+});
+
 module.exports = router;

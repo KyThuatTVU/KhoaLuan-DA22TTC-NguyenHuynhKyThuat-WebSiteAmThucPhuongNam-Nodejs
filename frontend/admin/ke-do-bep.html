@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Kê Đồ Bếp - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+            .no-print { display: none !important; }
+        }
+        .status-cho_duyet { background: #fef3c7; color: #92400e; }
+        .status-da_duyet { background: #dcfce7; color: #166534; }
+        .status-da_nhap { background: #dbeafe; color: #1e40af; }
+        .warning-row { background: #fef2f2 !important; }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <div id="sidebar-placeholder"></div>
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Phiếu Kê Đồ Bếp</h1>
+                        <p class="text-slate-500 text-sm">Bếp kê nguyên liệu mỗi tối, in phiếu cho quản lý nhập hàng sáng hôm sau</p>
+                    </div>
+                    <button onclick="openCreateModal()" class="btn-primary no-print">
+                        <i class="fas fa-plus mr-2"></i> Tạo Phiếu Kê Mới
+                    </button>
+                </div>
+
+                <!-- Danh sách phiếu -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden no-print">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mã Phiếu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Ngày kê</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Người kê</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Trạng thái</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Ghi chú</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="slips-container" class="bg-white divide-y divide-slate-200">
+                            <tr><td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>Đang tải...
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Khu vực in -->
+                <div id="print-area" class="hidden"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Tạo phiếu -->
+    <div id="create-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-5 border-b flex items-center justify-between bg-gradient-to-r from-orange-600 to-amber-500 text-white rounded-t-2xl">
+                <h3 class="text-lg font-bold"><i class="fas fa-clipboard-list mr-2"></i>Tạo Phiếu Kê Đồ Bếp</h3>
+                <button onclick="closeCreateModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 flex-1 overflow-y-auto bg-slate-50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ngày kê đồ</label>
+                        <input type="date" id="ngay_ke" class="w-full px-4 py-2 border border-slate-200 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Ghi chú</label>
+                        <input type="text" id="slip_ghi_chu" placeholder="VD: Ca tối 29/03..." class="w-full px-4 py-2 border border-slate-200 rounded-lg">
+                    </div>
+                </div>
+
+                <h4 class="font-bold text-slate-800 mb-3"><i class="fas fa-boxes-stacked mr-1 text-orange-500"></i> Danh sách nguyên liệu</h4>
+                <div class="overflow-hidden border border-slate-200 rounded-xl">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-slate-600 uppercase">Nguyên liệu</th>
+                                <th class="px-4 py-2 text-center text-xs font-bold text-slate-600 uppercase w-28">Tồn kho (HT)</th>
+                                <th class="px-4 py-2 text-center text-xs font-bold text-slate-600 uppercase w-32">Còn lại thực tế</th>
+                                <th class="px-4 py-2 text-center text-xs font-bold text-slate-600 uppercase w-32">Cần nhập thêm</th>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-slate-600 uppercase">Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ingredient-list" class="bg-white divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="p-4 border-t bg-white flex justify-end space-x-3 rounded-b-2xl">
+                <button onclick="closeCreateModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                <button onclick="saveSlip()" class="btn-primary"><i class="fas fa-save mr-1"></i> Lưu Phiếu Kê</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Chi tiết -->
+    <div id="detail-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-5 border-b flex items-center justify-between bg-slate-800 text-white rounded-t-2xl">
+                <h3 class="text-lg font-bold">Chi tiết phiếu kê #<span id="detail-id"></span></h3>
+                <button onclick="closeDetailModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 flex-1 overflow-y-auto" id="detail-content"></div>
+            <div class="p-4 border-t bg-white flex justify-end space-x-3 rounded-b-2xl" id="detail-actions"></div>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script>
+        const SLIP_API = `${API_URL}/kitchen-slips`;
+        const INV_API = `${API_URL}/inventory`;
+        let allIngredients = [];
+        let allSlips = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('ngay_ke').value = new Date().toISOString().split('T')[0];
+            await loadIngredients();
+            loadSlips();
+        });
+
+        async function loadIngredients() {
+            try {
+                const res = await fetch(INV_API, { credentials: 'include' });
+                const data = await res.json();
+                allIngredients = data.data || [];
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadSlips() {
+            try {
+                const res = await fetch(SLIP_API, { credentials: 'include' });
+                const data = await res.json();
+                allSlips = data.data || [];
+                renderSlips();
+            } catch (e) { console.error(e); }
+        }
+
+        function renderSlips() {
+            const c = document.getElementById('slips-container');
+            if (allSlips.length === 0) {
+                c.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400"><i class="fas fa-clipboard text-4xl mb-2 opacity-20"></i><br>Chưa có phiếu kê nào</td></tr>';
+                return;
+            }
+            const statusMap = { cho_duyet: 'Chờ duyệt', da_duyet: 'Đã duyệt', da_nhap: 'Đã nhập hàng' };
+            c.innerHTML = allSlips.map(s => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4 text-sm font-bold text-orange-600">#PKE${String(s.ma_phieu_ke).padStart(4, '0')}</td>
+                    <td class="px-6 py-4 text-sm text-slate-600">${new Date(s.ngay_ke).toLocaleDateString('vi-VN')}</td>
+                    <td class="px-6 py-4 text-sm text-slate-700 font-medium">${s.ten_nhan_vien || 'Hệ thống'}</td>
+                    <td class="px-6 py-4">
+                        <span class="text-[10px] font-bold uppercase px-3 py-1 rounded-full status-${s.trang_thai}">${statusMap[s.trang_thai]}</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-500">${s.ghi_chu || '-'}</td>
+                    <td class="px-6 py-4 text-center space-x-2">
+                        <button onclick="viewDetail(${s.ma_phieu_ke})" class="text-blue-600 hover:text-blue-800 font-bold text-sm" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="printSlip(${s.ma_phieu_ke})" class="text-green-600 hover:text-green-800 font-bold text-sm" title="In phiếu">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        ${s.trang_thai === 'cho_duyet' ? `
+                        <button onclick="approveSlip(${s.ma_phieu_ke})" class="text-amber-600 hover:text-amber-800 font-bold text-sm" title="Duyệt">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                        <button onclick="deleteSlip(${s.ma_phieu_ke})" class="text-red-500 hover:text-red-700 font-bold text-sm" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openCreateModal() {
+            document.getElementById('create-modal').classList.remove('hidden');
+            renderIngredientRows();
+        }
+        function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
+        function closeDetailModal() { document.getElementById('detail-modal').classList.add('hidden'); }
+
+        function renderIngredientRows() {
+            const list = document.getElementById('ingredient-list');
+            list.innerHTML = allIngredients.map(ing => `
+                <tr data-id="${ing.ma_nguyen_lieu}">
+                    <td class="px-4 py-2.5">
+                        <span class="font-medium text-slate-800 text-sm">${ing.ten_nguyen_lieu}</span>
+                        <span class="text-[10px] ml-1 font-bold text-slate-400 uppercase">${ing.don_vi_tinh}</span>
+                    </td>
+                    <td class="px-4 py-2.5 text-center text-sm text-slate-500">${parseFloat(ing.so_luong_ton).toLocaleString('vi-VN')} <small class="text-[10px] uppercase font-bold text-slate-400">${ing.don_vi_tinh}</small></td>
+                    <td class="px-4 py-2.5">
+                        <input type="number" step="0.01" class="con-lai w-full px-2 py-1.5 border border-slate-200 rounded text-sm text-center" placeholder="0" value="${parseFloat(ing.so_luong_ton)}">
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <input type="number" step="0.01" class="can-nhap w-full px-2 py-1.5 border border-slate-200 rounded text-sm text-center" placeholder="0" value="0">
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <input type="text" class="row-note w-full px-2 py-1.5 border border-slate-200 rounded text-sm" placeholder="Ghi chú...">
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function saveSlip() {
+            const rows = document.querySelectorAll('#ingredient-list tr');
+            const items = [];
+            rows.forEach(row => {
+                const conLai = parseFloat(row.querySelector('.con-lai').value) || 0;
+                const canNhap = parseFloat(row.querySelector('.can-nhap').value) || 0;
+                const note = row.querySelector('.row-note').value;
+                if (canNhap > 0 || conLai > 0) {
+                    items.push({
+                        ma_nguyen_lieu: parseInt(row.dataset.id),
+                        so_luong_con_lai: conLai,
+                        so_luong_can_nhap: canNhap,
+                        ghi_chu: note
+                    });
+                }
+            });
+
+            if (items.length === 0) {
+                alert('Vui lòng nhập số liệu cho ít nhất 1 nguyên liệu');
+                return;
+            }
+
+            try {
+                const res = await fetch(SLIP_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        ngay_ke: document.getElementById('ngay_ke').value,
+                        ghi_chu: document.getElementById('slip_ghi_chu').value,
+                        items
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Tạo phiếu kê đồ thành công!');
+                    closeCreateModal();
+                    loadSlips();
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (e) { console.error(e); alert('Lỗi máy chủ'); }
+        }
+
+        async function viewDetail(id) {
+            try {
+                const res = await fetch(`${SLIP_API}/${id}`, { credentials: 'include' });
+                const result = await res.json();
+                if (!result.success) return;
+                const pk = result.data;
+                document.getElementById('detail-id').textContent = `PKE${String(pk.ma_phieu_ke).padStart(4, '0')}`;
+
+                const statusMap = { cho_duyet: '🟡 Chờ duyệt', da_duyet: '🟢 Đã duyệt', da_nhap: '🔵 Đã nhập hàng' };
+
+                let html = `
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div><p class="text-xs text-slate-500 uppercase font-bold mb-1">Ngày kê</p>
+                            <p class="font-bold text-slate-800">${new Date(pk.ngay_ke).toLocaleDateString('vi-VN')}</p></div>
+                        <div><p class="text-xs text-slate-500 uppercase font-bold mb-1">Người kê</p>
+                            <p class="font-bold text-slate-800">${pk.ten_nhan_vien || 'Hệ thống'}</p></div>
+                        <div><p class="text-xs text-slate-500 uppercase font-bold mb-1">Trạng thái</p>
+                            <p class="font-bold">${statusMap[pk.trang_thai]}</p></div>
+                        <div><p class="text-xs text-slate-500 uppercase font-bold mb-1">Ghi chú</p>
+                            <p class="text-slate-800">${pk.ghi_chu || 'Không'}</p></div>
+                    </div>
+                    <h4 class="font-bold text-slate-800 mb-3">Chi tiết nguyên liệu</h4>
+                    <table class="min-w-full border rounded-lg overflow-hidden">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-bold">Nguyên liệu</th>
+                                <th class="px-4 py-2 text-right text-xs font-bold">Còn lại</th>
+                                <th class="px-4 py-2 text-right text-xs font-bold">Cần nhập</th>
+                                <th class="px-4 py-2 text-right text-xs font-bold">Mức cảnh báo</th>
+                                <th class="px-4 py-2 text-left text-xs font-bold">Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${pk.items.map(it => {
+                                const isWarning = parseFloat(it.so_luong_con_lai) < parseFloat(it.muc_canh_bao);
+                                return `<tr class="${isWarning ? 'warning-row' : ''}">
+                                    <td class="px-4 py-2 border-t font-medium">${it.ten_nguyen_lieu} <small class="text-[10px] uppercase font-bold text-slate-400">${it.don_vi_tinh}</small></td>
+                                    <td class="px-4 py-2 border-t text-right ${isWarning ? 'text-red-600 font-bold' : ''}">${parseFloat(it.so_luong_con_lai).toLocaleString('vi-VN')} ${it.don_vi_tinh}</td>
+                                    <td class="px-4 py-2 border-t text-right font-bold text-blue-600">${parseFloat(it.so_luong_can_nhap).toLocaleString('vi-VN')} ${it.don_vi_tinh}</td>
+                                    <td class="px-4 py-2 border-t text-right text-slate-400">${parseFloat(it.muc_canh_bao).toLocaleString('vi-VN')} ${it.don_vi_tinh}</td>
+                                    <td class="px-4 py-2 border-t text-sm text-slate-500">${it.ghi_chu || '-'}</td>
+                                </tr>`;
+                            }).join('')}
+                        </tbody>
+                    </table>`;
+
+                document.getElementById('detail-content').innerHTML = html;
+
+                let actions = `<button onclick="closeDetailModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Đóng</button>
+                    <button onclick="printSlip(${pk.ma_phieu_ke})" class="px-6 py-2.5 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700"><i class="fas fa-print mr-1"></i> In phiếu</button>`;
+                if (pk.trang_thai === 'cho_duyet') {
+                    actions += `<button onclick="approveSlip(${pk.ma_phieu_ke})" class="px-6 py-2.5 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600"><i class="fas fa-check mr-1"></i> Duyệt</button>`;
+                }
+                document.getElementById('detail-actions').innerHTML = actions;
+                document.getElementById('detail-modal').classList.remove('hidden');
+            } catch (e) { console.error(e); }
+        }
+
+        async function printSlip(id) {
+            try {
+                const res = await fetch(`${SLIP_API}/${id}`, { credentials: 'include' });
+                const result = await res.json();
+                if (!result.success) return;
+                const pk = result.data;
+                const statusMap = { cho_duyet: 'Chờ duyệt', da_duyet: 'Đã duyệt', da_nhap: 'Đã nhập hàng' };
+
+                const printArea = document.getElementById('print-area');
+                printArea.classList.remove('hidden');
+                printArea.innerHTML = `
+                    <div style="font-family: monospace; max-width: 700px; margin: 0 auto;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="margin: 0; font-size: 22px;">NHÀ HÀNG ẨM THỰC PHƯƠNG NAM</h2>
+                            <h3 style="margin: 8px 0;">PHIẾU KÊ ĐỒ BẾP</h3>
+                            <p style="color: #666;">Mã phiếu: #PKE${String(pk.ma_phieu_ke).padStart(4, '0')}</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 13px;">
+                            <span><b>Ngày kê:</b> ${new Date(pk.ngay_ke).toLocaleDateString('vi-VN')}</span>
+                            <span><b>Người kê:</b> ${pk.ten_nhan_vien || 'Hệ thống'}</span>
+                            <span><b>Trạng thái:</b> ${statusMap[pk.trang_thai]}</span>
+                        </div>
+                        ${pk.ghi_chu ? `<p style="font-size: 13px; margin-bottom: 10px;"><b>Ghi chú:</b> ${pk.ghi_chu}</p>` : ''}
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #333;">
+                                    <th style="text-align: left; padding: 8px 4px;">STT</th>
+                                    <th style="text-align: left; padding: 8px 4px;">Nguyên liệu</th>
+                                    <th style="text-align: right; padding: 8px 4px;">Còn lại</th>
+                                    <th style="text-align: right; padding: 8px 4px;">Cần nhập</th>
+                                    <th style="text-align: left; padding: 8px 4px;">Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${pk.items.map((it, i) => `
+                                    <tr style="border-bottom: 1px solid #ddd;">
+                                        <td style="padding: 6px 4px;">${i + 1}</td>
+                                        <td style="padding: 6px 4px;">${it.ten_nguyen_lieu} (${it.don_vi_tinh})</td>
+                                        <td style="padding: 6px 4px; text-align: right;">${parseFloat(it.so_luong_con_lai).toLocaleString('vi-VN')} ${it.don_vi_tinh}</td>
+                                        <td style="padding: 6px 4px; text-align: right; font-weight: bold;">${parseFloat(it.so_luong_can_nhap).toLocaleString('vi-VN')} ${it.don_vi_tinh}</td>
+                                        <td style="padding: 6px 4px;">${it.ghi_chu || ''}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+                            <div style="text-align: center;">
+                                <p><b>Người kê đồ</b></p>
+                                <p style="margin-top: 50px; font-style: italic;">(Ký, ghi rõ họ tên)</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <p><b>Quản lý duyệt</b></p>
+                                <p style="margin-top: 50px; font-style: italic;">(Ký, ghi rõ họ tên)</p>
+                            </div>
+                        </div>
+                        <p style="text-align: center; margin-top: 30px; font-size: 11px; color: #999;">In lúc: ${new Date().toLocaleString('vi-VN')}</p>
+                    </div>`;
+                
+                setTimeout(() => { window.print(); printArea.classList.add('hidden'); }, 300);
+            } catch (e) { console.error(e); }
+        }
+
+        async function approveSlip(id) {
+            if (!confirm('Duyệt phiếu kê đồ này?')) return;
+            try {
+                const res = await fetch(`${SLIP_API}/${id}/approve`, { method: 'PUT', credentials: 'include' });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Đã duyệt phiếu!');
+                    loadSlips();
+                    closeDetailModal();
+                } else { alert(result.message); }
+            } catch (e) { console.error(e); }
+        }
+
+        async function deleteSlip(id) {
+            if (!confirm('Xóa phiếu kê đồ này?')) return;
+            try {
+                const res = await fetch(`${SLIP_API}/${id}`, { method: 'DELETE', credentials: 'include' });
+                const result = await res.json();
+                if (result.success) { alert('Đã xóa!'); loadSlips(); }
+                else { alert(result.message); }
+            } catch (e) { console.error(e); }
+        }
+    </script>
+</body>
+</html>

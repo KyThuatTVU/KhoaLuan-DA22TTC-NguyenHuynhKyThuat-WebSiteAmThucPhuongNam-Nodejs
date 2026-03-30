@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo Tài chính - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+
+<body class="bg-slate-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Page Title -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Báo cáo Tài chính</h1>
+                        <p class="text-slate-500 text-sm">Theo dõi doanh thu, chi phí và lợi nhuận định kỳ</p>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+                        <select id="select-month" class="bg-transparent border-none focus:ring-0 text-slate-700 font-bold px-4 py-2 cursor-pointer">
+                            <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+                            <option value="3">Tháng 3</option><option value="4">Tháng 4</option>
+                            <option value="5">Tháng 5</option><option value="6">Tháng 6</option>
+                            <option value="7">Tháng 7</option><option value="8">Tháng 8</option>
+                            <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+                            <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+                        </select>
+                        <div class="h-6 w-px bg-slate-200"></div>
+                        <select id="select-year" class="bg-transparent border-none focus:ring-0 text-slate-700 font-bold px-4 py-2 cursor-pointer">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                        </select>
+                        <button onclick="loadFinanceData()" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl transition-all shadow-lg shadow-blue-200">
+                            <i class="fas fa-sync-alt px-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                        <div class="relative">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tổng Thu (Doanh thu)</p>
+                            <h3 id="total-revenue" class="text-3xl font-black text-slate-800">0đ</h3>
+                            <div class="mt-4 flex items-center text-xs text-emerald-600 font-bold bg-emerald-50 w-fit px-2 py-1 rounded-lg">
+                                <i class="fas fa-arrow-up mr-1 text-[10px]"></i> Tiền mặt & Online
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-50 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                        <div class="relative">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tổng Chi (Gốc hàng)</p>
+                            <h3 id="total-expenses" class="text-3xl font-black text-slate-800">0đ</h3>
+                            <div class="mt-4 flex items-center text-xs text-rose-600 font-bold bg-rose-50 w-fit px-2 py-1 rounded-lg">
+                                <i class="fas fa-arrow-down mr-1 text-[10px]"></i> Nhập nguyên liệu
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="profit-card" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group">
+                        <div id="profit-bg" class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                        <div class="relative">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Lợi Nhuận Dự Tính</p>
+                            <h3 id="net-profit" class="text-3xl font-black text-slate-800">0đ</h3>
+                            <div id="profit-status" class="mt-4 flex items-center text-xs text-emerald-600 font-bold bg-emerald-50 w-fit px-2 py-1 rounded-lg">
+                                <i class="fas fa-chart-line mr-1 text-[10px]"></i> Đang có lời
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-8 overflow-hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                             <i class="fas fa-chart-area text-blue-600"></i>
+                             Biến động Thu - Chi hàng ngày
+                        </h3>
+                        <div class="flex items-center gap-4 text-[10px] md:text-xs font-bold">
+                            <div class="flex items-center gap-2 text-blue-600">
+                                <span class="w-2 h-2 rounded-full bg-blue-600"></span> Doanh thu
+                            </div>
+                            <div class="flex items-center gap-2 text-rose-500">
+                                <span class="w-2 h-2 rounded-full bg-rose-500"></span> Chi phí
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-80 w-full">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Daily Detailed Table -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-12">
+                    <div class="p-6 border-b flex items-center justify-between bg-slate-50/50">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-slate-800"><i class="fas fa-table mr-2 text-indigo-500"></i>Bảng chi tiết hàng ngày</h3>
+                            <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">NHẤN VÀO DÒNG ĐỂ XEM CHI TIẾT</span>
+                        </div>
+                        <button onclick="window.print()" class="text-sm font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                            <i class="fas fa-file-pdf"></i> Xuất Báo cáo
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50/80">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-widest leading-4">Ngày</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-widest leading-4">Doanh thu (Thu)</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-widest leading-4">Chi phí (Chi)</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-widest leading-4">Lợi nhuận</th>
+                                    <th class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase tracking-widest leading-4">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="daily-table-body" class="divide-y divide-slate-100 font-medium whitespace-no-wrap">
+                                <!-- Data rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 invisible transition-all duration-300">
+        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b flex items-center justify-between bg-slate-50/50">
+                <div>
+                    <h3 id="modal-title" class="font-bold text-xl text-slate-800">Chi tiết Thu - Chi</h3>
+                    <p id="modal-date" class="text-sm text-slate-500 font-medium"></p>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6 md:p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Thu (Income) -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-6">
+                            <div class="w-2 h-6 bg-blue-600 rounded-full"></div>
+                            <h4 class="font-black text-slate-800 uppercase tracking-widest text-sm">Khoản Thu (Doanh thu)</h4>
+                        </div>
+                        <div id="income-list" class="space-y-3">
+                            <!-- Items -->
+                        </div>
+                    </div>
+
+                    <!-- Chi (Expenses) -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-6">
+                            <div class="w-2 h-6 bg-rose-600 rounded-full"></div>
+                            <h4 class="font-black text-slate-800 uppercase tracking-widest text-sm">Khoản Chi (Nhập hàng)</h4>
+                        </div>
+                        <div id="expense-list" class="space-y-3">
+                            <!-- Items -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 bg-slate-50 border-t flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex gap-4">
+                    <div class="text-center md:text-left">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Tổng Thu Ngày</p>
+                        <p id="modal-total-thu" class="text-xl font-black text-blue-600">0đ</p>
+                    </div>
+                    <div class="w-px h-10 bg-slate-200"></div>
+                    <div class="text-center md:text-left">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Tổng Chi Ngày</p>
+                        <p id="modal-total-chi" class="text-xl font-black text-rose-600">0đ</p>
+                    </div>
+                </div>
+                <div class="bg-white px-6 py-3 rounded-2xl border border-slate-200">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Lợi Nhuận Ròng</p>
+                    <p id="modal-net" class="text-2xl font-black text-slate-800">0đ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="admin-layout.js"></script>
+    <script>
+        let financeChart = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            document.getElementById('select-month').value = today.getMonth() + 1;
+            document.getElementById('select-year').value = today.getFullYear();
+            loadFinanceData();
+        });
+
+        async function loadFinanceData() {
+            const month = document.getElementById('select-month').value;
+            const year = document.getElementById('select-year').value;
+            
+            try {
+                const res = await fetch(`${API_URL}/stats/financial-summary?month=${month}&year=${year}`, { credentials: 'include' });
+                const result = await res.json();
+                
+                if (result.success) {
+                    updateUI(result.summary);
+                    renderChart(result.data);
+                    renderTable(result.data);
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Không thể kết nối máy chủ');
+            }
+        }
+
+        function updateUI(summary) {
+            document.getElementById('total-revenue').textContent = (summary.totalRevenue || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('total-expenses').textContent = (summary.totalExpenses || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('net-profit').textContent = (summary.netProfit || 0).toLocaleString('vi-VN') + 'đ';
+            
+            const statusDiv = document.getElementById('profit-status');
+            const bgDiv = document.getElementById('profit-bg');
+            if (summary.netProfit >= 0) {
+                statusDiv.innerHTML = '<i class="fas fa-chart-line mr-1 text-[10px]"></i> Đang có lời';
+                statusDiv.className = 'mt-4 flex items-center text-xs text-emerald-600 font-bold bg-emerald-50 w-fit px-2 py-1 rounded-lg';
+                bgDiv.className = 'absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full group-hover:scale-125 transition-transform duration-500';
+            } else {
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1 text-[10px]"></i> Đang thua lỗ';
+                statusDiv.className = 'mt-4 flex items-center text-xs text-rose-600 font-bold bg-rose-50 w-fit px-2 py-1 rounded-lg';
+                bgDiv.className = 'absolute -right-4 -top-4 w-24 h-24 bg-rose-50 rounded-full group-hover:scale-125 transition-transform duration-500';
+            }
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            
+            if (financeChart) financeChart.destroy();
+            
+            financeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.date.split('-')[2]),
+                    datasets: [
+                        {
+                            label: 'Doanh thu',
+                            data: data.map(d => d.thu),
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#2563eb'
+                        },
+                        {
+                            label: 'Chi phí',
+                            data: data.map(d => d.chi),
+                            borderColor: '#e11d48',
+                            backgroundColor: 'transparent',
+                            fill: false,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1E293B',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: (context) => {
+                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString('vi-VN') + ' VNĐ';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { 
+                                callback: val => (val / 1000).toLocaleString('vi-VN') + 'k',
+                                font: { size: 10, weight: 'bold' },
+                                color: '#64748b'
+                            }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { font: { size: 10, weight: 'bold' }, color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTable(data) {
+            const body = document.getElementById('daily-table-body');
+            body.innerHTML = '';
+            
+            const filteredData = data.filter(day => day.thu > 0 || day.chi > 0);
+            
+            filteredData.forEach(day => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 transition-all cursor-pointer group';
+                row.onclick = () => showDayDetail(day.date);
+                
+                const profitClass = day.net >= 0 ? 'text-emerald-600' : 'text-rose-600';
+                const statusBadge = day.net >= 0 
+                    ? '<span class="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-bold">LỜI</span>' 
+                    : '<span class="px-2 py-1 bg-rose-50 text-rose-600 rounded-lg text-[10px] font-bold">LỖ</span>';
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-sm font-bold text-slate-700 group-hover:text-blue-600 transition-colors">${new Date(day.date).toLocaleDateString('vi-VN')}</td>
+                    <td class="px-6 py-4 text-right text-sm text-blue-600 font-bold">${day.thu.toLocaleString('vi-VN')}đ</td>
+                    <td class="px-6 py-4 text-right text-sm text-slate-500">${day.chi.toLocaleString('vi-VN')}đ</td>
+                    <td class="px-6 py-4 text-right text-sm ${profitClass} font-black">${day.net.toLocaleString('vi-VN')}đ</td>
+                    <td class="px-6 py-4 text-center">${statusBadge}</td>
+                `;
+                body.appendChild(row);
+            });
+            
+            if (filteredData.length === 0) {
+                body.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-slate-400 italic">Không có dữ liệu thu chi trong tháng này</td></tr>';
+            }
+        }
+
+        async function showDayDetail(date) {
+            const modal = document.getElementById('detail-modal');
+            const dateText = document.getElementById('modal-date');
+            const incomeList = document.getElementById('income-list');
+            const expenseList = document.getElementById('expense-list');
+            
+            dateText.textContent = 'Ngày ' + new Date(date).toLocaleDateString('vi-VN');
+            incomeList.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-slate-300"></i></div>';
+            expenseList.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-slate-300"></i></div>';
+            
+            modal.classList.remove('invisible', 'opacity-0');
+            
+            try {
+                const res = await fetch(`${API_URL}/stats/financial-day-details?date=${date}`, { credentials: 'include' });
+                const result = await res.json();
+                
+                if (result.success) {
+                    renderDetailLists(result.income, result.expenses);
+                    updateModalSummary(result.income, result.expenses);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderDetailLists(income, expenses) {
+            const incomeList = document.getElementById('income-list');
+            const expenseList = document.getElementById('expense-list');
+            
+            // Render Income
+            if (income.length === 0) {
+                incomeList.innerHTML = '<p class="text-center py-8 text-slate-400 italic text-xs">Không có khoản thu</p>';
+            } else {
+                incomeList.innerHTML = income.map(item => `
+                    <div class="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">${item.source}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">${new Date(item.time).toLocaleTimeString('vi-VN')} • ${item.method}</p>
+                        </div>
+                        <p class="font-black text-blue-600">${parseFloat(item.amount || 0).toLocaleString('vi-VN')}đ</p>
+                    </div>
+                `).join('');
+            }
+            
+            // Render Expenses
+            if (expenses.length === 0) {
+                expenseList.innerHTML = '<p class="text-center py-8 text-slate-400 italic text-xs">Không có khoản chi</p>';
+            } else {
+                expenseList.innerHTML = expenses.map(item => `
+                    <div class="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-100">
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">${item.source}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">${new Date(item.time).toLocaleTimeString('vi-VN')} • ID: ${item.id}</p>
+                        </div>
+                        <p class="font-black text-rose-600">${parseFloat(item.amount || 0).toLocaleString('vi-VN')}đ</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateModalSummary(income, expenses) {
+            const totalThu = income.reduce((sum, i) => sum + parseFloat(i.amount || 0), 0);
+            const totalChi = expenses.reduce((sum, i) => sum + parseFloat(i.amount || 0), 0);
+            const net = totalThu - totalChi;
+            
+            document.getElementById('modal-total-thu').textContent = (totalThu || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('modal-total-chi').textContent = (totalChi || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('modal-net').textContent = (net || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('modal-net').className = `text-2xl font-black ${net >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            modal.classList.add('invisible', 'opacity-0');
+        }
+    </script>
+</body>
+
+</html>

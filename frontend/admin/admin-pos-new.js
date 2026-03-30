@@ -329,7 +329,7 @@ function updateOrderUI() {
                 <div class="order-item-meta">
                     <div class="order-qty-control">
                         <button class="qty-btn" onclick="updateQuantity(${item.ma_mon}, -1)">-</button>
-                        <span class="font-bold">${item.so_luong}</span>
+                        <span class="font-bold">${item.so_luong} <span class="text-[10px] font-normal uppercase">Phần</span></span>
                         <button class="qty-btn" onclick="updateQuantity(${item.ma_mon}, 1)">+</button>
                     </div>
                     <div class="flex items-center gap-2">
@@ -432,7 +432,7 @@ function showKitchenTicket() {
                 ${orderItems.map(i => `
                     <tr>
                         <td class="py-1">${i.ten_mon}</td>
-                        <td class="py-1 text-right font-bold text-xl">${i.so_luong}</td>
+                        <td class="py-1 text-right font-bold text-xl">${i.so_luong} <small class="text-xs font-normal uppercase">Phần</small></td>
                     </tr>
                     ${i.ghi_chu ? `<tr><td colspan="2" class="text-xs italic pl-4">- ${i.ghi_chu}</td></tr>` : ''}
                 `).join('')}
@@ -532,7 +532,7 @@ function showBill(method) {
                 ${orderItems.map((i, idx) => `
                     <tr style="border-bottom:1px solid #f1f5f9; background:${idx%2===0?'#fff':'#f8fafc'}">
                         <td style="padding:5px 0;">${i.ten_mon}${i.ghi_chu ? `<br><span style="font-size:9px;color:#94a3b8;font-style:italic;">${i.ghi_chu}</span>` : ''}</td>
-                        <td style="text-align:center; font-weight:700;">${i.so_luong}</td>
+                        <td style="text-align:center; font-weight:700;">${i.so_luong}<br><span style="font-size:8px;font-weight:normal;color:#94a3b8;text-transform:uppercase;">Phần</span></td>
                         <td style="text-align:right; color:#64748b;">${formatCurrency(i.gia)}</td>
                         <td style="text-align:right; font-weight:600;">${formatCurrency(i.gia * i.so_luong)}</td>
                     </tr>

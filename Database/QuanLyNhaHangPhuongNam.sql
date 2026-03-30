@@ -97,6 +97,14 @@ CREATE TABLE `mon_an` (
   CONSTRAINT `fk_mon_an_danhmuc` FOREIGN KEY (`ma_danh_muc`) REFERENCES `danh_muc` (`ma_danh_muc`)
 ) ENGINE=InnoDB;
 
+-- Lệnh thêm cột dinh_luong vào bảng mon_an
+ALTER TABLE `mon_an` 
+ADD COLUMN `dinh_luong` VARCHAR(50) DEFAULT NULL 
+AFTER `gia_tien`;
+
+DESCRIBE `mon_an`;
+
+
 -- --------------------------------------------------------
 -- 5. Bảng: ban (Bàn vật lý trong nhà hàng)
 -- --------------------------------------------------------
@@ -632,9 +640,12 @@ CREATE TABLE IF NOT EXISTS `nha_cung_cap` (
   `ma_nha_cung_cap` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `ten_nha_cung_cap` varchar(255) NOT NULL,
   `so_dien_thoai` varchar(20),
+  `email` varchar(100),
   `dia_chi` text,
   `ghi_chu` text,
-  `ngay_tao` datetime DEFAULT CURRENT_TIMESTAMP
+  `trang_thai` enum('dang_hop_tac', 'ngung_hop_tac') DEFAULT 'dang_hop_tac',
+  `ngay_tao` datetime DEFAULT CURRENT_TIMESTAMP,
+  `thoi_gian_cap_nhat` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2. Cập nhật bảng nguyen_lieu để quản lý giá và nhà cung cấp
@@ -809,6 +820,83 @@ SET FOREIGN_KEY_CHECKS = 1;
 UPDATE `nhan_vien` SET `luong_co_ban` = 15000000, `luong_theo_gio` = 0 WHERE `tai_khoan` = 'admin';
 UPDATE `nhan_vien` SET `luong_co_ban` = 5000000, `luong_theo_gio` = 25000 WHERE `tai_khoan` = 'nhanvien1';
 
+-- Tính năng Quản lý Nhập hàng và Kiểm kê nguyên liệu
+
+-- 1. Bảng phieu_nhap (Phiếu nhập hàng)
+CREATE TABLE IF NOT EXISTS `phieu_nhap` (
+  `ma_phieu_nhap` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `thoi_gian_nhap` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ma_nhan_vien` int DEFAULT NULL,
+  `tong_tien` decimal(15, 2) DEFAULT 0,
+  `ma_nha_cung_cap` int DEFAULT NULL,
+  `nha_cung_cap` varchar(255) COMMENT 'Tên NCC (dùng khi không chọn từ danh sách)',
+  `ghi_chu` text,
+  `trang_thai` varchar(50) DEFAULT 'hoan_tat' COMMENT 'cho_duyet, hoan_tat, huy',
+  CONSTRAINT `fk_phieunhap_nhanvien` FOREIGN KEY (`ma_nhan_vien`) REFERENCES `nhan_vien` (`ma_nhan_vien`) ON DELETE SET NULL,
+  CONSTRAINT `fk_phieunhap_ncc` FOREIGN KEY (`ma_nha_cung_cap`) REFERENCES `nha_cung_cap` (`ma_nha_cung_cap`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Bảng chi_tiet_phieu_nhap (Chi tiết mặt hàng nhập)
+CREATE TABLE IF NOT EXISTS `chi_tiet_phieu_nhap` (
+  `ma_chi_tiet` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `ma_phieu_nhap` int NOT NULL,
+  `ma_nguyen_lieu` int NOT NULL,
+  `so_luong_nhap` decimal(10, 2) NOT NULL,
+  `don_gia` decimal(15, 2) NOT NULL,
+  `don_vi_nhap` varchar(50),
+  CONSTRAINT `fk_ctpn_phieunhap` FOREIGN KEY (`ma_phieu_nhap`) REFERENCES `phieu_nhap` (`ma_phieu_nhap`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ctpn_nguyenlieu` FOREIGN KEY (`ma_nguyen_lieu`) REFERENCES `nguyen_lieu` (`ma_nguyen_lieu`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. Bảng kiem_ke (Phiếu kiểm kê)
+CREATE TABLE IF NOT EXISTS `kiem_ke` (
+  `ma_kiem_ke` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `thoi_gian_kiem_ke` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ma_nhan_vien` int DEFAULT NULL,
+  `ghi_chu` text,
+  `trang_thai` varchar(50) DEFAULT 'hoan_tat' COMMENT 'dang_kiem_ke, hoan_tat',
+  CONSTRAINT `fk_kiemke_nhanvien` FOREIGN KEY (`ma_nhan_vien`) REFERENCES `nhan_vien` (`ma_nhan_vien`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. Bảng chi_tiet_kiem_ke (Chi tiết mục kiểm kê)
+CREATE TABLE IF NOT EXISTS `chi_tiet_kiem_ke` (
+  `ma_chi_tiet` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `ma_kiem_ke` int NOT NULL,
+  `ma_nguyen_lieu` int NOT NULL,
+  `so_luong_he_thong` decimal(10, 2) NOT NULL COMMENT 'Số lượng trên app',
+  `so_luong_thuc_te` decimal(10, 2) NOT NULL COMMENT 'Số lượng đếm tay',
+  `chenh_lech` decimal(10, 2) NOT NULL,
+  `ly_do` text,
+  CONSTRAINT `fk_ctkk_kiemke` FOREIGN KEY (`ma_kiem_ke`) REFERENCES `kiem_ke` (`ma_kiem_ke`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ctkk_nguyenlieu` FOREIGN KEY (`ma_nguyen_lieu`) REFERENCES `nguyen_lieu` (`ma_nguyen_lieu`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS nha_cung_cap (
+    ma_nha_cung_cap INT AUTO_INCREMENT PRIMARY KEY,
+    ten_nha_cung_cap VARCHAR(255) NOT NULL,
+    so_dien_thoai VARCHAR(20) NOT NULL,
+    email VARCHAR(100),
+    dia_chi TEXT,
+    ghi_chu TEXT,
+    trang_thai ENUM('dang_hop_tac', 'ngung_hop_tac') DEFAULT 'dang_hop_tac',
+    thoi_gian_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    thoi_gian_cap_nhat TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Add some sample data
+INSERT INTO nha_cung_cap (ten_nha_cung_cap, so_dien_thoai, email, dia_chi, ghi_chu)
+VALUES 
+('Công ty Thực phẩm Sạch ABC', '0912345678', 'abc@food.vn', '123 Đường 3/2, Cần Thơ', 'Cung cấp thịt, cá tươi'),
+('Nông trại Rau Xanh Phương Nam', '0987654321', 'rauxanh@farm.vn', '456 Mỹ Thuận, Vĩnh Long', 'Cung cấp rau củ quả'),
+('Hải sản Tươi Sống Sông Tiền', '0901239876', 'haisansongtien@vinhlong.vn', '789 Bến đò Mỹ Thuận, Vĩnh Long', 'Chuyên hải sản, cua đồng');
+
+-- 3. Modify phieu_nhap to link with nha_cung_cap
+-- Add the foreign key field, keeping existing records as NULL
+ALTER TABLE phieu_nhap 
+ADD COLUMN ma_nha_cung_cap INT NULL,
+ADD CONSTRAINT fk_phieu_nhap_nha_cung_cap FOREIGN KEY (ma_nha_cung_cap) REFERENCES nha_cung_cap(ma_nha_cung_cap);
+
 -- 3. Chèn dữ liệu mẫu nhà cung cấp
 INSERT IGNORE INTO `nha_cung_cap` (`ten_nha_cung_cap`, `so_dien_thoai`, `dia_chi`, `ghi_chu`) VALUES
 ('Đại lý Thực phẩm Sạch Việt', '0901234567', '123 Đường ABC, Q1, TP.HCM', 'Cung cấp sườn, tôm, thịt'),
@@ -963,3 +1051,4 @@ SELECT * FROM email_verification;
 SELECT * FROM lich_su_chat;
 SELECT * FROM password_reset;
 SELECT * FROM thong_ke_ngay;
+SELECT * FROM CHAM_CONG;

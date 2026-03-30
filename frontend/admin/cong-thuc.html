@@ -24,6 +24,12 @@
             <div id="header-placeholder"></div>
 
             <main class="flex-1 overflow-y-auto p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Quản lý Công thức nấu ăn</h1>
+                        <p class="text-slate-500 text-sm">Thiết lập định lượng nguyên liệu cho từng món ăn</p>
+                    </div>
+                </div>
                 <!-- Filters -->
                 <div class="content-card mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -258,8 +264,9 @@
                         ${optionsHTML}
                     </select>
                 </div>
-                <div class="w-32">
-                    <input type="number" class="ing-qty w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="Số lượng..." value="${displayQty}" min="${minVal}" step="${stepVal}" oninput="fireDraftUpdate()">
+                <div class="w-36 relative">
+                    <input type="number" class="ing-qty w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 pr-12" placeholder="Số lượng..." value="${displayQty}" min="${minVal}" step="${stepVal}" oninput="fireDraftUpdate()">
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] uppercase font-bold text-slate-400 pointer-events-none">${selectedUnit}</span>
                 </div>
                 <button type="button" onclick="this.closest('.recipe-row').remove(); fireDraftUpdate()" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition">
                     <i class="fas fa-trash"></i>

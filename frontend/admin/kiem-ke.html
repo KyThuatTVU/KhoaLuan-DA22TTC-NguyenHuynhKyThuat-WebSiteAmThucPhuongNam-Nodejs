@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm Kê Kho - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Kiểm Kê Kho</h1>
+                        <p class="text-slate-500 text-sm">Đối soát kho thực tế và hệ thống (thường làm mỗi tối)</p>
+                    </div>
+                    <button onclick="startNewAudit()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold transition flex items-center shadow-lg shadow-indigo-200">
+                        <i class="fas fa-clipboard-check mr-2"></i> Bắt đầu Kiểm kê
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="content-card mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm theo ghi chú..."
+                            class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Audit History Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mã Phiếu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Thời gian</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Nhân viên</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Ghi chú</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Trạng thái</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audits-container" class="bg-white divide-y divide-slate-200">
+                            <tr>
+                                <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>Đang tải dữ liệu...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Audit Session Modal -->
+    <div id="audit-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-indigo-700 to-indigo-600 text-white rounded-t-2xl">
+                <div>
+                    <h3 class="text-xl font-bold">Phiếu Kiểm Kê Thực Tế</h3>
+                    <p class="text-xs text-indigo-100">Ngày kiểm kê: <span id="current-date"></span></p>
+                </div>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+
+            <div class="p-6 flex-1 overflow-y-auto bg-slate-50">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Ghi chú kiểm kê</label>
+                    <input type="text" id="audit-note" placeholder="Ví dụ: Kiểm kê cuối ngày 30/03..." class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div class="bg-white border rounded-xl overflow-hidden">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-slate-600 uppercase">Nguyên liệu</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-slate-600 uppercase">Đơn vị</th>
+                                <th class="px-4 py-3 text-right text-xs font-bold text-slate-600 uppercase">Tồn hệ thống</th>
+                                <th class="px-4 py-3 text-center text-xs font-bold text-slate-600 uppercase w-40">Tồn thực tế (Đếm tay)</th>
+                                <th class="px-4 py-3 text-right text-xs font-bold text-slate-600 uppercase">Chênh lệch</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-items-list" class="bg-white divide-y divide-slate-100">
+                            <!-- Items here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-4 border-t bg-white flex justify-end space-x-3 rounded-b-2xl">
+                <button onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                <button onclick="submitAudit()" class="bg-indigo-600 text-white px-8 py-2.5 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition">
+                    Xác nhận & Cân bằng kho
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b flex items-center justify-between bg-slate-800 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold">Kết quả kiểm kê #<span id="detail-id"></span></h3>
+                <button onclick="closeDetailModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 flex-1 overflow-y-auto" id="detail-content">
+                <!-- Content here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script>
+        let auditHistory = [];
+        let ingredients = [];
+
+        async function loadData() {
+            try {
+                // Load Ingredients
+                const resIng = await fetch(`${API_URL}/inventory`, { credentials: 'include' });
+                const dataIng = await resIng.json();
+                ingredients = dataIng.data || [];
+
+                // Load History
+                loadAuditHistory();
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadAuditHistory() {
+            try {
+                const res = await fetch(`${API_URL}/audits`, { credentials: 'include' });
+                const data = await res.json();
+                auditHistory = data.data || [];
+                renderAuditList(auditHistory);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderAuditList(items) {
+            const container = document.getElementById('audits-container');
+            if (items.length === 0) {
+                container.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Chưa có lịch sử kiểm kê</td></tr>`;
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4 text-sm font-bold text-indigo-600">#${item.ma_kiem_ke}</td>
+                    <td class="px-6 py-4 text-sm text-slate-500">${new Date(item.thoi_gian_kiem_ke).toLocaleString('vi-VN')}</td>
+                    <td class="px-6 py-4 text-sm text-slate-700">${item.ten_nhan_vien || 'Hệ thống'}</td>
+                    <td class="px-6 py-4 text-sm text-slate-500 italic max-w-xs truncate">${item.ghi_chu || 'Không có ghi chú'}</td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Hoàn tất</span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="viewDetail(${item.ma_kiem_ke})" class="text-indigo-600 hover:text-indigo-800 font-bold text-sm">
+                            <i class="fas fa-file-alt mr-1"></i> Xem báo cáo hụt
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function startNewAudit() {
+            document.getElementById('current-date').textContent = new Date().toLocaleString('vi-VN');
+            document.getElementById('audit-note').value = 'Kiểm kê cuối ngày ' + new Date().toLocaleDateString('vi-VN');
+            
+            const list = document.getElementById('audit-items-list');
+            list.innerHTML = ingredients.map(ing => `
+                <tr class="audit-row" data-id="${ing.ma_nguyen_lieu}" data-system="${ing.so_luong_ton}">
+                    <td class="px-4 py-3 font-medium text-slate-800">${ing.ten_nguyen_lieu}</td>
+                    <td class="px-4 py-3 text-sm text-slate-500 font-bold">${ing.don_vi_tinh}</td>
+                    <td class="px-4 py-3 text-right font-bold text-slate-600">${parseFloat(ing.so_luong_ton).toLocaleString('vi-VN')} <span class="text-xs text-slate-400 font-normal">${ing.don_vi_tinh}</span></td>
+                    <td class="px-4 py-3 relative">
+                        <input type="number" class="actual-qty w-full px-3 py-1.5 border border-slate-200 rounded text-center font-bold text-indigo-600 pr-10" 
+                               value="${ing.so_luong_ton}" oninput="updateDiff(this)">
+                        <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 pointer-events-none">${ing.don_vi_tinh}</span>
+                    </td>
+                    <td class="px-4 py-3 text-right font-bold diff-display text-slate-400">0</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('audit-modal').classList.remove('hidden');
+        }
+
+        function updateDiff(input) {
+            const row = input.closest('tr');
+            const system = parseFloat(row.dataset.system);
+            const actual = parseFloat(input.value) || 0;
+            const diff = actual - system;
+            const diffEl = row.querySelector('.diff-display');
+            
+            diffEl.textContent = (diff > 0 ? '+' : '') + diff.toLocaleString('vi-VN');
+            
+            if (diff > 0) diffEl.className = 'px-4 py-3 text-right font-bold diff-display text-emerald-600';
+            else if (diff < 0) diffEl.className = 'px-4 py-3 text-right font-bold diff-display text-red-600';
+            else diffEl.className = 'px-4 py-3 text-right font-bold diff-display text-slate-400';
+        }
+
+        function closeModal() {
+            document.getElementById('audit-modal').classList.add('hidden');
+        }
+
+        async function submitAudit() {
+            const rows = document.querySelectorAll('.audit-row');
+            const items = [];
+
+            rows.forEach(row => {
+                const id = parseInt(row.dataset.id);
+                const actual = parseFloat(row.querySelector('.actual-qty').value) || 0;
+                const system = parseFloat(row.dataset.system);
+
+                if (actual !== system) {
+                    items.push({
+                        ma_nguyen_lieu: id,
+                        so_luong_thuc_te: actual,
+                        ly_do: actual < system ? 'Hao hụt/Mất mát' : 'Cập nhật lại kho'
+                    });
+                } else {
+                     // Even if no diff, we might want to record it to confirm everything was checked
+                     items.push({
+                        ma_nguyen_lieu: id,
+                        so_luong_thuc_te: actual,
+                        ly_do: 'Khớp số liệu'
+                    });
+                }
+            });
+
+            if(!confirm('Bạn có chắc chắn muốn cân bằng lại kho theo số liệu thực tế? Thao tác này sẽ cập nhật số lượng tồn kho của tất cả nguyên liệu.')) return;
+
+            const data = {
+                ghi_chu: document.getElementById('audit-note').value,
+                items: items
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/audits`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    credentials: 'include'
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Đã hoàn tất kiểm kê và cân bằng lại toàn bộ kho hàng!');
+                    closeModal();
+                    loadData();
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi máy chủ');
+            }
+        }
+
+        async function viewDetail(id) {
+            try {
+                const res = await fetch(`${API_URL}/audits/${id}`, { credentials: 'include' });
+                const result = await res.json();
+                if (result.success) {
+                    const audit = result.data;
+                    document.getElementById('detail-id').textContent = audit.ma_kiem_ke;
+                    
+                    let html = `
+                        <div class="mb-6 grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-bold mb-1">Thời gian kiểm kê</p>
+                                <p class="text-slate-800">${new Date(audit.thoi_gian_kiem_ke).toLocaleString('vi-VN')}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 uppercase font-bold mb-1">Nhân viên thực hiện</p>
+                                <p class="text-slate-800">${audit.ten_nhan_vien || 'Admin'}</p>
+                            </div>
+                            <div class="col-span-2">
+                                <p class="text-xs text-slate-500 uppercase font-bold mb-1">Ghi chú</p>
+                                <p class="text-slate-800">${audit.ghi_chu || 'Không có ghi chú'}</p>
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-slate-800 mb-2">Bảng đối soát chi tiết</h4>
+                        <table class="min-w-full border rounded-lg overflow-hidden">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-bold">Nguyên liệu</th>
+                                    <th class="px-4 py-2 text-right text-xs font-bold">Hệ thống</th>
+                                    <th class="px-4 py-2 text-right text-xs font-bold">Thực tế</th>
+                                    <th class="px-4 py-2 text-right text-xs font-bold">Chênh lệch</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${audit.items.map(it => {
+                                    const diff = parseFloat(it.chenh_lech);
+                                    let diffClass = 'text-slate-400';
+                                    if(diff > 0) diffClass = 'text-emerald-600';
+                                    if(diff < 0) diffClass = 'text-red-600';
+
+                                    return `
+                                    <tr>
+                                        <td class="px-4 py-2 border-t">${it.ten_nguyen_lieu}</td>
+                                        <td class="px-4 py-2 border-t text-right font-mono text-slate-500">${parseFloat(it.so_luong_he_thong).toLocaleString('vi-VN')} <span class="text-[10px] uppercase font-bold">${it.don_vi_tinh}</span></td>
+                                        <td class="px-4 py-2 border-t text-right font-bold text-slate-800 font-mono">${parseFloat(it.so_luong_thuc_te).toLocaleString('vi-VN')} <span class="text-[10px] uppercase font-bold">${it.don_vi_tinh}</span></td>
+                                        <td class="px-4 py-2 border-t text-right font-bold ${diffClass} font-mono">
+                                            ${diff > 0 ? '+' : ''}${diff.toLocaleString('vi-VN')} <span class="text-[10px] uppercase font-bold">${it.don_vi_tinh}</span>
+                                        </td>
+                                    </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    document.getElementById('detail-content').innerHTML = html;
+                    document.getElementById('detail-modal').classList.remove('hidden');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        function applyFilters() {
+            const s = document.getElementById('search').value.toLowerCase();
+            const filtered = auditHistory.filter(h => 
+                (h.ghi_chu && h.ghi_chu.toLowerCase().includes(s))
+            );
+            renderAuditList(filtered);
+        }
+
+        loadData();
+    </script>
+</body>
+
+</html>
