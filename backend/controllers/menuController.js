@@ -313,7 +313,7 @@ const updateStock = async (req, res) => {
 // Thêm món ăn mới (Admin)
 const createDish = async (req, res) => {
     try {
-        const { ten_mon, ma_danh_muc, gia_tien, so_luong_ton, mo_ta_chi_tiet, trang_thai } = req.body;
+        const { ten_mon, ma_danh_muc, gia_tien, dinh_luong, so_luong_ton, mo_ta_chi_tiet, trang_thai } = req.body;
         const anh_mon = req.file ? '/images/' + req.file.filename : null;
 
         const stockQty = parseInt(so_luong_ton) || 0;
@@ -329,9 +329,9 @@ const createDish = async (req, res) => {
         }
 
         const [result] = await db.query(
-            `INSERT INTO mon_an (ten_mon, ma_danh_muc, gia_tien, so_luong_ton, mo_ta_chi_tiet, trang_thai, anh_mon) 
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [ten_mon, ma_danh_muc, gia_tien, stockQty, mo_ta_chi_tiet, finalStatus, anh_mon]
+            `INSERT INTO mon_an (ten_mon, ma_danh_muc, gia_tien, dinh_luong, so_luong_ton, mo_ta_chi_tiet, trang_thai, anh_mon) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [ten_mon, ma_danh_muc, gia_tien, dinh_luong, stockQty, mo_ta_chi_tiet, finalStatus, anh_mon]
         );
 
         res.json({
@@ -349,7 +349,7 @@ const createDish = async (req, res) => {
 // Cập nhật món ăn (Admin)
 const updateDish = async (req, res) => {
     try {
-        const { ten_mon, ma_danh_muc, gia_tien, so_luong_ton, mo_ta_chi_tiet, trang_thai } = req.body;
+        const { ten_mon, ma_danh_muc, gia_tien, dinh_luong, so_luong_ton, mo_ta_chi_tiet, trang_thai } = req.body;
         const anh_mon = req.file ? '/images/' + req.file.filename : null;
 
         const stockQty = parseInt(so_luong_ton) || 0;
@@ -368,10 +368,10 @@ const updateDish = async (req, res) => {
 
         const [result] = await db.query(
             `UPDATE mon_an 
-             SET ten_mon = ?, ma_danh_muc = ?, gia_tien = ?, so_luong_ton = ?, 
+             SET ten_mon = ?, ma_danh_muc = ?, gia_tien = ?, dinh_luong = ?, so_luong_ton = ?, 
                  mo_ta_chi_tiet = ?, trang_thai = ?, anh_mon = COALESCE(?, anh_mon)
              WHERE ma_mon = ?`,
-            [ten_mon, ma_danh_muc, gia_tien, stockQty, mo_ta_chi_tiet, finalStatus, anh_mon, req.params.id]
+            [ten_mon, ma_danh_muc, gia_tien, dinh_luong, stockQty, mo_ta_chi_tiet, finalStatus, anh_mon, req.params.id]
         );
 
         if (result.affectedRows === 0) {

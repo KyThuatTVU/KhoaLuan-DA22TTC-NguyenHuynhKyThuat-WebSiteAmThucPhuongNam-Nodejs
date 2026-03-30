@@ -87,7 +87,7 @@ const generatePayroll = async (req, res) => {
             } else {
                 await db.query(`
                     INSERT INTO bang_luong (ma_nhan_vien, thang, nam, luong_co_ban, tong_gio_lam, luong_theo_gio, thuong, phat, tong_luong, trang_thai)
-                    VALUES (?, ?, ?, ?, ?, ?, 0, 0, ?, 'Chưa thanh toán')
+                    VALUES (?, ?, ?, ?, ?, ?, 0, 0, ?, 'chua_thanh_toan')
                 `, [s.ma_nhan_vien, thang, nam, luongCoBan, tongGio, luongTheoGio, tongLuong]);
                 createdCount++;
             }
@@ -107,13 +107,17 @@ const generatePayroll = async (req, res) => {
 const updatePayrollReport = async (req, res) => {
     try {
         const { id } = req.params;
-        const { thuong, phat, trang_thai } = req.body;
+        const { thuong, phat, phu_cap, khau_tru, trang_thai } = req.body;
         
         const [[report]] = await db.query('SELECT * FROM bang_luong WHERE ma_luong = ?', [id]);
         if (!report) return res.status(404).json({ success: false, message: 'Bản ghi không tồn tại' });
 
-        const newThuong = thuong !== undefined ? parseFloat(thuong) : parseFloat(report.thuong);
-        const newPhat = phat !== undefined ? parseFloat(phat) : parseFloat(report.phat);
+        // Chấp nhận cả thuong/phat hoặc phu_cap/khau_tru từ frontend
+        const inputThuong = thuong !== undefined ? thuong : phu_cap;
+        const inputPhat = phat !== undefined ? phat : khau_tru;
+
+        const newThuong = inputThuong !== undefined ? parseFloat(inputThuong) : parseFloat(report.thuong);
+        const newPhat = inputPhat !== undefined ? parseFloat(inputPhat) : parseFloat(report.phat);
         
         // Tính lại tổng lương
         const tongLuongMoi = (parseFloat(report.luong_co_ban) + (report.tong_gio_lam * report.luong_theo_gio) + newThuong - newPhat).toFixed(2);

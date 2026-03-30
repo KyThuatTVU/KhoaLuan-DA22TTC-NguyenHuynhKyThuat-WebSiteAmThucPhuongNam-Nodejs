@@ -86,6 +86,10 @@
                         <p id="price-in-words" class="text-xs mt-1 text-blue-600 italic hidden"></p>
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Định lượng (ví dụ: 300g, 1 phần...)</label>
+                        <input type="text" id="dinh_luong" placeholder="Ví dụ: 300g, 2 người ăn..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-slate-700 mb-2">Số lượng tồn</label>
                         <input type="number" id="so_luong_ton" min="0" value="0" readonly title="Số lượng tồn được tính tự động từ Kho nguyên liệu và Công thức" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-100 text-slate-500 cursor-not-allowed">
                         <p id="stock-warning" class="text-xs mt-1 hidden"></p>
@@ -252,6 +256,7 @@
                                 </span>
                                 ${outOfStock ? '<span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-800 text-white">Hết hàng</span>' : 
                                   stockWarning ? '<span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">Sắp hết</span>' : ''}
+                                ${product.dinh_luong ? `<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700"><i class="fas fa-weight-hanging mr-1"></i>${product.dinh_luong}</span>` : ''}
                             </div>
                         </div>
                         <div class="p-5">
@@ -294,6 +299,7 @@
                 }
             }
             document.getElementById('product-id').value = ''; 
+            document.getElementById('dinh_luong').value = ''; // Reset định lượng
             document.getElementById('price-in-words').classList.add('hidden');
             document.getElementById('stock-warning').classList.add('hidden');
             document.getElementById('product-modal').classList.remove('hidden'); 
@@ -331,6 +337,7 @@
             const price = product.gia_tien || product.gia || '';
             document.getElementById('gia').value = price;
             showPriceInWords(price); // Hiển thị giá bằng chữ
+            document.getElementById('dinh_luong').value = product.dinh_luong || ''; // Gán định lượng
             const stock = product.so_luong_ton || 0;
             document.getElementById('so_luong_ton').value = stock;
             checkStockWarning(document.getElementById('so_luong_ton')); // Hiển thị cảnh báo số lượng
@@ -379,6 +386,7 @@
             formData.append('ten_mon', document.getElementById('ten_mon').value);
             formData.append('ma_danh_muc', document.getElementById('ma_danh_muc').value);
             formData.append('gia_tien', document.getElementById('gia').value);
+            formData.append('dinh_luong', document.getElementById('dinh_luong').value); // Thêm định lượng
             formData.append('so_luong_ton', stockValue);
             formData.append('mo_ta_chi_tiet', document.getElementById('mo_ta').value);
             formData.append('trang_thai', document.getElementById('trang_thai').value === 'con_hang' ? 1 : 0);

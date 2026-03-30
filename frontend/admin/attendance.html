@@ -9,24 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="admin-responsive.css">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         body { background: #f0f4f8; }
-        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
-        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
-        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
-        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
-        .content-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
-        .btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
-        
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-content { background: #fff; margin: 5% auto; padding: 0; border-radius: 16px; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        .modal-header { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 20px 24px; border-radius: 16px 16px 0 0; }
-        .modal-body { padding: 24px; }
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #1e3a5f; margin-bottom: 8px; }
-        .form-input, .form-select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; }
-
         .status-on-time { background: #dcfce7; color: #16a34a; }
         .status-late { background: #fef3c7; color: #d97706; }
         .status-early { background: #fee2e2; color: #dc2626; }
@@ -103,51 +91,60 @@
         </div>
     </div>
 
-    <!-- Manual Check Modal -->
+    <!-- Modal Chấm công -->
     <div id="checkModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header flex justify-between">
-                <h3 class="font-bold">Chỉnh sửa Chấm công</h3>
-                <button onclick="closeModal()"><i class="fas fa-times"></i></button>
+        <div class="modal-content relative">
+            <div class="modal-header">
+                <h3 class="text-lg font-bold">Chỉnh sửa Chấm công</h3>
+                <button onclick="closeModal()" class="text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="modal-body">
-                <form id="attendanceForm">
+            <form id="attendanceForm">
+                <div class="modal-body">
                     <input type="hidden" id="attendance-id">
+                    
                     <div class="form-group">
-                        <label class="form-label">Chọn nhân viên</label>
+                        <label class="form-label">Nhân viên</label>
                         <select id="form-staff" class="form-select" required></select>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Ngày chấm công</label>
                         <input type="date" id="form-date" class="form-input" required>
                     </div>
+
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
                             <label class="form-label">Giờ vào</label>
-                            <input type="time" id="form-in" class="form-input" required>
+                            <input type="time" id="form-in" class="form-input">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Giờ ra</label>
                             <input type="time" id="form-out" class="form-input">
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Đánh giá trạng thái</label>
                         <select id="form-status" class="form-select">
-                            <option value="Đúng giờ">Đúng giờ</option>
-                            <option value="Đi muộn">Đi muộn</option>
-                            <option value="Về sớm">Về sớm</option>
-                            <option value="Đi muộn, Về sớm">Mộn + Sớm</option>
-                            <option value="Ngoài ca">Ngoài ca / Tăng ca</option>
+                            <option value="dung_gio">Đúng giờ</option>
+                            <option value="di_muon">Đi muộn</option>
+                            <option value="ve_som">Về sớm</option>
+                            <option value="ngoai_ca">Ngoài ca</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Ghi chú (Lý do)</label>
-                        <textarea id="form-note" class="form-input h-20" placeholder="Nhập lý do đi muộn hoặc về sớm nếu có..."></textarea>
+                        <textarea id="form-note" class="form-textarea" placeholder="Nhập lý do đi muộn hoặc về sớm nếu có..."></textarea>
                     </div>
-                    <button type="submit" class="btn-primary w-full mt-4 py-3">Lưu bản ghi chấm công</button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-600 font-bold hover:bg-gray-50 transition">Hủy bỏ</button>
+                    <button type="submit" class="px-8 py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Lưu bản ghi</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -166,19 +163,33 @@
             
             loadStaffOptions();
             loadAttendance();
+
+            // Khởi tạo Flatpickr cho các input giờ
+            const fpConfig = {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                disableMobile: "true"
+            };
+            flatpickr("#form-in", fpConfig);
+            flatpickr("#form-out", fpConfig);
         });
 
         async function loadStaffOptions() {
             try {
                 const res = await fetch(STAFF_API);
                 const data = await res.json();
-                const staffList = data.data.filter(s => s.trang_thai === 1);
                 
-                document.getElementById('filter-staff').innerHTML = '<option value="">-- Tất cả nhân viên --</option>' + 
-                    staffList.map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien} (${s.vai_tro})</option>`).join('');
-                
-                document.getElementById('form-staff').innerHTML = staffList.map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien}</option>`).join('');
-            } catch (err) { console.error(err); }
+                if (data.success && Array.isArray(data.data)) {
+                    const staffList = data.data.filter(s => s.trang_thai === 1);
+                    
+                    document.getElementById('filter-staff').innerHTML = '<option value="">-- Tất cả nhân viên --</option>' + 
+                        staffList.map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien} (${s.vai_tro})</option>`).join('');
+                    
+                    document.getElementById('form-staff').innerHTML = staffList.map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien}</option>`).join('');
+                }
+            } catch (err) { console.error('Error loading staff options:', err); }
         }
 
         async function loadAttendance() {
@@ -194,16 +205,38 @@
                 const data = await res.json();
                 const body = document.getElementById('attendance-table-body');
                 
+                if (!data.success || !Array.isArray(data.data)) {
+                    body.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-gray-500 italic">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> ${(data.message || 'Không thể tải dữ liệu')}
+                    </td></tr>`;
+                    return;
+                }
+
+                if (data.data.length === 0) {
+                    body.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-gray-400 italic">Không có dữ liệu chấm công cho khoảng thời gian này</td></tr>';
+                    document.getElementById('count-on-time').innerText = '0';
+                    document.getElementById('count-late').innerText = '0';
+                    document.getElementById('count-early').innerText = '0';
+                    return;
+                }
+
                 let onTime = 0, late = 0, early = 0;
 
                 body.innerHTML = data.data.map(a => {
-                    const status = a.trang_thai || 'Đúng giờ';
+                    let statusLabel = 'Đúng giờ';
                     let statusClass = 'bg-gray-100 text-gray-600';
                     
-                    if(status.includes('Đúng giờ')) { statusClass = 'status-on-time'; onTime++; }
-                    else if(status.includes('Muộn')) { statusClass = 'status-late'; late++; }
-                    else if(status.includes('sớm')) { statusClass = 'status-early'; early++; }
-                    else if(status === 'Ngoài ca') { statusClass = 'status-outside'; }
+                    switch(a.trang_thai) {
+                        case 'dung_gio': statusLabel = 'Đúng giờ'; statusClass = 'status-on-time'; onTime++; break;
+                        case 'di_muon': statusLabel = 'Đi muộn'; statusClass = 'status-late'; late++; break;
+                        case 've_som': statusLabel = 'Về sớm'; statusClass = 'status-early'; early++; break;
+                        case 'ngoai_ca': statusLabel = 'Ngoài ca'; statusClass = 'status-outside'; break;
+                        default: 
+                            if(a.trang_thai && a.trang_thai.includes('muộn')) { statusLabel = a.trang_thai; statusClass = 'status-late'; late++; }
+                            else if(a.trang_thai && a.trang_thai.includes('sớm')) { statusLabel = a.trang_thai; statusClass = 'status-early'; early++; }
+                            else { statusLabel = a.trang_thai || 'Đúng giờ'; }
+                            break;
+                    }
 
                     return `
                         <tr class="border-b hover:bg-gray-50 transition">
@@ -224,7 +257,7 @@
                             </td>
                             <td class="py-4 px-4 text-center font-black text-blue-600">${a.so_gio_lam || '0'}h</td>
                             <td class="py-4 px-4">
-                                <span class="px-3 py-1.5 rounded-lg text-xs font-black uppercase ${statusClass}">${status}</span>
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-black uppercase ${statusClass}">${statusLabel}</span>
                             </td>
                             <td class="py-4 px-4 text-center">
                                 <button onclick="editAttendance(${a.ma_cham_cong})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
@@ -238,7 +271,11 @@
                 document.getElementById('count-late').innerText = late;
                 document.getElementById('count-early').innerText = early;
 
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error('Error loading attendance:', err);
+                const body = document.getElementById('attendance-table-body');
+                if(body) body.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-red-500 italic">Đã xảy ra lỗi khi kết nối với máy chủ</td></tr>';
+            }
         }
 
         function openManualCheckModal() {

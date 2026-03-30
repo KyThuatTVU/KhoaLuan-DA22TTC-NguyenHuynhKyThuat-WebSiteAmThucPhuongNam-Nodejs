@@ -5,6 +5,7 @@ const attendanceController = require('../controllers/attendanceController');
 // Quản lý chấm công
 router.get('/', attendanceController.getAttendanceRecords);
 router.post('/check-in-out', attendanceController.checkInOut);
+router.post('/manual', attendanceController.createManualAttendance);
 router.put('/:id', attendanceController.updateAttendanceRecord);
 router.delete('/:id', attendanceController.deleteAttendanceRecord);
 

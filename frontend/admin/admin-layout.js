@@ -14,38 +14,101 @@ const SIDEBAR_TEMPLATE = `
                 </div>
             </div>
         </div>
-        <nav class="flex-1 overflow-y-auto p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
-            <div class="space-y-1">
-                <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
-                <a href="admin-pos-new.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos"><i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span></a>
-                <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
-                <a href="categories.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-categories"><i class="fas fa-tags w-5"></i><span class="text-sm font-medium">Danh mục</span></a>
-                <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
-                <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
-                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
-                <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
-                <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span></a>
-                <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
-                <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
-                <a href="shifts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-clock w-5"></i><span class="text-sm">Ca làm việc</span></a>
-                <a href="attendance.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-check-double w-5"></i><span class="text-sm">Chấm công</span></a>
-                <a href="payroll.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-money-bill-wave w-5"></i><span class="text-sm">Bảng lương</span></a>
-                <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
-                <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
-                <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
-                <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+        <nav class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            <!-- 1. Tổng quan -->
+            <p class="nav-group-title">Tổng quan</p>
+            <div class="space-y-1 mb-6">
+                <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span>
+                </a>
             </div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3 menu-content-title">Nội dung</p>
-            <div class="space-y-1 menu-content-group">
-                <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
-                <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
-                <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
-                <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+
+            <!-- 2. Nghiệp vụ bán hàng -->
+            <p class="nav-group-title">Nghiệp vụ bán hàng</p>
+            <div class="space-y-1 mb-6">
+                <a href="admin-pos-new.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos">
+                    <i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span>
+                </a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span>
+                </a>
+                <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span>
+                </a>
+                <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
+                </a>
             </div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3 menu-system-title">Hệ thống</p>
-            <div class="space-y-1 menu-system-group">
-                <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+
+            <!-- 3. Thực đơn & Chế biến -->
+            <p class="nav-group-title">Thực đơn & Chế biến</p>
+            <div class="space-y-1 mb-6">
+                <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span>
+                </a>
+                <a href="categories.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-categories">
+                    <i class="fas fa-tags w-5"></i><span class="text-sm font-medium">Danh mục</span>
+                </a>
+                <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span>
+                </a>
+                <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span>
+                </a>
+            </div>
+
+            <!-- 4. Quản lý nhân sự -->
+            <p class="nav-group-title staff-group-title">Quản lý nhân sự</p>
+            <div class="space-y-1 mb-6 staff-group-content">
+                <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span>
+                </a>
+                <a href="shifts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-clock w-5"></i><span class="text-sm">Ca làm việc</span>
+                </a>
+                <a href="attendance.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-check-double w-5"></i><span class="text-sm">Chấm công</span>
+                </a>
+                <a href="payroll.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-money-bill-wave w-5"></i><span class="text-sm">Bảng lương</span>
+                </a>
+            </div>
+
+            <!-- 5. Khách hàng & Tiếp thị -->
+            <p class="nav-group-title">Khách hàng & Tiếp thị</p>
+            <div class="space-y-1 mb-6">
+                <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span>
+                </a>
+                <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span>
+                </a>
+                <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span>
+                </a>
+                <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span>
+                </a>
+                <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span>
+                </a>
+            </div>
+
+            <!-- 6. Nội dung & Hệ thống -->
+            <p class="nav-group-title content-system-title">Nội dung & Hệ thống</p>
+            <div class="space-y-1 content-system-group">
+                <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span>
+                </a>
+                <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận</span>
+                </a>
+                <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span>
+                </a>
+                <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt hệ thống</span>
+                </a>
             </div>
         </nav>
         <div class="p-4 border-t border-white/10">
@@ -59,7 +122,9 @@ const SIDEBAR_TEMPLATE = `
                 </div>
                 <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
                     <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
-                    <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                    <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+                    </button>
                 </div>
             </div>
         </div>
@@ -194,27 +259,33 @@ function toggleSidebar() {
 
 function applyRBAC(adminUser) {
     if (!adminUser) return;
-    const currentRole = adminUser.role || 'staff';
+    const currentRole = (adminUser.role || 'staff').toLowerCase();
+    
+    console.log('🛡️ Applying RBAC for role:', currentRole);
     
     // Hide based on role
     if (currentRole === 'staff') {
         const forbidden = ['dashboard.html', 'products.html', 'categories.html', 'customers.html', 'staff.html', 'settings.html', 'shifts.html', 'attendance.html', 'payroll.html'];
         forbidden.forEach(h => {
             const el = document.querySelector(`a[href="${h}"]`);
-            if (el) el.remove();
+            if (el && !window.location.pathname.endsWith(h)) el.remove();
         });
-        document.querySelector('.menu-content-title')?.remove();
-        document.querySelector('.menu-content-group')?.remove();
-        document.querySelector('.menu-system-title')?.remove();
-        document.querySelector('.menu-system-group')?.remove();
+        document.querySelector('.staff-group-title')?.remove();
+        document.querySelector('.staff-group-content')?.remove();
+        document.querySelector('.content-system-title')?.remove();
+        document.querySelector('.content-system-group')?.remove();
     } else if (currentRole === 'manager') {
-        ['staff.html', 'shifts.html', 'attendance.html', 'payroll.html', 'settings.html'].forEach(h => {
+        const forbidden = ['staff.html', 'shifts.html', 'attendance.html', 'payroll.html', 'settings.html'];
+        forbidden.forEach(h => {
              const el = document.querySelector(`a[href="${h}"]`);
-             if (el) el.remove();
+             if (el && !window.location.pathname.endsWith(h)) el.remove();
         });
-        document.querySelector('.menu-system-title')?.remove();
-        document.querySelector('.menu-system-group')?.remove();
+        // We might keep the group titles if some items remain, but settings is forbidden
+        const settingsLink = document.querySelector('a[href="settings.html"]');
+        if (settingsLink) settingsLink.remove();
     }
+    
+    // Admin role doesn't hide anything
     
     const roleBadge = document.getElementById('user-role-badge');
     if (roleBadge) {
@@ -223,13 +294,51 @@ function applyRBAC(adminUser) {
 }
 
 function setActiveNavLink() {
-    const path = window.location.pathname;
-    const currentPage = path.split('/').pop().split('?')[0] || 'dashboard.html';
-    document.querySelectorAll('.sidebar-item').forEach(link => {
-        const linkPage = link.getAttribute('href').split('/').pop().split('?')[0];
-        if (linkPage === currentPage) link.classList.add('active');
-        else link.classList.remove('active');
-    });
+    // Add small delay to ensure DOM is settled after injection
+    setTimeout(() => {
+        const path = window.location.pathname;
+        const currentPage = path.split('/').pop().split('?')[0] || 'dashboard.html';
+        const pageName = currentPage.replace('.html', '').toLowerCase();
+        
+        console.log('📍 Current Page Path:', path);
+        console.log('📍 Page Name:', pageName);
+        
+        // Map sub-pages to parent sidebar items
+        const subPageMap = {
+            'admin-pos-new': 'admin-pos-new',
+            'admin-pos-order': 'admin-pos-new',
+            'admin-pos-tables': 'admin-pos-new',
+            'quan-ly-binh-luan': 'quan-ly-binh-luan',
+            'quan-ly-danh-gia-tin-tuc': 'quan-ly-binh-luan',
+            // Detailed pages for staff, products, etc.
+            'staff-detail': 'staff',
+            'product-detail': 'products',
+            'order-detail': 'orders'
+        };
+        
+        const activeBasePage = subPageMap[pageName] || pageName;
+        let activeElement = null;
+        
+        document.querySelectorAll('.sidebar-item').forEach(link => {
+            const h = link.getAttribute('href');
+            if (!h) return;
+            
+            const linkPage = h.split('/').pop().split('?')[0].replace('.html', '').toLowerCase();
+            
+            if (linkPage === activeBasePage) {
+                link.classList.add('active');
+                activeElement = link;
+                console.log('✅ Active Link Set:', linkPage);
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        // AUTO-SCROLL to active item so user always knows where they are
+        if (activeElement) {
+            activeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, 100);
 }
 
 // Layout Injection Engine

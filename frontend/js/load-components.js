@@ -478,50 +478,49 @@ window.handleLogout = function() {
 
 // Set active navigation link based on current page
 function setActiveNavLink() {
-    // Wait a bit for navbar to be fully loaded
+    // Wait a bit for navbar to be fully loaded and settled
     setTimeout(() => {
         // Get current page filename
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        const pageName = currentPage.replace('.html', '');
+        const path = window.location.pathname;
+        const currentPage = path.split('/').pop().split('?')[0] || 'index.html';
+        const pageName = currentPage.replace('.html', '').toLowerCase();
         
-        console.log('📍 Current page:', pageName);
-        console.log('📍 Full path:', window.location.pathname);
+        console.log('📍 Frontend Page:', pageName);
         
-        // Set active state for desktop nav links
-        const navLinks = document.querySelectorAll('.nav-link');
-        console.log('🔍 Found nav links:', navLinks.length);
+        // Map sub-pages to their parent menu items
+        const subPageMap = {
+            'tin-tuc-chi-tiet': 'tin-tuc',
+            'chitietmonan': 'thuc-don',
+            'gio-hang': 'gio-hang',
+            'thanh-toan': 'gio-hang',
+            'dat-hang-thanh-cong': 'gio-hang',
+            'tai-khoan': 'tai-khoan'
+        };
         
-        navLinks.forEach(link => {
-            const linkPage = link.getAttribute('data-page');
-            console.log('🔗 Checking link:', linkPage, 'vs', pageName);
+        const activeBasePage = subPageMap[pageName] || pageName;
+        
+        // Desktop nav links highlight
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const linkPage = (link.getAttribute('data-page') || '').toLowerCase();
             
-            // Remove active class first
-            link.classList.remove('active');
-            
-            // Add active class if matches
-            if (linkPage === pageName || (pageName === '' && linkPage === 'index')) {
+            if (linkPage === activeBasePage) {
                 link.classList.add('active');
-                console.log('✅ Active link set:', linkPage);
+            } else {
+                link.classList.remove('active');
             }
         });
         
-        // Set active state for mobile nav links
-        const mobileNavLinks = document.querySelectorAll('.nav-link-mobile');
-        console.log('🔍 Found mobile nav links:', mobileNavLinks.length);
-        
-        mobileNavLinks.forEach(link => {
-            const linkPage = link.getAttribute('data-page');
+        // Mobile nav links highlight
+        document.querySelectorAll('.nav-link-mobile').forEach(link => {
+            const linkPage = (link.getAttribute('data-page') || '').toLowerCase();
             
-            // Remove active class first
-            link.classList.remove('active');
-            
-            // Add active class if matches
-            if (linkPage === pageName || (pageName === '' && linkPage === 'index')) {
+            if (linkPage === activeBasePage) {
                 link.classList.add('active');
-                console.log('✅ Active mobile link set:', linkPage);
+            } else {
+                link.classList.remove('active');
             }
         });
-    }, 200); // Wait 200ms for navbar to load
+    }, 300);
 }
 
 // Load components when DOM is ready

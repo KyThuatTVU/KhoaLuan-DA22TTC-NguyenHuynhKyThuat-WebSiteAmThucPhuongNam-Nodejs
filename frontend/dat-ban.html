@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="css/modern-style.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/loading.css">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         .menu-item-card {
             transition: all 0.3s ease;
@@ -208,7 +212,10 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium mb-2">Giờ đến *</label>
-                                    <input type="time" id="gio_den" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600">
+                                    <div class="relative">
+                                        <input type="text" id="gio_den" required class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:border-orange-600 time-picker" placeholder="Chọn giờ đến">
+                                        <i class="fas fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-start">
@@ -617,7 +624,20 @@
             
             const hoursStr = String(hours).padStart(2, '0');
             const minutesStr = String(minutes).padStart(2, '0');
-            document.getElementById('gio_den').value = `${hoursStr}:${minutesStr}`;
+            const timeValue = `${hoursStr}:${minutesStr}`;
+            
+            // Khởi tạo Flatpickr cho giờ đến
+            flatpickr("#gio_den", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                defaultDate: timeValue,
+                minuteIncrement: 15, // Cho phép bước nhảy 15 phút cho dễ chọn
+                disableMobile: "true" // Sử dụng Flatpickr trên mobile thay vì native picker
+            });
+            
+            document.getElementById('gio_den').value = timeValue;
         }
         
         // Setup event listeners

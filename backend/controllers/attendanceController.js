@@ -59,7 +59,7 @@ const checkInOut = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Bạn đang trong ca làm việc (chưa check-out)!' });
             }
 
-            let status = 'Đúng giờ';
+            let status = 'dung_gio';
             let assignedShiftId = null;
 
             if (shiftAssignments.length > 0) {
@@ -68,10 +68,10 @@ const checkInOut = async (req, res) => {
                 assignedShiftId = shift.ma_ca;
                 
                 if (time > shift.gio_bat_dau) {
-                    status = 'Đi muộn';
+                    status = 'di_muon';
                 }
             } else {
-                status = 'Ngoài ca';
+                status = 'ngoai_ca';
             }
 
             await db.query(
@@ -110,7 +110,7 @@ const checkInOut = async (req, res) => {
             if (shiftAssignments.length > 0) {
                 const shift = shiftAssignments[0];
                 if (time < shift.gio_ket_thuc) {
-                    status = status === 'Đúng giờ' ? 'Về sớm' : status + ', Về sớm';
+                    status = 've_som';
                 }
             }
 
@@ -141,7 +141,12 @@ const checkInOut = async (req, res) => {
 const updateAttendanceRecord = async (req, res) => {
     try {
         const { id } = req.params;
-        const { gio_vao, gio_ra, so_gio_lam, trang_thai, ghi_chu } = req.body;
+        let { gio_vao, gio_ra, so_gio_lam, trang_thai, ghi_chu } = req.body;
+        
+        // Đảm bảo định dạng HH:MM:SS cho MySQL TIME column
+        gio_vao = formatTimeToFull(gio_vao);
+        gio_ra = formatTimeToFull(gio_ra);
+
         await db.query(`
             UPDATE cham_cong 
             SET gio_vao = ?, gio_ra = ?, so_gio_lam = ?, trang_thai = ?, ghi_chu = ?
@@ -164,9 +169,46 @@ const deleteAttendanceRecord = async (req, res) => {
     }
 };
 
+// Admin tạo thủ công bản ghi chấm công
+const createManualAttendance = async (req, res) => {
+    try {
+        let { ma_nhan_vien, ngay, gio_vao, gio_ra, so_gio_lam, trang_thai, ghi_chu } = req.body;
+        
+        // Đảm bảo định dạng HH:MM:SS cho MySQL TIME column
+        gio_vao = formatTimeToFull(gio_vao);
+        gio_ra = formatTimeToFull(gio_ra);
+
+        const [result] = await db.query(
+            'INSERT INTO cham_cong (ma_nhan_vien, ngay, gio_vao, gio_ra, so_gio_lam, trang_thai, ghi_chu) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [ma_nhan_vien, ngay, gio_vao, gio_ra, so_gio_lam, trang_thai, ghi_chu]
+        );
+        
+        res.json({ 
+            success: true, 
+            message: 'Thêm bản ghi chấm công thủ công thành công!',
+            data: { ma_cham_cong: result.insertId }
+        });
+    } catch (error) {
+        console.error('CreateManualAttendance Error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getAttendanceRecords,
     checkInOut,
     updateAttendanceRecord,
-    deleteAttendanceRecord
+    deleteAttendanceRecord,
+    createManualAttendance
 };
+
+// Helper to format time strings HH:MM to HH:MM:00 for MySQL TIME type
+function formatTimeToFull(timeStr) {
+    if (!timeStr) return null;
+    if (typeof timeStr !== 'string') return timeStr;
+    // Handle HH:MM format from <input type="time">
+    if (timeStr.length === 5 && timeStr.includes(':')) {
+        return `${timeStr}:00`;
+    }
+    return timeStr;
+}

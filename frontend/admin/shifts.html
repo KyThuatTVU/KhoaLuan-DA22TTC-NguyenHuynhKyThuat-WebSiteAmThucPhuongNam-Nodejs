@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="admin-responsive.css">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         body {
             background: #f0f4f8;
@@ -56,57 +60,6 @@
             transition: all 0.2s;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-content {
-            background: #fff;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 16px;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%);
-            color: #fff;
-            padding: 20px 24px;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #1e3a5f;
-            margin-bottom: 8px;
-        }
-
-        .form-input,
-        .form-select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.875rem;
-        }
     </style>
 </head>
 
@@ -200,11 +153,17 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
                             <label class="form-label">Giở bắt đầu</label>
-                            <input type="time" id="shift-start" class="form-input" required>
+                            <div class="relative">
+                                <input type="text" id="shift-start" class="form-input time-picker" required placeholder="00:00">
+                                <i class="fas fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Giờ kết thúc</label>
-                            <input type="time" id="shift-end" class="form-input" required>
+                            <div class="relative">
+                                <input type="text" id="shift-end" class="form-input time-picker" required placeholder="00:00">
+                                <i class="fas fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -263,6 +222,17 @@
             loadShifts();
             loadSchedules();
             loadStaffOptions();
+
+            // Khởi tạo Flatpickr cho các input giờ
+            const fpConfig = {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                disableMobile: "true"
+            };
+            flatpickr("#shift-start", fpConfig);
+            flatpickr("#shift-end", fpConfig);
         });
 
         function changeDay(offset) {
@@ -280,6 +250,17 @@
                 const body = document.getElementById('shift-table-body');
                 const selectShift = document.getElementById('select-shift');
                 
+                if (!data.success || !Array.isArray(data.data)) {
+                    body.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi tải danh sách ca</td></tr>';
+                    return;
+                }
+
+                if (data.data.length === 0) {
+                    body.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500 italic">Chưa có ca làm việc nào</td></tr>';
+                    selectShift.innerHTML = '<option value="">-- Chưa có ca --</option>';
+                    return;
+                }
+
                 body.innerHTML = data.data.map(s => `
                     <tr class="border-b transition hover:bg-gray-50">
                         <td class="py-4 px-4 font-bold text-gray-800">${s.ten_ca}</td>
@@ -287,14 +268,14 @@
                         <td class="py-4 px-4 text-gray-600 font-medium">${s.gio_ket_thuc}</td>
                         <td class="py-4 px-4"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg font-bold">x${s.he_so_luong}</span></td>
                         <td class="py-4 px-4 text-center">
-                            <button onclick="editShift(${s.ma_ca})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
-                            <button onclick="deleteShift(${s.ma_ca})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                            <button onclick="editShift(${s.id})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
+                            <button onclick="deleteShift(${s.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
                         </td>
                     </tr>
                 `).join('');
 
-                selectShift.innerHTML = data.data.map(s => `<option value="${s.ma_ca}">${s.ten_ca} (${s.gio_bat_dau} - ${s.gio_ket_thuc})</option>`).join('');
-            } catch (err) { console.error(err); }
+                selectShift.innerHTML = data.data.map(s => `<option value="${s.id}">${s.ten_ca} (${s.gio_bat_dau} - ${s.gio_ket_thuc})</option>`).join('');
+            } catch (err) { console.error('Error loading shifts:', err); }
         }
 
         async function loadSchedules() {
@@ -304,6 +285,11 @@
                 const data = await res.json();
                 const body = document.getElementById('schedule-table-body');
                 
+                if (!data.success || !Array.isArray(data.data)) {
+                    body.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-red-500">Lỗi kết nối server</td></tr>';
+                    return;
+                }
+
                 if (data.data.length === 0) {
                     body.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-gray-400 italic">Chưa có ai làm việc ngày này</td></tr>';
                     return;
@@ -330,23 +316,25 @@
                             <td class="py-4 px-4">${statusBadge}</td>
                             <td class="py-4 px-4 text-center">
                                 ${s.trang_thai === 'scheduled' ? `
-                                    <button onclick="deleteSchedule(${s.ma_phan_ca})" class="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-times"></i></button>
+                                    <button onclick="deleteSchedule(${s.id})" class="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-times"></i></button>
                                 ` : '-'}
                             </td>
                         </tr>
                     `;
                 }).join('');
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error('Error loading schedules:', err); }
         }
 
         async function loadStaffOptions() {
             try {
                 const res = await fetch(STAFF_API);
                 const data = await res.json();
-                document.getElementById('select-staff').innerHTML = data.data
-                    .filter(s => s.trang_thai === 1)
-                    .map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien} (${s.vai_tro})</option>`).join('');
-            } catch (err) { console.error(err); }
+                if (data.success && Array.isArray(data.data)) {
+                    document.getElementById('select-staff').innerHTML = data.data
+                        .filter(s => s.trang_thai === 1)
+                        .map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien} (${s.vai_tro})</option>`).join('');
+                }
+            } catch (err) { console.error('Error loading staff options:', err); }
         }
 
         function openShiftModal(id = null) {
@@ -362,9 +350,9 @@
             try {
                 const res = await fetch(SHIFT_API);
                 const data = await res.json();
-                const s = data.data.find(x => x.ma_ca === id);
+                const s = data.data.find(x => x.id === id);
                 if(s) {
-                    document.getElementById('shift-id').value = s.ma_ca;
+                    document.getElementById('shift-id').value = s.id;
                     document.getElementById('shift-name').value = s.ten_ca;
                     document.getElementById('shift-start').value = s.gio_bat_dau;
                     document.getElementById('shift-end').value = s.gio_ket_thuc;

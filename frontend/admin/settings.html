@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="admin-responsive.css">
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
     <div class="flex h-screen overflow-hidden">
@@ -47,17 +51,29 @@
                             <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                                 <span class="font-medium text-slate-700">Thứ 2 - Thứ 6</span>
                                 <div class="flex items-center space-x-2">
-                                    <input type="time" id="gio_mo_t2t6" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                    <div class="relative">
+                                        <input type="text" id="gio_mo_t2t6" class="pl-3 pr-8 py-2 border border-slate-200 rounded-xl w-32 time-picker" placeholder="00:00">
+                                        <i class="fas fa-clock absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                                    </div>
                                     <span class="text-slate-400">-</span>
-                                    <input type="time" id="gio_dong_t2t6" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                    <div class="relative">
+                                        <input type="text" id="gio_dong_t2t6" class="pl-3 pr-8 py-2 border border-slate-200 rounded-xl w-32 time-picker" placeholder="00:00">
+                                        <i class="fas fa-clock absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                                 <span class="font-medium text-slate-700">Thứ 7 - Chủ nhật</span>
                                 <div class="flex items-center space-x-2">
-                                    <input type="time" id="gio_mo_t7cn" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                    <div class="relative">
+                                        <input type="text" id="gio_mo_t7cn" class="pl-3 pr-8 py-2 border border-slate-200 rounded-xl w-32 time-picker" placeholder="00:00">
+                                        <i class="fas fa-clock absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                                    </div>
                                     <span class="text-slate-400">-</span>
-                                    <input type="time" id="gio_dong_t7cn" class="px-3 py-2 border border-slate-200 rounded-xl">
+                                    <div class="relative">
+                                        <input type="text" id="gio_dong_t7cn" class="pl-3 pr-8 py-2 border border-slate-200 rounded-xl w-32 time-picker" placeholder="00:00">
+                                        <i class="fas fa-clock absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,6 +177,16 @@
         function stopAllEffects() { if (window.ChristmasIntro) window.ChristmasIntro.hide?.(); if (window.TetIntro) window.TetIntro.hide?.(); }
 
         loadSettings();
+
+        // Khởi tạo Flatpickr cho các input giờ
+        const fpConfig = {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            disableMobile: "true"
+        };
+        flatpickr(".time-picker", fpConfig);
     </script>
 </body>
 </html>

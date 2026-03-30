@@ -18,13 +18,7 @@
         .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
         .content-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08); }
         .btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); }
-        .modal-content { background: #fff; margin: 5% auto; padding: 0; border-radius: 16px; max-width: 500px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
-        .modal-header { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 20px 24px; border-radius: 16px 16px 0 0; }
-        .modal-body { padding: 24px; }
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #1e3a5f; margin-bottom: 8px; }
-        .form-input, .form-select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; }
+        .btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
     </style>
 </head>
 <body>
@@ -120,40 +114,43 @@
         </div>
     </div>
 
-    <!-- Edit Payroll Modal -->
+    <!-- Modal Sửa lương -->
     <div id="payrollModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header flex justify-between">
-                <h3 class="font-bold">Điều chỉnh phiếu lương</h3>
-                <button onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h3 class="text-lg font-bold">Chỉnh sửa phiếu lương</h3>
+                <button onclick="closeModal()" class="text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="modal-body">
-                <form id="payrollForm">
+            <form id="payrollForm">
+                <div class="modal-body">
                     <input type="hidden" id="payroll-id">
-                    <div id="payroll-info" class="mb-4 p-3 bg-blue-50 rounded-lg text-sm font-medium text-blue-700"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label class="form-label">Phụ cấp (VND)</label>
-                            <input type="number" id="form-bonus" class="form-input" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Khấu trừ / Phạt (VND)</label>
-                            <input type="number" id="form-deduct" class="form-input" value="0">
-                        </div>
-                    </div>
+                    <p id="payroll-info" class="text-blue-600 font-bold mb-4 bg-blue-50 p-3 rounded-lg"></p>
+                    
                     <div class="form-group">
-                        <label class="form-label">Trạng thái phát lương</label>
+                        <label class="form-label">Phụ cấp (VNĐ)</label>
+                        <input type="number" id="form-bonus" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Khấu trừ (VNĐ)</label>
+                        <input type="number" id="form-deduct" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái thanh toán</label>
                         <select id="form-status" class="form-select">
-                            <option value="Chưa thanh toán">Chưa thanh toán</option>
-                            <option value="Đã thanh toán">Đã thanh toán</option>
+                            <option value="chua_thanh_toan">Chưa thanh toán</option>
+                            <option value="da_thanh_toan">Đã thanh toán</option>
                         </select>
                     </div>
-                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 mb-4">
-                        * Tổng thực lĩnh = (Lương cơ bản + Lương theo giờ) + Phụ cấp - Khấu trừ.
-                    </div>
-                    <button type="submit" class="btn-primary w-full py-3 font-bold">Cập nhật phiếu lương</button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-600 font-bold hover:bg-gray-50 transition">Hủy bỏ</button>
+                    <button type="submit" class="px-8 py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Cập nhật</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -178,6 +175,20 @@
                 const data = await res.json();
                 const body = document.getElementById('payroll-table-body');
 
+                if (!data.success || !Array.isArray(data.data)) {
+                    body.innerHTML = '<tr><td colspan="8" class="text-center py-10 text-red-500">Lỗi kết nối máy chủ hoặc dữ liệu không hợp lệ</td></tr>';
+                    return;
+                }
+
+                if (data.data.length === 0) {
+                    body.innerHTML = '<tr><td colspan="8" class="text-center py-10 text-gray-400 italic">Chưa có bảng lương cho kỳ này. Nhấn "Khởi tạo & Tính toán" để tạo mới.</td></tr>';
+                    document.getElementById('total-payout').innerText = '0đ';
+                    document.getElementById('paid-amount').innerText = '0đ';
+                    document.getElementById('unpaid-amount').innerText = '0đ';
+                    document.getElementById('staff-count').innerText = '0';
+                    return;
+                }
+
                 let total = 0, paid = 0, unpaid = 0;
 
                 body.innerHTML = data.data.map(p => {
@@ -186,12 +197,15 @@
                     const netSalary = parseFloat(p.tong_luong || 0);
                     
                     total += netSalary;
-                    if(p.trang_thai === 'Đã thanh toán') paid += netSalary;
+                    const isPaid = p.trang_thai === 'da_thanh_toan' || p.trang_thai === 'Đã thanh toán';
+                    if(isPaid) paid += netSalary;
                     else unpaid += netSalary;
 
-                    const statusClass = p.trang_thai === 'Đã thanh toán' 
+                    const statusClass = isPaid
                         ? 'bg-emerald-100 text-emerald-700' 
                         : 'bg-amber-100 text-amber-700';
+                    
+                    const statusLabel = isPaid ? 'Đã thanh toán' : 'Chưa thanh toán';
 
                     return `
                         <tr class="border-b hover:bg-slate-50 transition">
@@ -207,14 +221,14 @@
                                 <p class="font-black text-blue-600">${p.tong_gio_lam}h</p>
                                 <p class="text-[10px] text-gray-400">@${parseFloat(p.luong_theo_gio).toLocaleString()}đ/h</p>
                             </td>
-                            <td class="py-4 px-4 text-right text-emerald-600 font-bold">+${parseFloat(p.phu_cap).toLocaleString()}đ</td>
-                            <td class="py-4 px-4 text-right text-rose-600 font-bold">-${parseFloat(p.khau_tru).toLocaleString()}đ</td>
+                            <td class="py-4 px-4 text-right text-emerald-600 font-bold">+${parseFloat(p.thuong || 0).toLocaleString()}đ</td>
+                            <td class="py-4 px-4 text-right text-rose-600 font-bold">-${parseFloat(p.phat || 0).toLocaleString()}đ</td>
                             <td class="py-4 px-4 text-right">
                                 <p class="text-lg font-black text-indigo-700">${netSalary.toLocaleString()}đ</p>
                             </td>
                             <td class="py-4 px-4 text-center">
                                 <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase ${statusClass}">
-                                    ${p.trang_thai}
+                                    ${statusLabel}
                                 </span>
                             </td>
                             <td class="py-4 px-4 text-center">
@@ -230,7 +244,7 @@
                 document.getElementById('unpaid-amount').innerText = unpaid.toLocaleString() + 'đ';
                 document.getElementById('staff-count').innerText = data.data.length;
 
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error('Error loading payroll:', err); }
         }
 
         async function generatePayroll() {
@@ -257,24 +271,27 @@
                 const year = document.getElementById('filter-year').value;
                 const res = await fetch(`${PAYROLL_API}?thang=${month}&nam=${year}`);
                 const data = await res.json();
-                const p = data.data.find(x => x.ma_luong === id);
-                if (p) {
-                    document.getElementById('payroll-id').value = p.ma_luong;
-                    document.getElementById('form-bonus').value = p.phu_cap || 0;
-                    document.getElementById('form-deduct').value = p.khau_tru || 0;
-                    document.getElementById('form-status').value = p.trang_thai || 'Chưa thanh toán';
-                    document.getElementById('payroll-info').innerHTML = `<i class="fas fa-user mr-2"></i> ${p.ten_nhan_vien} - Thàng ${month}/${year}`;
-                    document.getElementById('payrollModal').style.display = 'block';
+                
+                if (data.success && Array.isArray(data.data)) {
+                    const p = data.data.find(x => x.ma_luong === id);
+                    if (p) {
+                        document.getElementById('payroll-id').value = p.ma_luong;
+                        document.getElementById('form-bonus').value = p.thuong || 0;
+                        document.getElementById('form-deduct').value = p.phat || 0;
+                        document.getElementById('form-status').value = p.trang_thai || 'chua_thanh_toan';
+                        document.getElementById('payroll-info').innerHTML = `<i class="fas fa-user mr-2"></i> ${p.ten_nhan_vien} - Tháng ${month}/${year}`;
+                        document.getElementById('payrollModal').style.display = 'block';
+                    }
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error('Error editing payroll:', err); }
         }
 
         document.getElementById('payrollForm').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('payroll-id').value;
             const payload = {
-                phu_cap: document.getElementById('form-bonus').value,
-                khau_tru: document.getElementById('form-deduct').value,
+                thuong: document.getElementById('form-bonus').value,
+                phat: document.getElementById('form-deduct').value,
                 trang_thai: document.getElementById('form-status').value
             };
             try {
