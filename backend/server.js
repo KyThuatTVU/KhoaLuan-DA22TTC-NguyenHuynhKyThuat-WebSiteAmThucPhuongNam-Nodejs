@@ -41,6 +41,8 @@ app.use(passport.session());
 
 // Static files middleware
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/wastage', express.static(path.join(__dirname, 'uploads/wastage')));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ==================== GRAPHQL SETUP ====================
@@ -437,6 +439,7 @@ const auditRoutes = require('./routes/audits');
 const supplierRoutes = require('./routes/suppliers');
 const kitchenSlipRoutes = require('./routes/kitchenSlips');
 const ingredientCategoryRoutes = require('./routes/ingredientCategories');
+const wastageRoutes = require('./routes/wastage');
 
 
 // Register routes
@@ -476,6 +479,7 @@ app.use('/api/audits', auditRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/kitchen-slips', kitchenSlipRoutes);
 app.use('/api/ingredient-categories', ingredientCategoryRoutes);
+app.use('/api/wastage', wastageRoutes);
 
 
 // Admin notifications routes

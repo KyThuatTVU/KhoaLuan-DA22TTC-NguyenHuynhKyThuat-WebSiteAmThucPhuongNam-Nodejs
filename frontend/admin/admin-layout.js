@@ -70,6 +70,9 @@ const SIDEBAR_TEMPLATE = `
                 <a href="kiem-ke.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-clipboard-check w-5"></i><span class="text-sm">Kiểm kê kho</span>
                 </a>
+                <a href="hao-hut.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-dumpster w-5"></i><span class="text-sm">Báo cáo hao hụt</span>
+                </a>
                 <a href="ke-do-bep.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-kitchen-set w-5"></i><span class="text-sm">Kê đồ bếp</span>
                 </a>

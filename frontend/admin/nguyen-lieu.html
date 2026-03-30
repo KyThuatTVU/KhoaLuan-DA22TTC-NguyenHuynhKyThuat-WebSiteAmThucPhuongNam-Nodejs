@@ -151,9 +151,9 @@
 
     <!-- Nhập Kho Modal -->
     <div id="add-stock-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
             <div class="p-6 border-b flex items-center justify-between bg-emerald-600 text-white rounded-t-2xl">
-                <h3 class="text-xl font-bold">Nhập Khôi/Bổ Sung</h3>
+                <h3 class="text-xl font-bold">Nhập Kho/Bổ Sung</h3>
                 <button onclick="closeAddStockModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="add-stock-form" class="p-6 space-y-4">
@@ -166,7 +166,60 @@
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="closeAddStockModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
-                    <button type="submit" class="bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700 shadow-md transform hover:-translate-y-0.5 px-6 py-2.5 rounded-xl transition">Nhập Kho</button>
+                    <button type="submit" class="bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700 shadow-md transform hover:-translate-y-0.5 px-6 py-2.5 rounded-xl transition font-bold">Nhập Kho</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Báo Cáo Hao Hụt Modal -->
+    <div id="wastage-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden">
+            <div class="p-6 border-b flex items-center justify-between bg-orange-600 text-white">
+                <h3 class="text-xl font-bold">Báo Cáo Hao Hụt</h3>
+                <button onclick="closeWastageModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="wastage-form" class="p-6 space-y-4">
+                <input type="hidden" id="wastage-ingredient-id">
+                <div class="bg-orange-50 p-3 rounded-lg border border-orange-100 flex items-center space-x-3">
+                    <i class="fas fa-exclamation-triangle text-orange-500 text-xl"></i>
+                    <div>
+                        <p class="text-xs text-orange-600 font-bold uppercase tracking-wider">Đang báo cáo cho:</p>
+                        <p id="wastage-ingredient-name" class="font-bold text-slate-800"></p>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Số lượng hao hụt (<span id="wastage-unit" class="font-bold"></span>) *</label>
+                    <input type="number" id="wastage-amount" required min="0.01" step="any" placeholder="0.00" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 font-bold text-orange-600">
+                    <p class="text-[10px] text-slate-400 mt-1 italic">Số lượng này sẽ bị trừ trực tiếp vào tồn kho hiện tại.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Lý do hao hụt *</label>
+                    <textarea id="wastage-reason" required rows="3" placeholder="Ví dụ: Hư hỏng do vận chuyển, hết hạn sử dụng, rơi vãi..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 text-sm"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Hình ảnh minh chứng</label>
+                    <div class="flex items-center justify-center w-full">
+                        <label for="wastage-image" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <div id="image-preview-container" class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-2"></i>
+                                <p class="text-xs text-slate-500">Click để tải ảnh lên (JPG, PNG, WEBP)</p>
+                            </div>
+                            <img id="image-preview" class="hidden h-full w-full object-contain p-2" />
+                            <input id="wastage-image" type="file" class="hidden" accept="image/*" onchange="previewWastageImage(this)" />
+                        </label>
+                    </div>
+                    <button type="button" id="btn-remove-image" onclick="removeWastageImage()" class="hidden text-xs text-red-500 mt-1 hover:underline"><i class="fas fa-trash-alt mr-1"></i>Xóa ảnh</button>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeWastageModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 text-sm font-medium transition">Đóng</button>
+                    <button type="submit" class="bg-orange-600 text-white hover:bg-orange-700 shadow-lg shadow-orange-200 px-6 py-2.5 rounded-xl text-sm font-bold transition flex items-center">
+                        <i class="fas fa-paper-plane mr-2"></i>Gửi Báo Cáo
+                    </button>
                 </div>
             </form>
         </div>
@@ -266,10 +319,13 @@
                             ${formatStock(item.so_luong_ton, item.don_vi_tinh)} <span class="text-[10px] uppercase font-bold text-slate-400">${item.don_vi_tinh}</span> / <span class="text-xs font-normal text-slate-400">Cảnh báo: ${formatStock(item.muc_canh_bao, item.don_vi_tinh)} ${item.don_vi_tinh}</span>
                         </td>
                         <td class="px-6 py-4">${badgeHTML}</td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="openAddStockModal(${item.ma_nguyen_lieu})" class="text-emerald-600 hover:bg-emerald-50 px-3 py-1 rounded border border-emerald-200 mr-2 text-sm font-medium"><i class="fas fa-plus-circle mr-1"></i>Nhập</button>
-                            <button onclick="editIngredient(${item.ma_nguyen_lieu})" class="text-blue-600 hover:bg-blue-50 px-3 py-1 rounded border border-blue-200 mr-2 text-sm font-medium"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteIngredient(${item.ma_nguyen_lieu}, '${item.ten_nguyen_lieu.replace(/'/g, "\\'")}')" class="text-red-600 hover:bg-red-50 px-3 py-1 rounded border border-red-200 text-sm font-medium"><i class="fas fa-trash"></i></button>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center space-x-1">
+                                <button onclick="openAddStockModal(${item.ma_nguyen_lieu})" class="text-emerald-600 hover:bg-emerald-50 px-2 py-1.5 rounded-lg border border-emerald-200 text-[10px] font-bold uppercase transition" title="Nhập hàng"><i class="fas fa-plus mr-1"></i>Nhập</button>
+                                <button onclick="openWastageModal(${item.ma_nguyen_lieu})" class="text-orange-600 hover:bg-orange-50 px-2 py-1.5 rounded-lg border border-orange-200 text-[10px] font-bold uppercase transition" title="Báo cáo hao hụt"><i class="fas fa-dumpster mr-1"></i>Hao hụt</button>
+                                <button onclick="editIngredient(${item.ma_nguyen_lieu})" class="text-blue-600 hover:bg-blue-50 w-8 h-8 rounded-lg flex items-center justify-center border border-blue-200 transition" title="Sửa"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteIngredient(${item.ma_nguyen_lieu}, '${item.ten_nguyen_lieu.replace(/'/g, "\\'")}')" class="text-red-600 hover:bg-red-50 w-8 h-8 rounded-lg flex items-center justify-center border border-red-200 transition" title="Xóa"><i class="fas fa-trash"></i></button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -617,6 +673,108 @@
                 alert('Lỗi máy chủ');
             }
         }
+
+        // --- Wastage Functions ---
+        function openWastageModal(id) {
+            const item = ingredients.find(i => i.ma_nguyen_lieu === id);
+            if (!item) return;
+
+            document.getElementById('wastage-ingredient-id').value = id;
+            document.getElementById('wastage-ingredient-name').textContent = item.ten_nguyen_lieu;
+            document.getElementById('wastage-unit').textContent = item.don_vi_tinh;
+            document.getElementById('wastage-amount').value = '';
+            document.getElementById('wastage-reason').value = '';
+            removeWastageImage();
+
+            document.getElementById('wastage-modal').classList.remove('hidden');
+        }
+
+        function closeWastageModal() {
+            document.getElementById('wastage-modal').classList.add('hidden');
+        }
+
+        function previewWastageImage(input) {
+            const preview = document.getElementById('image-preview');
+            const container = document.getElementById('image-preview-container');
+            const btnRemove = document.getElementById('btn-remove-image');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    container.classList.add('hidden');
+                    btnRemove.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeWastageImage() {
+            const input = document.getElementById('wastage-image');
+            const preview = document.getElementById('image-preview');
+            const container = document.getElementById('image-preview-container');
+            const btnRemove = document.getElementById('btn-remove-image');
+            
+            input.value = '';
+            preview.src = '';
+            preview.classList.add('hidden');
+            container.classList.remove('hidden');
+            btnRemove.classList.add('hidden');
+        }
+
+        document.getElementById('wastage-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const originalContent = btnSubmit.innerHTML;
+            
+            const id = document.getElementById('wastage-ingredient-id').value;
+            const item = ingredients.find(i => i.ma_nguyen_lieu == id);
+            const amount = parseFloat(document.getElementById('wastage-amount').value);
+            
+            if (amount > item.so_luong_ton) {
+                if (!confirm(`Số lượng báo cáo hao hụt (${amount}) vượt quá tồn kho thực tế (${item.so_luong_ton}). Hệ thống sẽ hạ tồn kho về 0. Đồng ý?`)) {
+                    return;
+                }
+            }
+
+            const formData = new FormData();
+            formData.append('ma_nguyen_lieu', id);
+            formData.append('so_luong_hao_hut', amount);
+            formData.append('ly_do', document.getElementById('wastage-reason').value);
+            
+            const imageFile = document.getElementById('wastage-image').files[0];
+            if (imageFile) {
+                formData.append('hinh_anh', imageFile);
+            }
+
+            try {
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang gửi...';
+                
+                const res = await fetch(`${API_URL}/wastage`, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    alert('Báo cáo hao hụt thành công!');
+                    closeWastageModal();
+                    loadIngredients();
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi kết nối máy chủ!');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalContent;
+            }
+        });
 
         loadIngredients();
     </script>
