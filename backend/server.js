@@ -195,6 +195,181 @@ async function initAdminNotificationsTable() {
 
 initAdminNotificationsTable();
 
+// Khởi tạo các bảng quản lý nhân sự
+async function initStaffTables() {
+    try {
+        // 1. Cập nhật bảng nhan_vien (thêm các cột mới nếu chưa có)
+        const [existingColumns] = await db.query('SHOW COLUMNS FROM nhan_vien');
+        const columnNames = existingColumns.map(c => c.Field);
+
+        const newColumns = [
+            { name: 'ma_nv_code', type: 'VARCHAR(50) AFTER ma_nhan_vien' },
+            { name: 'dia_chi', type: 'TEXT AFTER so_dien_thoai' },
+            { name: 'ngay_sinh', type: 'DATE AFTER dia_chi' },
+            { name: 'gioi_tinh', type: 'VARCHAR(20) AFTER ngay_sinh' },
+            { name: 'cccd', type: 'VARCHAR(20) AFTER gioi_tinh' },
+            { name: 'ngay_vao_lam', type: 'DATE AFTER cccd' },
+            { name: 'anh_dai_dien', type: 'VARCHAR(255) AFTER ngay_vao_lam' },
+            { name: 'luong_co_ban', type: 'DECIMAL(15,2) DEFAULT 0 AFTER luong_theo_gio' },
+            { name: 'is_deleted', type: 'TINYINT(1) DEFAULT 0 AFTER trang_thai' }
+        ];
+
+        for (const col of newColumns) {
+            if (!columnNames.includes(col.name)) {
+                await db.query(`ALTER TABLE nhan_vien ADD COLUMN ${col.name} ${col.type}`);
+                console.log(`✅ Đã thêm cột ${col.name} vào bảng nhan_vien`);
+            }
+        }
+
+        if (!columnNames.includes('luong_theo_gio')) {
+            await db.query('ALTER TABLE nhan_vien ADD COLUMN luong_theo_gio DECIMAL(15,2) DEFAULT 0 AFTER vai_tro');
+            console.log('✅ Đã thêm cột luong_theo_gio vào bảng nhan_vien');
+        }
+
+        // 2. Bảng Vai trò (Roles)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS vai_tro_he_thong (
+                ma_vai_tro INT NOT NULL AUTO_INCREMENT,
+                ten_vai_tro VARCHAR(100) NOT NULL,
+                mo_ta TEXT,
+                ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_vai_tro),
+                UNIQUE KEY (ten_vai_tro)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // 3. Bảng Quyền hạn (Permissions)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS quyen_han (
+                ma_quyen INT NOT NULL AUTO_INCREMENT,
+                ten_quyen VARCHAR(100) NOT NULL,
+                mo_ta TEXT,
+                ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_quyen),
+                UNIQUE KEY (ten_quyen)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // 4. Bảng Quyền - Vai trò (Role Permissions)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS quyen_vai_tro (
+                ma_vai_tro INT NOT NULL,
+                ma_quyen INT NOT NULL,
+                PRIMARY KEY (ma_vai_tro, ma_quyen),
+                CONSTRAINT fk_qvt_vai_tro FOREIGN KEY (ma_vai_tro) REFERENCES vai_tro_he_thong (ma_vai_tro) ON DELETE CASCADE,
+                CONSTRAINT fk_qvt_quyen FOREIGN KEY (ma_quyen) REFERENCES quyen_han (ma_quyen) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // 5. Bảng ca làm việc
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS ca_lam_viec (
+                ma_ca INT NOT NULL AUTO_INCREMENT,
+                ten_ca VARCHAR(100) NOT NULL,
+                gio_bat_dau TIME NOT NULL,
+                gio_ket_thuc TIME NOT NULL,
+                he_so_luong FLOAT DEFAULT 1.0,
+                ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_ca)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // 6. Bảng phân ca (Employee Shifts)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS phan_ca (
+                ma_phan_ca INT NOT NULL AUTO_INCREMENT,
+                ma_nhan_vien INT NOT NULL,
+                ma_ca INT NOT NULL,
+                ngay DATE NOT NULL,
+                trang_thai ENUM('scheduled', 'completed', 'cancelled') DEFAULT 'scheduled',
+                ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_phan_ca),
+                CONSTRAINT fk_phan_ca_nv FOREIGN KEY (ma_nhan_vien) REFERENCES nhan_vien (ma_nhan_vien) ON DELETE CASCADE,
+                CONSTRAINT fk_phan_ca_ca FOREIGN KEY (ma_ca) REFERENCES ca_lam_viec (ma_ca) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // 7. Bảng chấm công (Attendance)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS cham_cong (
+                ma_cham_cong INT NOT NULL AUTO_INCREMENT,
+                ma_nhan_vien INT NOT NULL,
+                ngay DATE NOT NULL,
+                gio_vao TIME DEFAULT NULL,
+                gio_ra TIME DEFAULT NULL,
+                so_gio_lam FLOAT DEFAULT 0,
+                trang_thai VARCHAR(50) DEFAULT 'Đúng giờ',
+                ghi_chu TEXT,
+                ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_cham_cong),
+                CONSTRAINT fk_cham_cong_nv FOREIGN KEY (ma_nhan_vien) REFERENCES nhan_vien (ma_nhan_vien) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // 8. Bảng lương (Salaries)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS bang_luong (
+                ma_luong INT NOT NULL AUTO_INCREMENT,
+                ma_nhan_vien INT NOT NULL,
+                thang INT NOT NULL,
+                nam INT NOT NULL,
+                luong_co_ban DECIMAL(15,2) DEFAULT 0,
+                tong_gio_lam FLOAT DEFAULT 0,
+                luong_theo_gio DECIMAL(15,2) DEFAULT 0,
+                thuong DECIMAL(15,2) DEFAULT 0,
+                phat DECIMAL(15,2) DEFAULT 0,
+                tong_luong DECIMAL(15,2) DEFAULT 0,
+                trang_thai VARCHAR(50) DEFAULT 'Chưa thanh toán',
+                ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_luong),
+                CONSTRAINT fk_bang_luong_nv FOREIGN KEY (ma_nhan_vien) REFERENCES nhan_vien (ma_nhan_vien) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        // Seed default roles and permissions if empty
+        const [rolesCount] = await db.query('SELECT COUNT(*) as count FROM vai_tro_he_thong');
+        if (rolesCount[0].count === 0) {
+            const roles = [
+                ['admin', 'Quản trị viên toàn hệ thống'],
+                ['manager', 'Quản lý nhà hàng'],
+                ['cashier', 'Thu ngân'],
+                ['waiter', 'Nhân viên phục vụ'],
+                ['chef', 'Đầu bếp']
+            ];
+            for (const r of roles) {
+                await db.query('INSERT INTO vai_tro_he_thong (ten_vai_tro, mo_ta) VALUES (?, ?)', r);
+            }
+
+            const permissions = [
+                ['manage_staff', 'Quản lý nhân viên'],
+                ['manage_shifts', 'Quản lý ca làm'],
+                ['manage_attendance', 'Quản lý chấm công'],
+                ['manage_payroll', 'Quản lý lương'],
+                ['view_reports', 'Xem báo cáo'],
+                ['manage_orders', 'Quản lý đơn hàng'],
+                ['manage_products', 'Quản lý món ăn']
+            ];
+            for (const p of permissions) {
+                await db.query('INSERT INTO quyen_han (ten_quyen, mo_ta) VALUES (?, ?)', p);
+            }
+
+            // Assign all permissions to admin
+            const [adminRole] = await db.query('SELECT ma_vai_tro FROM vai_tro_he_thong WHERE ten_vai_tro = "admin"');
+            const [allPerms] = await db.query('SELECT ma_quyen FROM quyen_han');
+            for (const p of allPerms) {
+                await db.query('INSERT INTO quyen_vai_tro (ma_vai_tro, ma_quyen) VALUES (?, ?)', [adminRole[0].ma_vai_tro, p.ma_quyen]);
+            }
+            console.log('✅ Đã gán quyền mặc định cho Admin');
+        }
+
+        console.log('✅ Các bảng quản lý nhân sự đã sẵn sàng');
+    } catch (error) {
+        console.error('❌ Lỗi khởi tạo các bảng nhân sự:', error.message);
+    }
+}
+
+initStaffTables();
+
 // ==================== BASIC ROUTES ====================
 
 app.get('/', (req, res) => {
@@ -254,6 +429,9 @@ const staffRoutes = require('./routes/staff');
 const tableRoutes = require('./routes/tables');
 const inventoryRoutes = require('./routes/inventory');
 const recipeRoutes = require('./routes/recipe');
+const shiftRoutes = require('./routes/shifts');
+const attendanceRoutes = require('./routes/attendance');
+const payrollRoutes = require('./routes/payroll');
 
 // Register routes
 app.use('/api/tts', ttsRoutes);
@@ -284,6 +462,9 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/recipe', recipeRoutes);
+app.use('/api/shifts', shiftRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/payroll', payrollRoutes);
 
 // Admin notifications routes
 const adminNotificationRoutes = require('./routes/admin-notifications');

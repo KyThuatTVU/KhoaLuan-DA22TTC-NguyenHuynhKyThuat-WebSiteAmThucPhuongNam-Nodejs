@@ -1,357 +1,267 @@
 // Admin Layout Component - Shared across all admin pages
 const API_URL = 'http://localhost:3000/api';
 
+// 1. SIDEBAR TEMPLATE (Centralized Source of Truth)
+const SIDEBAR_TEMPLATE = `
+<aside id="sidebar" class="sidebar w-72 flex-shrink-0 transition-transform -translate-x-full lg:translate-x-0 fixed lg:relative z-50 h-full">
+    <div class="h-full flex flex-col">
+        <div class="p-5 border-b border-white/10">
+            <div class="flex items-center space-x-3">
+                <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
+                <div>
+                    <h1 class="font-bold text-white text-lg">Phương Nam</h1>
+                    <p class="text-xs text-blue-300">Hệ thống quản trị</p>
+                </div>
+            </div>
+        </div>
+        <nav class="flex-1 overflow-y-auto p-4">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
+            <div class="space-y-1">
+                <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
+                <a href="admin-pos-new.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos"><i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span></a>
+                <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
+                <a href="categories.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-categories"><i class="fas fa-tags w-5"></i><span class="text-sm font-medium">Danh mục</span></a>
+                <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
+                <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
+                <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
+                <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span></a>
+                <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
+                <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
+                <a href="shifts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-clock w-5"></i><span class="text-sm">Ca làm việc</span></a>
+                <a href="attendance.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-check-double w-5"></i><span class="text-sm">Chấm công</span></a>
+                <a href="payroll.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-staff"><i class="fas fa-money-bill-wave w-5"></i><span class="text-sm">Bảng lương</span></a>
+                <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
+                <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
+                <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
+                <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
+            </div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3 menu-content-title">Nội dung</p>
+            <div class="space-y-1 menu-content-group">
+                <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
+                <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
+                <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
+                <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
+            </div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3 menu-system-title">Hệ thống</p>
+            <div class="space-y-1 menu-system-group">
+                <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
+            </div>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+            <div class="admin-card">
+                <div class="flex items-center space-x-3">
+                    <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                    <div class="flex-1 min-w-0">
+                        <p id="admin-name" class="font-semibold text-sm text-white truncate">Admin</p>
+                        <p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+                    <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
+                    <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+`;
+
+// 2. HEADER TEMPLATE (Centralized Source of Truth)
+const HEADER_TEMPLATE = `
+<header class="header-bar flex items-center justify-between">
+    <div class="flex items-center space-x-3 sm:space-x-4">
+        <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white cursor-pointer"><i class="fas fa-bars text-xl"></i></button>
+        <div>
+            <h2 id="header-page-title" class="text-base sm:text-xl font-bold">Quản trị</h2>
+            <p id="header-page-desc" class="text-xs sm:text-sm text-blue-200 hidden sm:block">Nhà hàng Ẩm thực Phương Nam</p>
+        </div>
+    </div>
+    <div class="flex items-center space-x-4">
+        <!-- Admin Notification Bell -->
+        <div id="admin-notification-container" class="relative">
+            <button id="admin-notification-btn" class="relative text-white hover:text-blue-200 transition cursor-pointer">
+                <i class="fas fa-bell text-lg"></i>
+                <span id="admin-notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            </button>
+            <div id="admin-notification-dropdown" class="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-100 hidden" style="z-index: 9999;">
+                <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="font-semibold text-gray-800">Thông báo quản trị</h3>
+                    <button id="admin-mark-all-read-btn" class="text-xs text-orange-600 hover:text-orange-700 cursor-pointer">Đánh dấu đã đọc</button>
+                </div>
+                <div id="admin-notification-list" class="max-h-96 overflow-y-auto">
+                    <div class="text-center py-8 text-gray-400">
+                        <i class="fas fa-bell-slash text-3xl mb-2"></i>
+                        <p class="text-sm">Chưa có thông báo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="../index.html" target="_blank" class="text-white hover:text-blue-200 transition" title="Xem website">
+            <i class="fas fa-external-link-alt text-lg"></i>
+        </a>
+        <div class="hidden md:flex items-center space-x-3 pl-4 border-l border-white/20">
+            <img id="admin-avatar-header" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-10 h-10 rounded-full border-2 border-blue-400">
+            <div>
+                <p id="admin-name-header" class="font-semibold text-sm text-white">Admin</p>
+                <p id="user-role-badge" class="text-xs text-blue-200 uppercase tracking-tighter font-bold">Quản trị viên</p>
+            </div>
+        </div>
+    </div>
+</header>
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 lg:hidden opacity-0 invisible transition-all duration-300" onclick="toggleSidebar()"></div>
+`;
+
+// Helper to update elements safely
+function safeUpdate(id, prop, val, isAttr = false) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (isAttr) el.setAttribute(prop, val);
+    else el[prop] = val;
+}
+
 // Load admin info from session
 async function loadAdminInfo(retryCount = 0) {
     try {
-        console.log(`🔍 Checking admin session (attempt ${retryCount + 1})...`);
-        
         const response = await fetch(`${API_URL}/admin-auth/check-session`, {
             method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Cache-Control': 'no-cache'
-            }
-        });
-
-        const result = await response.json();
-        
-        console.log('📦 Session check result:', result);
-
-        if (result.isAuthenticated && result.data) {
-            const admin = result.data;
-
-            console.log('📦 Admin data from server:', admin);
-
-            // Lấy tên và avatar từ Google
-            const adminName = admin.ten_hien_thi || admin.tai_khoan || admin.email.split('@')[0];
-            const adminAvatar = admin.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=ea580c&color=fff&size=128`;
-            const adminEmail = admin.email;
-
-            console.log('👤 Processed admin info:', { name: adminName, avatar: adminAvatar, email: adminEmail });
-
-            // Update all admin info elements
-            updateAdminElements('admin-name', adminName);
-            updateAdminElements('admin-avatar', adminAvatar, true);
-            updateAdminElements('admin-email', adminEmail);
-
-            console.log('✅ Admin info loaded and updated');
-
-            return { name: adminName, avatar: adminAvatar, email: adminEmail, role: admin.role, quyen: admin.quyen };
-        } else {
-            // Retry nếu chưa đến giới hạn (tối đa 3 lần)
-            if (retryCount < 2) {
-                console.log(`⏳ Session not ready, retrying in 500ms...`);
-                await new Promise(resolve => setTimeout(resolve, 500));
-                return loadAdminInfo(retryCount + 1);
-            }
-            
-            // Không có session sau khi retry, chuyển về trang đăng nhập
-            console.warn('⚠️ No admin session found after retries');
-            window.location.href = 'dang-nhap-admin.html?error=unauthorized';
-            return null;
-        }
-    } catch (error) {
-        console.error('❌ Error loading admin info:', error);
-        
-        // Retry nếu có lỗi và chưa đến giới hạn
-        if (retryCount < 2) {
-            console.log(`⏳ Error occurred, retrying in 500ms...`);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            return loadAdminInfo(retryCount + 1);
-        }
-
-        // Fallback to default
-        const defaultName = 'Admin';
-        const defaultAvatar = 'https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff&size=128';
-
-        updateAdminElements('admin-name', defaultName);
-        updateAdminElements('admin-avatar', defaultAvatar, true);
-
-        return { name: defaultName, avatar: defaultAvatar, email: '' };
-    }
-}
-
-// Helper function to update elements by ID or class
-function updateAdminElements(identifier, value, isImage = false) {
-    console.log(`🔄 Updating ${identifier}:`, isImage ? 'Image URL' : value);
-
-    let updated = 0;
-
-    // Update by ID
-    const elementById = document.getElementById(identifier);
-    if (elementById) {
-        if (isImage) {
-            console.log(`🖼️ Setting image src for #${identifier}:`, value);
-
-            // Thêm các thuộc tính để load ảnh Google
-            elementById.setAttribute('referrerpolicy', 'no-referrer');
-            elementById.setAttribute('crossorigin', 'anonymous');
-
-            elementById.src = value;
-            elementById.onerror = () => {
-                console.warn(`⚠️ Image failed to load, using fallback avatar. URL was: ${value}`);
-                elementById.src = 'https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff';
-            };
-        } else {
-            elementById.textContent = value;
-        }
-        updated++;
-        console.log(`✅ Updated #${identifier}`);
-    } else {
-        console.warn(`⚠️ Element #${identifier} not found`);
-    }
-
-    // Update by class
-    const elementsByClass = document.getElementsByClassName(identifier);
-    if (elementsByClass.length > 0) {
-        Array.from(elementsByClass).forEach(element => {
-            if (isImage) {
-                // Thêm các thuộc tính để load ảnh Google
-                element.setAttribute('referrerpolicy', 'no-referrer');
-                element.setAttribute('crossorigin', 'anonymous');
-
-                element.src = value;
-                element.onerror = () => {
-                    console.warn(`⚠️ Image failed to load, using fallback avatar. URL was: ${value}`);
-                    element.src = 'https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff';
-                };
-            } else {
-                element.textContent = value;
-            }
-            updated++;
-        });
-        console.log(`✅ Updated ${elementsByClass.length} elements with class .${identifier}`);
-    }
-
-    // Update elements with data attribute
-    const elementsByData = document.querySelectorAll(`[data-admin="${identifier}"]`);
-    if (elementsByData.length > 0) {
-        elementsByData.forEach(element => {
-            if (isImage) {
-                // Thêm các thuộc tính để load ảnh Google
-                element.setAttribute('referrerpolicy', 'no-referrer');
-                element.setAttribute('crossorigin', 'anonymous');
-
-                element.src = value;
-                element.onerror = () => {
-                    console.warn(`⚠️ Image failed to load, using fallback avatar. URL was: ${value}`);
-                    element.src = 'https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff';
-                };
-            } else {
-                element.textContent = value;
-            }
-            updated++;
-        });
-        console.log(`✅ Updated ${elementsByData.length} elements with data-admin="${identifier}"`);
-    }
-
-    // Also try with -header suffix
-    const headerElement = document.getElementById(`${identifier}-header`);
-    if (headerElement) {
-        if (isImage) {
-            console.log(`🖼️ Setting image src for #${identifier}-header:`, value);
-
-            // Thêm các thuộc tính để load ảnh Google
-            headerElement.setAttribute('referrerpolicy', 'no-referrer');
-            headerElement.setAttribute('crossorigin', 'anonymous');
-
-            headerElement.src = value;
-            headerElement.onerror = () => {
-                console.warn(`⚠️ Image failed to load, using fallback avatar. URL was: ${value}`);
-                headerElement.src = 'https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff';
-            };
-        } else {
-            headerElement.textContent = value;
-        }
-        updated++;
-        console.log(`✅ Updated #${identifier}-header`);
-    }
-
-    if (updated === 0) {
-        console.warn(`⚠️ No elements found for: ${identifier}`);
-    } else {
-        console.log(`✅ Total ${updated} elements updated for ${identifier}`);
-    }
-}
-
-// Logout function
-async function logout() {
-    if (!confirm('Bạn có chắc muốn đăng xuất?')) {
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/admin-auth/logout`, {
-            method: 'POST',
             credentials: 'include'
         });
-
         const result = await response.json();
-
-        if (result.success) {
-            window.location.href = 'dang-nhap-admin.html?logout=success';
-        } else {
-            alert('Lỗi đăng xuất. Vui lòng thử lại!');
+        
+        if (result.isAuthenticated && result.data) {
+            const admin = result.data;
+            const adminName = admin.ten_hien_thi || admin.tai_khoan || admin.email.split('@')[0];
+            const adminAvatar = admin.anh_dai_dien || `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=3b82f6&color=fff`;
+            
+            // Sync UI
+            updateAdminElements('admin-name', adminName);
+            updateAdminElements('admin-avatar', adminAvatar, true);
+            updateAdminElements('admin-email', admin.email);
+            updateAdminElements('admin-name-header', adminName);
+            updateAdminElements('admin-avatar-header', adminAvatar, true);
+            
+            return admin;
+        } else if (retryCount < 2) {
+            await new Promise(r => setTimeout(r, 500));
+            return loadAdminInfo(retryCount + 1);
         }
+        window.location.href = 'dang-nhap-admin.html';
+        return null;
     } catch (error) {
-        console.error('Lỗi đăng xuất:', error);
-        alert('Lỗi đăng xuất. Vui lòng thử lại!');
+        console.error('❌ Error loading admin info:', error);
+        return null;
     }
 }
 
-// Toggle sidebar on mobile
+function updateAdminElements(identifier, value, isImage = false) {
+    const elements = [...document.querySelectorAll(`#${identifier}`), 
+                     ...document.querySelectorAll(`.${identifier}`),
+                     ...document.querySelectorAll(`[data-admin="${identifier}"]`)];
+    
+    elements.forEach(el => {
+        if (isImage) {
+            el.setAttribute('referrerpolicy', 'no-referrer');
+            el.src = value;
+            el.onerror = () => el.src = 'https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff';
+        } else {
+            el.textContent = value;
+        }
+    });
+}
+
+async function logout() {
+    if (!confirm('Bạn có chắc muốn đăng xuất?')) return;
+    try {
+        const res = await fetch(`${API_URL}/admin-auth/logout`, { method: 'POST', credentials: 'include' });
+        const result = await res.json();
+        if (result.success) window.location.href = 'dang-nhap-admin.html';
+    } catch (e) { alert('Lỗi đăng xuất!'); }
+}
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
     if (sidebar) {
         sidebar.classList.toggle('-translate-x-full');
-        sidebar.classList.toggle('translate-x-0');
+        if (overlay) {
+            overlay.classList.toggle('opacity-0');
+            overlay.classList.toggle('invisible');
+        }
     }
 }
 
-// Function to enforce Role-Based Access Control (RBAC) and inject POS link
 function applyRBAC(adminUser) {
     if (!adminUser) return;
+    const currentRole = adminUser.role || 'staff';
     
-    // 1. Inject POS link right after dashboard
-    const dashboardLink = document.querySelector('a[href="dashboard.html"]');
-    if (dashboardLink && !document.querySelector('a[href="admin-pos-tables.html"]') && !document.querySelector('a[href*="admin-pos"]')) {
-        const posLink = document.createElement('a');
-        posLink.href = 'admin-pos-new.html';
-        posLink.className = 'sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-pos';
-        posLink.innerHTML = '<i class="fas fa-cash-register w-5"></i><span class="text-sm font-medium">Bán hàng (POS)</span>';
-        dashboardLink.parentNode.insertBefore(posLink, dashboardLink.nextSibling);
-    }
-
-    // 2. Inject Category link after Products
-    const productsLink = document.querySelector('a[href="products.html"]');
-    if (productsLink && !document.querySelector('a[href="categories.html"]')) {
-        const categoryLink = document.createElement('a');
-        categoryLink.href = 'categories.html';
-        categoryLink.className = 'sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl menu-categories';
-        categoryLink.innerHTML = '<i class="fas fa-tags w-5"></i><span class="text-sm font-medium">Danh mục</span>';
-        productsLink.parentNode.insertBefore(categoryLink, productsLink.nextSibling);
-    }
-
-    // 3. Hide specific items based on role
-    const hideLinks = (hrefs) => {
-        hrefs.forEach(href => {
-            const link = document.querySelector(`a[href="${href}"]`);
-            if (link) link.style.display = 'none';
-        });
-    };
-    
-    // Hide content groups
-    const hideGroup = (titleText) => {
-        const pTags = document.querySelectorAll('nav p');
-        pTags.forEach(p => {
-            if (p.textContent.includes(titleText)) {
-                p.style.display = 'none';
-                if (p.nextElementSibling && p.nextElementSibling.tagName === 'DIV') {
-                    p.nextElementSibling.style.display = 'none';
-                }
-            }
-        });
-    }
-
-    const currentRole = adminUser.role || adminUser.quyen || 'admin';
-
-    // Staff: Only POS, Orders, Tables, Reservations
+    // Hide based on role
     if (currentRole === 'staff') {
-        hideLinks([
-            'dashboard.html', 
-            'products.html', 
-            'customers.html', 
-            'staff.html', 
-            'contacts.html',
-            'chatbot-history.html',
-            'reviews.html',
-            'promotions.html'
-        ]);
-        hideGroup('Nội dung');
-        hideGroup('Hệ thống');
-    } 
-    // Manager: No Staff, No Settings
-    else if (currentRole === 'manager') {
-        hideLinks([
-            'staff.html',
-            'settings.html'
-        ]);
-        hideGroup('Hệ thống');
+        const forbidden = ['dashboard.html', 'products.html', 'categories.html', 'customers.html', 'staff.html', 'settings.html', 'shifts.html', 'attendance.html', 'payroll.html'];
+        forbidden.forEach(h => {
+            const el = document.querySelector(`a[href="${h}"]`);
+            if (el) el.remove();
+        });
+        document.querySelector('.menu-content-title')?.remove();
+        document.querySelector('.menu-content-group')?.remove();
+        document.querySelector('.menu-system-title')?.remove();
+        document.querySelector('.menu-system-group')?.remove();
+    } else if (currentRole === 'manager') {
+        ['staff.html', 'shifts.html', 'attendance.html', 'payroll.html', 'settings.html'].forEach(h => {
+             const el = document.querySelector(`a[href="${h}"]`);
+             if (el) el.remove();
+        });
+        document.querySelector('.menu-system-title')?.remove();
+        document.querySelector('.menu-system-group')?.remove();
     }
     
-    // Render role badge if element exists
     const roleBadge = document.getElementById('user-role-badge');
     if (roleBadge) {
-        let roleName = currentRole === 'admin' ? 'Quản trị viên' : (currentRole === 'manager' ? 'Quản lý' : 'Nhân viên');
-        roleBadge.innerHTML = `<i class="fas fa-id-badge mr-1"></i>${roleName}`;
+        roleBadge.textContent = currentRole === 'admin' ? 'Quản trị viên' : (currentRole === 'manager' ? 'Quản lý' : 'Nhân viên');
     }
 }
 
-// Set active nav link
 function setActiveNavLink() {
     const path = window.location.pathname;
     const currentPage = path.split('/').pop().split('?')[0] || 'dashboard.html';
-    
-    console.log(`📍 Current Page identified: ${currentPage}`);
-
-    const navLinks = document.querySelectorAll('.sidebar-item, .nav-link');
-
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (!href) return;
-        
-        // Extract filename from href for comparison
-        const linkPage = href.split('/').pop().split('?')[0];
-        
-        // Match if direct filename match OR related POS pages OR root path to dashboard
-        const isMatch = (linkPage === currentPage) || 
-                        (currentPage.includes('admin-pos') && linkPage.includes('admin-pos')) ||
-                        (currentPage === '' && linkPage === 'dashboard.html');
-
-        if (isMatch) {
-            link.classList.add('active');
-            link.classList.remove('text-slate-500'); // Ensure it stands out
-            console.log(`✅ Active link set: ${linkPage} (matches ${currentPage})`);
-        } else {
-            // Only remove if it's not a sub-match to avoid flickering during loads
-            link.classList.remove('active');
-        }
+    document.querySelectorAll('.sidebar-item').forEach(link => {
+        const linkPage = link.getAttribute('href').split('/').pop().split('?')[0];
+        if (linkPage === currentPage) link.classList.add('active');
+        else link.classList.remove('active');
     });
+}
 
-    // Special fix for POS if not found in list (e.g. injected menu)
-    if (currentPage.includes('admin-pos')) {
-        const posMenu = document.querySelector('.menu-pos');
-        if (posMenu) posMenu.classList.add('active');
+// Layout Injection Engine
+function injectLayout() {
+    // 1. Inject Sidebar
+    const sidebarPlaceholder = document.getElementById('sidebar-placeholder');
+    if (sidebarPlaceholder) {
+        sidebarPlaceholder.innerHTML = SIDEBAR_TEMPLATE;
+    }
+
+    // 2. Inject Header
+    const headerPlaceholder = document.getElementById('header-placeholder');
+    if (headerPlaceholder) {
+        headerPlaceholder.innerHTML = HEADER_TEMPLATE;
+        
+        // Auto-set title from document title
+        const pageTitle = document.title.split('-')[0].trim();
+        safeUpdate('header-page-title', 'textContent', pageTitle);
     }
 }
 
-// Initialize admin layout - with delay to ensure DOM is ready
-function initAdminLayout() {
-    console.log('🔧 Initializing admin layout...');
-
-    // Wait for session to be ready
-    setTimeout(async () => {
-        console.log('📋 Loading admin info...');
-        const adminData = await loadAdminInfo();
-        if (adminData) {
-            applyRBAC(adminData);
-        }
-        setActiveNavLink();
-    }, 200);
+async function initAdminLayout() {
+    injectLayout();
+    const adminData = await loadAdminInfo();
+    if (adminData) applyRBAC(adminData);
+    setActiveNavLink();
 }
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAdminLayout);
-} else {
-    // DOM already loaded
-    initAdminLayout();
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAdminLayout);
+else initAdminLayout();
 
-// Export functions
-window.loadAdminInfo = loadAdminInfo;
+// Export
 window.logout = logout;
 window.toggleSidebar = toggleSidebar;
-window.initAdminLayout = initAdminLayout;
 

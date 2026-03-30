@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chấm công & Điểm danh - Admin Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        body { background: #f0f4f8; }
+        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
+        .content-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
+        .btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: #fff; margin: 5% auto; padding: 0; border-radius: 16px; max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 20px 24px; border-radius: 16px 16px 0 0; }
+        .modal-body { padding: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #1e3a5f; margin-bottom: 8px; }
+        .form-input, .form-select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; }
+
+        .status-on-time { background: #dcfce7; color: #16a34a; }
+        .status-late { background: #fef3c7; color: #d97706; }
+        .status-early { background: #fee2e2; color: #dc2626; }
+        .status-outside { background: #f1f5f9; color: #475569; }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Filters Section -->
+                <div class="content-card mb-6 border-l-4 border-blue-500">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div class="form-group mb-0">
+                            <label class="form-label">Nhân viên</label>
+                            <select id="filter-staff" class="form-select" onchange="loadAttendance()"></select>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="form-label">Từ ngày</label>
+                            <input type="date" id="filter-start" class="form-input" onchange="loadAttendance()">
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="form-label">Đến ngày</label>
+                            <input type="date" id="filter-end" class="form-input" onchange="loadAttendance()">
+                        </div>
+                        <button onclick="openManualCheckModal()" class="bg-blue-600 text-white p-2.5 rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center space-x-2">
+                            <i class="fas fa-plus-circle"></i><span>Thêm bản ghi mới</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xl"><i class="fas fa-user-check"></i></div>
+                        <div><p class="text-xs text-emerald-600 font-bold uppercase">Đúng giờ</p><h4 id="count-on-time" class="text-2xl font-black text-emerald-900">0</h4></div>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white text-xl"><i class="fas fa-user-clock"></i></div>
+                        <div><p class="text-xs text-amber-600 font-bold uppercase">Đi muộn</p><h4 id="count-late" class="text-2xl font-black text-amber-900">0</h4></div>
+                    </div>
+                    <div class="bg-rose-50 border border-rose-100 p-4 rounded-xl flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-rose-500 rounded-full flex items-center justify-center text-white text-xl"><i class="fas fa-user-times"></i></div>
+                        <div><p class="text-xs text-rose-600 font-bold uppercase">Về sớm</p><h4 id="count-early" class="text-2xl font-black text-rose-900">0</h4></div>
+                    </div>
+                </div>
+
+                <!-- Attendance Table -->
+                <div class="content-card">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b bg-gray-50">
+                                    <th class="text-left py-4 px-4 text-sm font-bold text-gray-600">ID / Ngày</th>
+                                    <th class="text-left py-4 px-4 text-sm font-bold text-gray-600">Nhân viên</th>
+                                    <th class="text-left py-4 px-4 text-sm font-bold text-gray-600">Vào / Ra</th>
+                                    <th class="text-center py-4 px-4 text-sm font-bold text-gray-600">Số giờ</th>
+                                    <th class="text-left py-4 px-4 text-sm font-bold text-gray-600">Trạng thái</th>
+                                    <th class="text-center py-4 px-4 text-sm font-bold text-gray-600">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Manual Check Modal -->
+    <div id="checkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex justify-between">
+                <h3 class="font-bold">Chỉnh sửa Chấm công</h3>
+                <button onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="attendanceForm">
+                    <input type="hidden" id="attendance-id">
+                    <div class="form-group">
+                        <label class="form-label">Chọn nhân viên</label>
+                        <select id="form-staff" class="form-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngày chấm công</label>
+                        <input type="date" id="form-date" class="form-input" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Giờ vào</label>
+                            <input type="time" id="form-in" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giờ ra</label>
+                            <input type="time" id="form-out" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đánh giá trạng thái</label>
+                        <select id="form-status" class="form-select">
+                            <option value="Đúng giờ">Đúng giờ</option>
+                            <option value="Đi muộn">Đi muộn</option>
+                            <option value="Về sớm">Về sớm</option>
+                            <option value="Đi muộn, Về sớm">Mộn + Sớm</option>
+                            <option value="Ngoài ca">Ngoài ca / Tăng ca</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú (Lý do)</label>
+                        <textarea id="form-note" class="form-input h-20" placeholder="Nhập lý do đi muộn hoặc về sớm nếu có..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary w-full mt-4 py-3">Lưu bản ghi chấm công</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script>
+        const ATTENDANCE_API = `${API_URL}/attendance`;
+        const STAFF_API = `${API_URL}/staff`;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            const today = now.toISOString().split('T')[0];
+            document.getElementById('filter-start').value = startOfMonth;
+            document.getElementById('filter-end').value = today;
+            
+            loadStaffOptions();
+            loadAttendance();
+        });
+
+        async function loadStaffOptions() {
+            try {
+                const res = await fetch(STAFF_API);
+                const data = await res.json();
+                const staffList = data.data.filter(s => s.trang_thai === 1);
+                
+                document.getElementById('filter-staff').innerHTML = '<option value="">-- Tất cả nhân viên --</option>' + 
+                    staffList.map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien} (${s.vai_tro})</option>`).join('');
+                
+                document.getElementById('form-staff').innerHTML = staffList.map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien}</option>`).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadAttendance() {
+            try {
+                const staffId = document.getElementById('filter-staff').value;
+                const start = document.getElementById('filter-start').value;
+                const end = document.getElementById('filter-end').value;
+                
+                let url = `${ATTENDANCE_API}?start=${start}&end=${end}`;
+                if(staffId) url += `&ma_nhan_vien=${staffId}`;
+                
+                const res = await fetch(url);
+                const data = await res.json();
+                const body = document.getElementById('attendance-table-body');
+                
+                let onTime = 0, late = 0, early = 0;
+
+                body.innerHTML = data.data.map(a => {
+                    const status = a.trang_thai || 'Đúng giờ';
+                    let statusClass = 'bg-gray-100 text-gray-600';
+                    
+                    if(status.includes('Đúng giờ')) { statusClass = 'status-on-time'; onTime++; }
+                    else if(status.includes('Muộn')) { statusClass = 'status-late'; late++; }
+                    else if(status.includes('sớm')) { statusClass = 'status-early'; early++; }
+                    else if(status === 'Ngoài ca') { statusClass = 'status-outside'; }
+
+                    return `
+                        <tr class="border-b hover:bg-gray-50 transition">
+                            <td class="py-4 px-4">
+                                <span class="text-xs font-bold text-blue-600 block">#CC${a.ma_cham_cong}</span>
+                                <span class="text-sm font-medium text-gray-700">${new Date(a.ngay).toLocaleDateString('vi-VN')}</span>
+                            </td>
+                            <td class="py-4 px-4">
+                                <p class="font-bold text-gray-800">${a.ten_nhan_vien}</p>
+                                <p class="text-xs text-gray-500 uppercase font-bold">${a.ma_nv_code || '-'}</p>
+                            </td>
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm font-bold text-emerald-600">${a.gio_vao || '--'}</span>
+                                    <span class="text-gray-300">|</span>
+                                    <span class="text-sm font-bold text-rose-600">${a.gio_ra || '--'}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-center font-black text-blue-600">${a.so_gio_lam || '0'}h</td>
+                            <td class="py-4 px-4">
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-black uppercase ${statusClass}">${status}</span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <button onclick="editAttendance(${a.ma_cham_cong})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
+                                <button onclick="deleteAttendance(${a.ma_cham_cong})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                document.getElementById('count-on-time').innerText = onTime;
+                document.getElementById('count-late').innerText = late;
+                document.getElementById('count-early').innerText = early;
+
+            } catch (err) { console.error(err); }
+        }
+
+        function openManualCheckModal() {
+            document.getElementById('attendanceForm').reset();
+            document.getElementById('attendance-id').value = '';
+            document.getElementById('form-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('checkModal').style.display = 'block';
+        }
+
+        async function editAttendance(id) {
+            try {
+                const res = await fetch(`${ATTENDANCE_API}/reports?id=${id}`); // Fixed: search specifically or use existing list
+                // To keep it simple, I'll fetch from the current table data or re-load
+                const start = document.getElementById('filter-start').value;
+                const end = document.getElementById('filter-end').value;
+                const r = await fetch(`${ATTENDANCE_API}?start=${start}&end=${end}`);
+                const data = await r.json();
+                const a = data.data.find(x => x.ma_cham_cong === id);
+                
+                if(a) {
+                    document.getElementById('attendance-id').value = a.ma_cham_cong;
+                    document.getElementById('form-staff').value = a.ma_nhan_vien;
+                    document.getElementById('form-date').value = a.ngay.split('T')[0];
+                    document.getElementById('form-in').value = a.gio_vao;
+                    document.getElementById('form-out').value = a.gio_ra || '';
+                    document.getElementById('form-status').value = a.trang_thai || 'Đúng giờ';
+                    document.getElementById('form-note').value = a.ghi_chu || '';
+                    document.getElementById('checkModal').style.display = 'block';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('attendanceForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('attendance-id').value;
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${ATTENDANCE_API}/${id}` : `${ATTENDANCE_API}/manual`; // Assuming background supports manual create
+
+            const body = {
+                ma_nhan_vien: document.getElementById('form-staff').value,
+                ngay: document.getElementById('form-date').value,
+                gio_vao: document.getElementById('form-in').value,
+                gio_ra: document.getElementById('form-out').value,
+                trang_thai: document.getElementById('form-status').value,
+                ghi_chu: document.getElementById('form-note').value,
+                so_gio_lam: calculateHours(document.getElementById('form-in').value, document.getElementById('form-out').value)
+            };
+
+            const res = await fetch(url, {
+                method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            const result = await res.json();
+            if(result.success) {
+                closeModal();
+                loadAttendance();
+            } else alert(result.message);
+        };
+
+        function calculateHours(start, end) {
+            if(!start || !end) return 0;
+            const [h1, m1] = start.split(':').map(Number);
+            const [h2, m2] = end.split(':').map(Number);
+            let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+            if(diff < 0) diff += 24 * 60; // Handle overnight
+            return (diff / 60).toFixed(2);
+        }
+
+        async function deleteAttendance(id) {
+            if(confirm('Chú ý: Xóa bản ghi chấm công sẽ làm mất dữ liệu tính lương. Tiếp tục?')) {
+                await fetch(`${ATTENDANCE_API}/${id}`, {method: 'DELETE'});
+                loadAttendance();
+            }
+        }
+
+        function closeModal() { document.getElementById('checkModal').style.display = 'none'; }
+    </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng lương & Thu nhập - Admin Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        body { background: #f0f4f8; }
+        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
+        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
+        .header-bar { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 16px 28px; }
+        .content-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08); }
+        .btn-primary { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: all 0.2s; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); }
+        .modal-content { background: #fff; margin: 5% auto; padding: 0; border-radius: 16px; max-width: 500px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+        .modal-header { background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%); color: #fff; padding: 20px 24px; border-radius: 16px 16px 0 0; }
+        .modal-body { padding: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #1e3a5f; margin-bottom: 8px; }
+        .form-input, .form-select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Status Row -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="content-card flex items-center justify-between border-b-4 border-blue-500">
+                        <div>
+                            <p class="text-xs font-bold text-blue-500 uppercase">Tổng quỹ lương</p>
+                            <h3 id="total-payout" class="text-2xl font-black">0đ</h3>
+                        </div>
+                        <i class="fas fa-vault text-3xl text-blue-100"></i>
+                    </div>
+                    <div class="content-card flex items-center justify-between border-b-4 border-emerald-500">
+                        <div>
+                            <p class="text-xs font-bold text-emerald-500 uppercase">Đã thanh toán</p>
+                            <h3 id="paid-amount" class="text-2xl font-black">0đ</h3>
+                        </div>
+                        <i class="fas fa-check-double text-3xl text-emerald-100"></i>
+                    </div>
+                    <div class="content-card flex items-center justify-between border-b-4 border-amber-500">
+                        <div>
+                            <p class="text-xs font-bold text-amber-500 uppercase">Cần chi trả</p>
+                            <h3 id="unpaid-amount" class="text-2xl font-black text-amber-600">0đ</h3>
+                        </div>
+                        <i class="fas fa-hand-holding-dollar text-3xl text-amber-100"></i>
+                    </div>
+                    <div class="content-card flex items-center justify-between border-b-4 border-indigo-500">
+                        <div>
+                            <p class="text-xs font-bold text-indigo-500 uppercase">Số nhân sự</p>
+                            <h3 id="staff-count" class="text-2xl font-black">0</h3>
+                        </div>
+                        <i class="fas fa-users-cog text-3xl text-indigo-100"></i>
+                    </div>
+                </div>
+
+                <!-- Filters and Actions -->
+                <div class="content-card mb-6 border-l-4 border-blue-600">
+                    <div class="flex flex-wrap gap-4 items-end">
+                        <div class="form-group mb-0 flex-1 min-w-[150px]">
+                            <label class="form-label">Kỳ tính lương</label>
+                            <div class="flex space-x-2">
+                                <select id="filter-month" class="form-select" onchange="loadPayroll()">
+                                    <script>
+                                        for(let i=1; i<=12; i++) document.write(`<option value="${i}">Tháng ${i}</option>`);
+                                    </script>
+                                </select>
+                                <select id="filter-year" class="form-select" onchange="loadPayroll()">
+                                    <option value="2024">2024</option>
+                                    <option value="2025" selected>2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex-1"></div>
+                        <button onclick="generatePayroll()" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg flex items-center space-x-2">
+                            <i class="fas fa-calculator"></i><span>Khởi tạo & Tính toán lương</span>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-2 italic"><i class="fas fa-info-circle mr-1"></i> Hệ thống sẽ tổng hợp số giờ làm thực tế từ bảng chấm công và nhân với đơn giá giờ của từng nhân viên.</p>
+                </div>
+
+                <!-- Payroll Table -->
+                <div class="content-card">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b bg-gray-50">
+                                    <th class="text-left py-4 px-4 text-xs font-bold text-gray-600 uppercase">Nhân viên / Vai trò</th>
+                                    <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Lương Cơ Bản</th>
+                                    <th class="text-center py-4 px-4 text-xs font-bold text-gray-600 uppercase">Số Giờ</th>
+                                    <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Thưởng/Phụ cấp</th>
+                                    <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Khấu trừ</th>
+                                    <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Thực Lĩnh</th>
+                                    <th class="text-center py-4 px-4 text-xs font-bold text-gray-600 uppercase">Trạng thái</th>
+                                    <th class="text-center py-4 px-4 text-xs font-bold text-gray-600 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payroll-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Edit Payroll Modal -->
+    <div id="payrollModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex justify-between">
+                <h3 class="font-bold">Điều chỉnh phiếu lương</h3>
+                <button onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="payrollForm">
+                    <input type="hidden" id="payroll-id">
+                    <div id="payroll-info" class="mb-4 p-3 bg-blue-50 rounded-lg text-sm font-medium text-blue-700"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Phụ cấp (VND)</label>
+                            <input type="number" id="form-bonus" class="form-input" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Khấu trừ / Phạt (VND)</label>
+                            <input type="number" id="form-deduct" class="form-input" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái phát lương</label>
+                        <select id="form-status" class="form-select">
+                            <option value="Chưa thanh toán">Chưa thanh toán</option>
+                            <option value="Đã thanh toán">Đã thanh toán</option>
+                        </select>
+                    </div>
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 mb-4">
+                        * Tổng thực lĩnh = (Lương cơ bản + Lương theo giờ) + Phụ cấp - Khấu trừ.
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-3 font-bold">Cập nhật phiếu lương</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script>
+        const PAYROLL_API = `${API_URL}/payroll`;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('filter-month').value = now.getMonth() + 1;
+            document.getElementById('filter-year').value = now.getFullYear();
+            loadPayroll();
+        });
+
+        async function loadPayroll() {
+            try {
+                const month = document.getElementById('filter-month').value;
+                const year = document.getElementById('filter-year').value;
+
+                const res = await fetch(`${PAYROLL_API}?thang=${month}&nam=${year}`);
+                const data = await res.json();
+                const body = document.getElementById('payroll-table-body');
+
+                let total = 0, paid = 0, unpaid = 0;
+
+                body.innerHTML = data.data.map(p => {
+                    const baseSalary = parseFloat(p.luong_co_ban || 0);
+                    const hourlyPay = parseFloat(p.tong_gio_lam || 0) * parseFloat(p.luong_theo_gio || 0);
+                    const netSalary = parseFloat(p.tong_luong || 0);
+                    
+                    total += netSalary;
+                    if(p.trang_thai === 'Đã thanh toán') paid += netSalary;
+                    else unpaid += netSalary;
+
+                    const statusClass = p.trang_thai === 'Đã thanh toán' 
+                        ? 'bg-emerald-100 text-emerald-700' 
+                        : 'bg-amber-100 text-amber-700';
+
+                    return `
+                        <tr class="border-b hover:bg-slate-50 transition">
+                            <td class="py-4 px-4">
+                                <p class="font-black text-gray-800">${p.ten_nhan_vien}</p>
+                                <p class="text-[10px] uppercase font-bold text-blue-500 tracking-wider">${p.vai_tro}</p>
+                            </td>
+                            <td class="py-4 px-4 text-right font-medium">
+                                <span class="block text-gray-800">${baseSalary.toLocaleString()}đ</span>
+                                <span class="text-[10px] text-gray-400">Fixed</span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <p class="font-black text-blue-600">${p.tong_gio_lam}h</p>
+                                <p class="text-[10px] text-gray-400">@${parseFloat(p.luong_theo_gio).toLocaleString()}đ/h</p>
+                            </td>
+                            <td class="py-4 px-4 text-right text-emerald-600 font-bold">+${parseFloat(p.phu_cap).toLocaleString()}đ</td>
+                            <td class="py-4 px-4 text-right text-rose-600 font-bold">-${parseFloat(p.khau_tru).toLocaleString()}đ</td>
+                            <td class="py-4 px-4 text-right">
+                                <p class="text-lg font-black text-indigo-700">${netSalary.toLocaleString()}đ</p>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase ${statusClass}">
+                                    ${p.trang_thai}
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <button onclick="editPayroll(${p.ma_luong})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-1"><i class="fas fa-edit text-xs"></i></button>
+                                <button onclick="deletePayroll(${p.ma_luong})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                document.getElementById('total-payout').innerText = total.toLocaleString() + 'đ';
+                document.getElementById('paid-amount').innerText = paid.toLocaleString() + 'đ';
+                document.getElementById('unpaid-amount').innerText = unpaid.toLocaleString() + 'đ';
+                document.getElementById('staff-count').innerText = data.data.length;
+
+            } catch (err) { console.error(err); }
+        }
+
+        async function generatePayroll() {
+            const month = document.getElementById('filter-month').value;
+            const year = document.getElementById('filter-year').value;
+
+            if(!confirm(`Xác nhận tính toán lương cho Tháng ${month}/${year}? Hệ thống sẽ ghi đè các bản ghi cũ chưa thanh toán.`)) return;
+
+            try {
+                const res = await fetch(`${PAYROLL_API}/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ thang: month, nam: year })
+                });
+                const result = await res.json();
+                alert(result.message);
+                loadPayroll();
+            } catch (err) { alert('Lỗi kết nối server!'); }
+        }
+
+        async function editPayroll(id) {
+            try {
+                const month = document.getElementById('filter-month').value;
+                const year = document.getElementById('filter-year').value;
+                const res = await fetch(`${PAYROLL_API}?thang=${month}&nam=${year}`);
+                const data = await res.json();
+                const p = data.data.find(x => x.ma_luong === id);
+                if (p) {
+                    document.getElementById('payroll-id').value = p.ma_luong;
+                    document.getElementById('form-bonus').value = p.phu_cap || 0;
+                    document.getElementById('form-deduct').value = p.khau_tru || 0;
+                    document.getElementById('form-status').value = p.trang_thai || 'Chưa thanh toán';
+                    document.getElementById('payroll-info').innerHTML = `<i class="fas fa-user mr-2"></i> ${p.ten_nhan_vien} - Thàng ${month}/${year}`;
+                    document.getElementById('payrollModal').style.display = 'block';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('payrollForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('payroll-id').value;
+            const payload = {
+                phu_cap: document.getElementById('form-bonus').value,
+                khau_tru: document.getElementById('form-deduct').value,
+                trang_thai: document.getElementById('form-status').value
+            };
+            try {
+                const res = await fetch(`${PAYROLL_API}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    closeModal();
+                    loadPayroll();
+                } else alert(result.message);
+            } catch (err) { alert('Lỗi cập nhật!'); }
+        };
+
+        async function deletePayroll(id) {
+            if (confirm('Cảnh báo: Xóa bản ghi lương này? Dữ liệu này có thể được phục hồi bằng cách tính toán lại.')) {
+                await fetch(`${PAYROLL_API}/${id}`, { method: 'DELETE' });
+                loadPayroll();
+            }
+        }
+
+        function closeModal() { document.getElementById('payrollModal').style.display = 'none'; }
+    </script>
+</body>
+</html>

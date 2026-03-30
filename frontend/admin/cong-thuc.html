@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,107 +11,30 @@
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="admin-responsive.css">
 </head>
+
 <body>
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
-            <div class="h-full flex flex-col">
-                <div class="p-5 border-b border-white/10">
-                    <div class="flex items-center space-x-3">
-                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
-                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
-                    </div>
-                </div>
-                <nav class="flex-1 overflow-y-auto p-4">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
-                    <div class="space-y-1">
-                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
-                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
-                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
-                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl active"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
-                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
-                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
-                        <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
-                            <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
-                        </a>
-                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
-                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
-                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
-                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
-                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
-                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
-                    <div class="space-y-1">
-                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
-                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
-                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
-                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
-                    <div class="space-y-1">
-                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
-                    </div>
-                </nav>
-                <div class="p-4 border-t border-white/10">
-                    <div class="admin-card">
-                        <div class="flex items-center space-x-3">
-                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
-                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
-                        </div>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
-                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
-                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.getAttribute('href') === currentPage) {
-                item.classList.add('active');
-            }
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.getAttribute('href') === currentPage) {
-                item.classList.add('active');
-            }
-        });
-    });
-</script>
-</aside>
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
 
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="header-bar flex items-center justify-between">
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
-                    <div>
-                        <h2 class="text-base sm:text-xl font-bold">Khởi Tạo Công Thức</h2>
-                        <p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Gắn định lượng nguyên liệu cho món ăn</p>
-                    </div>
-                </div>
-            </header>
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
 
             <main class="flex-1 overflow-y-auto p-6">
                 <!-- Filters -->
                 <div class="content-card mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm kiếm món ăn..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm kiếm món ăn..."
+                            class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
 
                 <!-- Products Grid -->
-                <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div id="products-container"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <div class="col-span-full text-center py-12">
                         <i class="fas fa-spinner fa-spin text-4xl text-slate-400 mb-4"></i>
                         <p class="text-slate-500">Đang tải dữ liệu món ăn...</p>
@@ -123,20 +47,23 @@
     <!-- Recipe Modal -->
     <div id="recipe-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col">
-            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+            <div
+                class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
                 <div>
                     <h3 class="text-xl font-bold">Cập nhật công thức</h3>
                     <p id="recipe-dish-name" class="text-sm text-blue-200 mt-1"></p>
                 </div>
-                <button onclick="closeRecipeModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+                <button onclick="closeRecipeModal()" class="text-white/70 hover:text-white"><i
+                        class="fas fa-times text-xl"></i></button>
             </div>
-            
+
             <div class="p-6 flex-1 overflow-y-auto bg-slate-50">
                 <input type="hidden" id="recipe-dish-id">
-                
+
                 <div class="mb-4 flex justify-between items-center">
                     <h4 class="font-semibold text-slate-800">Danh sách nguyên liệu</h4>
-                    <button onclick="addIngredientRow('', '', true)" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-200 transition">
+                    <button onclick="addIngredientRow('', '', true)"
+                        class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-200 transition">
                         <i class="fas fa-plus mr-1"></i> Thêm thành phần
                     </button>
                 </div>
@@ -144,7 +71,7 @@
                 <div id="recipe-ingredients-list" class="space-y-3">
                     <!-- Dynamic Rows Here -->
                 </div>
-                
+
                 <div id="empty-recipe" class="hidden text-center py-8 text-slate-400">
                     <i class="fas fa-clipboard text-4xl mb-3 opacity-50"></i>
                     <p>Món ăn này chưa có công thức.</p>
@@ -152,7 +79,8 @@
             </div>
 
             <div class="p-4 border-t bg-white flex justify-end space-x-3 rounded-b-2xl">
-                <button type="button" onclick="closeRecipeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
+                <button type="button" onclick="closeRecipeModal()"
+                    class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
                 <button onclick="saveRecipe()" class="btn-primary">Lưu Công Thức</button>
             </div>
         </div>
@@ -179,7 +107,7 @@
                     if (state.action === 'edit' && state.dishId && state.dishName) {
                         openRecipeModal(state.dishId, state.dishName, true);
                     }
-                } catch(e) {}
+                } catch (e) { }
             }
         }
 
@@ -212,7 +140,7 @@
                 let imagePath = product.anh_mon || product.anh_dai_dien || '/images/default.jpg';
                 if (!imagePath.startsWith('http') && !imagePath.startsWith('/images/')) imagePath = '/images/' + imagePath.replace(/^\/+/, '');
                 const imageUrl = imagePath.startsWith('http') ? imagePath : `http://localhost:3000${imagePath}`;
-                
+
                 return `
                     <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition border border-slate-100 flex items-center p-3">
                         <img src="${imageUrl}" alt="${product.ten_mon}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
@@ -235,14 +163,14 @@
         }
 
         // --- Recipe Modal Logic --- //
-        
+
         // Draft persistence for dynamic fields
         const recipeListEl = document.getElementById('recipe-ingredients-list');
         recipeListEl.addEventListener('input', fireDraftUpdate);
-        
+
         function fireDraftUpdate() {
             const dishId = document.getElementById('recipe-dish-id').value;
-            if(!dishId) return;
+            if (!dishId) return;
             const rows = document.querySelectorAll('.recipe-row');
             const draft = [];
             rows.forEach(row => {
@@ -259,10 +187,10 @@
             document.getElementById('recipe-dish-name').textContent = `Món: ${dishName}`;
             document.getElementById('recipe-ingredients-list').innerHTML = '';
             document.getElementById('empty-recipe').classList.add('hidden');
-            
+
             // Show modal
             document.getElementById('recipe-modal').classList.remove('hidden');
-            
+
             if (!isAutoOpen) sessionStorage.setItem('adminUiState_cong_thuc', JSON.stringify({ action: 'edit', dishId: dishId, dishName: dishName }));
 
             try {
@@ -277,13 +205,13 @@
                             });
                             return; // Mở nháp thành công, không gọi fetch nữa
                         }
-                    } catch (e) {}
+                    } catch (e) { }
                 }
 
                 // Fetch existing recipe
                 const res = await fetch(`${API_URL}/recipe/dish/${dishId}`, { credentials: 'include' });
                 const data = await res.json();
-                
+
                 if (data.success && data.data && data.data.length > 0) {
                     data.data.forEach(item => {
                         addIngredientRow(item.ma_nguyen_lieu, item.so_luong_can, false);
@@ -304,10 +232,10 @@
         function addIngredientRow(ma_nguyen_lieu = '', so_luong_can = '', triggerUpdate = true) {
             document.getElementById('empty-recipe').classList.add('hidden');
             const list = document.getElementById('recipe-ingredients-list');
-            
+
             const row = document.createElement('div');
             row.className = 'recipe-row flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm';
-            
+
             let optionsHTML = '<option value="">-- Chọn nguyên liệu --</option>';
             allIngredients.forEach(ing => {
                 const selected = ing.ma_nguyen_lieu == ma_nguyen_lieu ? 'selected' : '';
@@ -359,14 +287,14 @@
         async function saveRecipe() {
             const dishId = document.getElementById('recipe-dish-id').value;
             const rows = document.querySelectorAll('.recipe-row');
-            
+
             const ingredientsData = [];
             let isValid = true;
 
             rows.forEach(row => {
                 const select = row.querySelector('.ing-select');
                 const qty = row.querySelector('.ing-qty');
-                
+
                 if (select.value && qty.value && parseFloat(qty.value) > 0) {
                     ingredientsData.push({
                         ma_nguyen_lieu: parseInt(select.value),
@@ -391,7 +319,7 @@
                     body: JSON.stringify({ ingredients: ingredientsData }),
                     credentials: 'include'
                 });
-                
+
                 const data = await response.json();
                 if (data.success) {
                     sessionStorage.removeItem(`recipe_draft_${dishId}`);
@@ -409,4 +337,5 @@
         loadData();
     </script>
 </body>
+
 </html>

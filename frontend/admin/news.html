@@ -12,100 +12,26 @@
 </head>
 <body>
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
-            <div class="h-full flex flex-col">
-                <div class="p-5 border-b border-white/10">
-                    <div class="flex items-center space-x-3">
-                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
-                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
-                    </div>
-                </div>
-                <nav class="flex-1 overflow-y-auto p-4">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
-                    <div class="space-y-1">
-                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
-                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
-                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
-                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
-                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
-                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
-                        <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
-                            <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
-                        </a>
-                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
-                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
-                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
-                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
-                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
-                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
-                    <div class="space-y-1">
-                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
-                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
-                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
-                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
-                    <div class="space-y-1">
-                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
-                    </div>
-                </nav>
-                <div class="p-4 border-t border-white/10">
-                    <div class="admin-card">
-                        <div class="flex items-center space-x-3">
-                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
-                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
-                        </div>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
-                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
-                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.getAttribute('href') === currentPage) {
-                item.classList.add('active');
-            }
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.getAttribute('href') === currentPage) {
-                item.classList.add('active');
-            }
-        });
-    });
-</script>
-</aside>
-
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Sidebar Overlay -->
             <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
             
-            <header class="header-bar flex items-center justify-between">
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
-                    <div><h2 class="text-base sm:text-xl font-bold">Quản lý Tin tức</h2><p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Quản lý bài viết và tin tức</p></div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button onclick="openAddModal()" class="btn-primary flex items-center space-x-2"><i class="fas fa-plus"></i><span>Thêm bài viết</span></button>
-                    <a href="../index.html" target="_blank" class="text-white hover:text-blue-200"><i class="fas fa-external-link-alt"></i></a>
-                </div>
-            </header>
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
 
             <main class="flex-1 overflow-y-auto p-6">
+                <!-- Top Actions -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-slate-800">Bài viết & Tin tức</h2>
+                    <button onclick="openAddModal()" class="bg-slate-800 text-white px-4 py-2 rounded-xl hover:bg-slate-900 font-medium text-sm">
+                        <i class="fas fa-plus mr-2"></i>Thêm bài viết
+                    </button>
+                </div>
+
                 <!-- Filters -->
                 <div class="content-card mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -146,7 +72,7 @@
                 <div><label class="block text-sm font-medium text-slate-700 mb-2">Ảnh đại diện</label><input type="file" id="anh_dai_dien" accept="image/*" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl"></div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
-                    <button type="submit" class="btn-primary">Lưu</button>
+                    <button type="submit" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl hover:bg-slate-900 font-medium">Lưu</button>
                 </div>
             </form>
         </div>
@@ -158,55 +84,43 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('news-id').classList.add('no-draft');
             window.newsDraftManager = new FormDraftManager('news-form');
         });
 
-        // API_URL đã được khai báo trong admin-layout.js
         let newsList = [];
 
         async function loadNews() {
             try {
-                console.log('Loading news from:', `${API_URL}/news/admin/all`);
                 const response = await fetch(`${API_URL}/news/admin/all`, { credentials: 'include' });
-                console.log('Response status:', response.status);
-                
                 if (!response.ok) {
-                    if (response.status === 401) {
-                        console.error('Unauthorized - redirecting to login');
-                        window.location.href = 'dang-nhap-admin.html?error=unauthorized';
-                        return;
-                    }
+                    if (response.status === 401) { window.location.href = 'dang-nhap-admin.html'; return; }
                     throw new Error(`HTTP ${response.status}`);
                 }
-                
                 const data = await response.json();
-                console.log('News data:', data);
                 newsList = data.data || [];
                 renderNews(newsList);
                 restoreUiState();
             } catch (error) {
-                console.error('Error loading news:', error);
-                document.getElementById('news-container').innerHTML = `<div class="text-center py-12"><i class="fas fa-exclamation-circle text-4xl text-red-400 mb-4"></i><p class="text-slate-500">Không thể tải dữ liệu: ${error.message}</p></div>`;
+                console.error('Error:', error);
+                document.getElementById('news-container').innerHTML = `<div class="text-center py-12"><i class="fas fa-exclamation-circle text-4xl text-red-400 mb-4"></i><p class="text-slate-500">Lỗi tải dữ liệu</p></div>`;
             }
         }
 
         function renderNews(items) {
             const container = document.getElementById('news-container');
-            if (items.length === 0) { container.innerHTML = `<div class="text-center py-12"><i class="fas fa-newspaper text-4xl text-slate-300 mb-4"></i><p class="text-slate-500">Chưa có bài viết nào</p></div>`; return; }
+            if (items.length === 0) { container.innerHTML = `<div class="text-center py-12"><i class="fas fa-newspaper text-4xl text-slate-300 mb-4"></i><p class="text-slate-500">Chưa có bài viết</p></div>`; return; }
             container.innerHTML = items.map(news => `
-                <div class="content-card overflow-hidden hover:shadow-lg transition p-0">
-                    <div class="flex">
-                        <div class="w-48 h-32 flex-shrink-0">
-                            <img src="${API_URL.replace('/api', '')}/${news.anh_dai_dien || 'images/default.jpg'}" alt="${news.tieu_de}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                <div class="content-card overflow-hidden hover:shadow-lg transition p-0 mb-4">
+                    <div class="flex flex-col sm:flex-row">
+                        <div class="w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
+                            <img src="${API_URL.replace('/api', '')}/${news.anh_dai_dien || 'images/default.jpg'}" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1 p-5">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <h4 class="font-bold text-lg mb-2 text-slate-800 line-clamp-1">${news.tieu_de}</h4>
-                                    <p class="text-sm text-slate-600 mb-3 line-clamp-2">${news.tom_tat || (news.noi_dung ? news.noi_dung.replace(/<[^>]*>/g, '').substring(0, 150) + '...' : 'Chưa có nội dung')}</p>
+                                    <p class="text-sm text-slate-600 mb-3 line-clamp-2">${news.tom_tat || '...'}</p>
                                     <div class="flex items-center space-x-4 text-sm text-slate-500">
-                                        <span><i class="fas fa-user mr-1"></i>${news.tac_gia || 'Admin'}</span>
                                         <span><i class="fas fa-calendar mr-1"></i>${news.ngay_dang ? new Date(news.ngay_dang).toLocaleDateString('vi-VN') : 'N/A'}</span>
                                         <span><i class="fas fa-eye mr-1"></i>${news.luot_xem || 0}</span>
                                     </div>
@@ -214,8 +128,8 @@
                                 <div class="ml-4 flex flex-col items-end space-y-2">
                                     <span class="px-3 py-1 rounded-full text-xs font-medium ${news.trang_thai == 1 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}">${news.trang_thai == 1 ? 'Đã đăng' : 'Đã ẩn'}</span>
                                     <div class="flex space-x-2">
-                                        <button onclick="editNews(${news.ma_tin_tuc})" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-sm"><i class="fas fa-edit"></i></button>
-                                        <button onclick="deleteNews(${news.ma_tin_tuc})" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm"><i class="fas fa-trash"></i></button>
+                                        <button onclick="editNews(${news.ma_tin_tuc})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-edit"></i></button>
+                                        <button onclick="deleteNews(${news.ma_tin_tuc})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="fas fa-trash"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -226,99 +140,63 @@
         }
 
         function restoreUiState() {
-            const stateStr = sessionStorage.getItem('adminUiState_news');
-            if (stateStr) {
-                try {
-                    const state = JSON.parse(stateStr);
-                    if (state.action === 'add') openAddModal(true);
-                    else if (state.action === 'edit' && state.id) editNews(state.id, true);
-                } catch (e) {}
-            }
+            const state = JSON.parse(sessionStorage.getItem('adminUiState_news') || '{}');
+            if (state.action === 'add') openAddModal(true);
+            else if (state.action === 'edit' && state.id) editNews(state.id, true);
         }
 
-        function openAddModal(isAutoOpen = false) { 
-            document.getElementById('modal-title').textContent = 'Thêm bài viết mới'; 
-            document.getElementById('news-form').reset(); 
-            if (window.newsDraftManager) {
-                window.newsDraftManager.setContext('new');
-                if (window.newsDraftManager.hasDraft()) window.newsDraftManager.restore();
-            }
-            document.getElementById('news-id').value = ''; 
-            document.getElementById('news-modal').classList.remove('hidden'); 
-            if (!isAutoOpen) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'add' }));
+        function openAddModal(auto = false) {
+            document.getElementById('modal-title').textContent = 'Thêm bài viết mới';
+            document.getElementById('news-form').reset();
+            document.getElementById('news-id').value = '';
+            if (window.newsDraftManager) { window.newsDraftManager.setContext('new'); if (window.newsDraftManager.hasDraft()) window.newsDraftManager.restore(); }
+            document.getElementById('news-modal').classList.remove('hidden');
+            if (!auto) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'add' }));
         }
 
-        function closeModal() { 
-            document.getElementById('news-modal').classList.add('hidden'); 
-            sessionStorage.removeItem('adminUiState_news');
-        }
+        function closeModal() { document.getElementById('news-modal').classList.add('hidden'); sessionStorage.removeItem('adminUiState_news'); }
 
-        async function editNews(id, isAutoOpen = false) {
+        function editNews(id, auto = false) {
             const news = newsList.find(n => n.ma_tin_tuc === id);
-            if (!news) {
-                sessionStorage.removeItem('adminUiState_news');
-                return;
-            }
+            if (!news) { sessionStorage.removeItem('adminUiState_news'); return; }
             document.getElementById('modal-title').textContent = 'Chỉnh sửa bài viết';
             document.getElementById('news-id').value = news.ma_tin_tuc;
-            
             if (window.newsDraftManager) window.newsDraftManager.setContext(id);
-            
             document.getElementById('tieu_de').value = news.tieu_de || '';
             document.getElementById('tom_tat').value = news.tom_tat || '';
             document.getElementById('noi_dung').value = news.noi_dung || '';
-            document.getElementById('trang_thai').value = news.trang_thai != null ? news.trang_thai : 1;
+            document.getElementById('trang_thai').value = news.trang_thai ?? 1;
             document.getElementById('news-modal').classList.remove('hidden');
-
-            if (!isAutoOpen) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'edit', id: id }));
-            
-            if (window.newsDraftManager && window.newsDraftManager.hasDraft()) {
-                window.newsDraftManager.restore();
-            }
+            if (!auto) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'edit', id: id }));
+            if (window.newsDraftManager && window.newsDraftManager.hasDraft()) window.newsDraftManager.restore();
         }
 
         async function deleteNews(id) {
-            if (!confirm('Bạn có chắc muốn xóa bài viết này?')) return;
+            if (!confirm('Xác nhận xóa?')) return;
             try {
-                const response = await fetch(`${API_URL}/news/${id}`, { method: 'DELETE', credentials: 'include' });
-                if (response.ok) { alert('Xóa thành công!'); loadNews(); } else { alert('Có lỗi xảy ra!'); }
-            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+                const res = await fetch(`${API_URL}/news/${id}`, { method: 'DELETE', credentials: 'include' });
+                if (res.ok) loadNews();
+            } catch (e) { alert('Lỗi xóa'); }
         }
 
         document.getElementById('news-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData();
             const id = document.getElementById('news-id').value;
-            formData.append('tieu_de', document.getElementById('tieu_de').value);
-            formData.append('tom_tat', document.getElementById('tom_tat').value || '');
-            formData.append('noi_dung', document.getElementById('noi_dung').value);
-            formData.append('trang_thai', document.getElementById('trang_thai').value);
-            const fileInput = document.getElementById('anh_dai_dien');
-            if (fileInput.files[0]) formData.append('anh_dai_dien', fileInput.files[0]);
+            const formData = new FormData(e.target);
+            const file = document.getElementById('anh_dai_dien').files[0];
+            if (file) formData.append('anh_dai_dien', file);
             try {
-                const url = id ? `${API_URL}/news/${id}` : `${API_URL}/news`;
-                const response = await fetch(url, { method: id ? 'PUT' : 'POST', body: formData, credentials: 'include' });
-                if (response.ok) { 
-                    if (window.newsDraftManager) window.newsDraftManager.clear();
-                    alert(id ? 'Cập nhật thành công!' : 'Thêm mới thành công!'); 
-                    closeModal(); 
-                    loadNews(); 
-                } else { alert('Có lỗi xảy ra!'); }
-            } catch (error) { console.error('Error:', error); alert('Có lỗi xảy ra!'); }
+                const res = await fetch(id ? `${API_URL}/news/${id}` : `${API_URL}/news`, { method: id ? 'PUT' : 'POST', body: formData, credentials: 'include' });
+                if (res.ok) { if (window.newsDraftManager) window.newsDraftManager.clear(); closeModal(); loadNews(); }
+            } catch (e) { alert('Lỗi lưu'); }
         });
 
         function applyFilters() {
-            const search = document.getElementById('search').value.toLowerCase();
-            const status = document.getElementById('status-filter').value;
-            let filtered = newsList.filter(n => {
-                const matchSearch = n.tieu_de.toLowerCase().includes(search);
-                const matchStatus = status === '' || n.trang_thai == status;
-                return matchSearch && matchStatus;
-            });
-            renderNews(filtered);
+            const s = document.getElementById('search').value.toLowerCase();
+            const st = document.getElementById('status-filter').value;
+            renderNews(newsList.filter(n => n.tieu_de.toLowerCase().includes(s) && (st === '' || n.trang_thai == st)));
         }
 
-        // Load data khi trang sẵn sàng
         loadNews();
     </script>
 </body>

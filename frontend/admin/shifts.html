@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Ca làm việc - Admin Phương Nam</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+    <style>
+        body {
+            background: #f0f4f8;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%);
+        }
+
+        .sidebar-item {
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff;
+        }
+
+        .header-bar {
+            background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%);
+            color: #fff;
+            padding: 16px 28px;
+        }
+
+        .content-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: #fff;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #1e3a5f 0%, #2d4a6f 100%);
+            color: #fff;
+            padding: 20px 24px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Shifts Section -->
+                <div class="content-card mb-8 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Cấu hình Ca làm việc</h3>
+                            <p class="text-sm text-gray-500">Thiết lập khung giờ và hệ số lương cho các ca</p>
+                        </div>
+                        <button onclick="openShiftModal()" class="btn-primary flex items-center space-x-2">
+                            <i class="fas fa-plus"></i><span>Thêm khung ca mới</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b bg-gray-50">
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Tên ca</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Bắt đầu</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Kết thúc</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Hệ số</th>
+                                    <th class="text-center py-3 px-4 text-sm font-bold text-gray-600">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shift-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Scheduling Section -->
+                <div class="content-card border-l-4 border-emerald-500">
+                    <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Lịch trình làm việc</h3>
+                            <p class="text-sm text-gray-500">Phân bổ nhân sự trực theo ngày</p>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-gray-100 p-2 rounded-xl">
+                            <button onclick="changeDay(-1)" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm hover:bg-gray-50"><i class="fas fa-chevron-left"></i></button>
+                            <input type="date" id="schedule-date" class="form-input w-48 border-none bg-transparent font-bold text-center" onchange="loadSchedules()">
+                            <button onclick="changeDay(1)" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm hover:bg-gray-50"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <button onclick="openScheduleModal()" class="btn-primary flex items-center space-x-2">
+                            <i class="fas fa-calendar-plus"></i><span>Phân ca ngay</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b bg-gray-50">
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Tên nhân viên</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Ca làm việc</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Khoảng thời gian</th>
+                                    <th class="text-left py-3 px-4 text-sm font-bold text-gray-600">Trạng thái</th>
+                                    <th class="text-center py-3 px-4 text-sm font-bold text-gray-600">Hủy lịch</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schedule-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Shift Modal -->
+    <div id="shiftModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex justify-between">
+                <h3 id="shift-modal-title" class="font-bold">Thiết lập khung ca</h3>
+                <button onclick="closeModal('shiftModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="shiftForm">
+                    <input type="hidden" id="shift-id">
+                    <div class="form-group">
+                        <label class="form-label">Tên ca làm việc</label>
+                        <input type="text" id="shift-name" class="form-input" required placeholder="Ví dụ: Ca Sáng, Ca Gãy, Overtime...">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Giở bắt đầu</label>
+                            <input type="time" id="shift-start" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giờ kết thúc</label>
+                            <input type="time" id="shift-end" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hệ số lương (Multiplier)</label>
+                        <input type="number" id="shift-factor" class="form-input" value="1.0" step="0.1" min="1.0">
+                        <p class="text-xs text-gray-400 mt-1 italic">* 1.0 là lương chuẩn, 1.5 cho OT, 2.0 cho ngày lễ</p>
+                    </div>
+                    <button type="submit" class="btn-primary w-full mt-4 py-3 text-lg">Cập nhật cấu hình</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex justify-between">
+                <h3 class="font-bold">Phân bổ nhân sự</h3>
+                <button onclick="closeModal('scheduleModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <div class="form-group">
+                        <label class="form-label">Chọn nhân viên</label>
+                        <select id="select-staff" class="form-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chọn ca làm việc</label>
+                        <select id="select-shift" class="form-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngày làm việc</label>
+                        <input type="date" id="select-date" class="form-input" required>
+                    </div>
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+                        <p class="text-xs text-blue-700 font-medium flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i> Hệ thống sẽ tự động kiểm tra nếu lịch làm việc của nhân viên bị chồng chéo.
+                        </p>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-3">Hoàn tất phân ca</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="check-auth.js"></script>
+    <script src="admin-layout.js"></script>
+    <script>
+        const SHIFT_API = `${API_URL}/shifts`;
+        const STAFF_API = `${API_URL}/staff`;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('schedule-date').value = today;
+            document.getElementById('select-date').value = today;
+            loadShifts();
+            loadSchedules();
+            loadStaffOptions();
+        });
+
+        function changeDay(offset) {
+            const dateInput = document.getElementById('schedule-date');
+            const date = new Date(dateInput.value);
+            date.setDate(date.getDate() + offset);
+            dateInput.value = date.toISOString().split('T')[0];
+            loadSchedules();
+        }
+
+        async function loadShifts() {
+            try {
+                const res = await fetch(SHIFT_API);
+                const data = await res.json();
+                const body = document.getElementById('shift-table-body');
+                const selectShift = document.getElementById('select-shift');
+                
+                body.innerHTML = data.data.map(s => `
+                    <tr class="border-b transition hover:bg-gray-50">
+                        <td class="py-4 px-4 font-bold text-gray-800">${s.ten_ca}</td>
+                        <td class="py-4 px-4 text-gray-600 font-medium">${s.gio_bat_dau}</td>
+                        <td class="py-4 px-4 text-gray-600 font-medium">${s.gio_ket_thuc}</td>
+                        <td class="py-4 px-4"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg font-bold">x${s.he_so_luong}</span></td>
+                        <td class="py-4 px-4 text-center">
+                            <button onclick="editShift(${s.ma_ca})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
+                            <button onclick="deleteShift(${s.ma_ca})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                selectShift.innerHTML = data.data.map(s => `<option value="${s.ma_ca}">${s.ten_ca} (${s.gio_bat_dau} - ${s.gio_ket_thuc})</option>`).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadSchedules() {
+            try {
+                const date = document.getElementById('schedule-date').value;
+                const res = await fetch(`${SHIFT_API}/schedules?start=${date}&end=${date}`);
+                const data = await res.json();
+                const body = document.getElementById('schedule-table-body');
+                
+                if (data.data.length === 0) {
+                    body.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-gray-400 italic">Chưa có ai làm việc ngày này</td></tr>';
+                    return;
+                }
+
+                body.innerHTML = data.data.map(s => {
+                    let statusBadge = '';
+                    switch(s.trang_thai) {
+                        case 'completed': statusBadge = '<span class="badge-completed">Hoàn thành</span>'; break;
+                        case 'cancelled': statusBadge = '<span class="badge-cancelled">Đã hủy</span>'; break;
+                        default: statusBadge = '<span class="badge-scheduled">Đã phân lịch</span>';
+                    }
+
+                    return `
+                        <tr class="border-b hover:bg-gray-50 transition">
+                            <td class="py-4 px-4">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-bold text-blue-600">#${s.ma_nv_code || '-'}</span>
+                                    <span class="font-bold text-gray-800">${s.ten_nhan_vien}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4"><span class="font-medium text-gray-700 uppercase text-xs tracking-wider">${s.ten_ca}</span></td>
+                            <td class="py-4 px-4 text-sm text-gray-600 font-bold font-mono">${s.gio_bat_dau} - ${s.gio_ket_thuc}</td>
+                            <td class="py-4 px-4">${statusBadge}</td>
+                            <td class="py-4 px-4 text-center">
+                                ${s.trang_thai === 'scheduled' ? `
+                                    <button onclick="deleteSchedule(${s.ma_phan_ca})" class="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-times"></i></button>
+                                ` : '-'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadStaffOptions() {
+            try {
+                const res = await fetch(STAFF_API);
+                const data = await res.json();
+                document.getElementById('select-staff').innerHTML = data.data
+                    .filter(s => s.trang_thai === 1)
+                    .map(s => `<option value="${s.ma_nhan_vien}">${s.ten_nhan_vien} (${s.vai_tro})</option>`).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        function openShiftModal(id = null) {
+            document.getElementById('shiftModal').style.display = 'block';
+            if(!id) {
+                document.getElementById('shiftForm').reset();
+                document.getElementById('shift-id').value = '';
+                document.getElementById('shift-modal-title').innerText = 'Tạo Ca Làm Việc Mới';
+            }
+        }
+
+        async function editShift(id) {
+            try {
+                const res = await fetch(SHIFT_API);
+                const data = await res.json();
+                const s = data.data.find(x => x.ma_ca === id);
+                if(s) {
+                    document.getElementById('shift-id').value = s.ma_ca;
+                    document.getElementById('shift-name').value = s.ten_ca;
+                    document.getElementById('shift-start').value = s.gio_bat_dau;
+                    document.getElementById('shift-end').value = s.gio_ket_thuc;
+                    document.getElementById('shift-factor').value = s.he_so_luong;
+                    document.getElementById('shift-modal-title').innerText = 'Cập Nhật Cấu Hình Ca';
+                    document.getElementById('shiftModal').style.display = 'block';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('shiftForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('shift-id').value;
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${SHIFT_API}/${id}` : SHIFT_API;
+            const payload = {
+                ten_ca: document.getElementById('shift-name').value,
+                gio_bat_dau: document.getElementById('shift-start').value,
+                gio_ket_thuc: document.getElementById('shift-end').value,
+                he_so_luong: document.getElementById('shift-factor').value
+            };
+            const res = await fetch(url, {
+                method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if(result.success) {
+                closeModal('shiftModal');
+                loadShifts();
+            } else alert(result.message);
+        };
+
+        async function deleteShift(id) {
+            if(confirm('Chú ý: Xóa ca làm việc sẽ ảnh hưởng đến các lịch phân ca đã có. Tiếp tục?')) {
+                await fetch(`${SHIFT_API}/${id}`, {method: 'DELETE'});
+                loadShifts();
+            }
+        }
+
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'block';
+            document.getElementById('select-date').value = document.getElementById('schedule-date').value;
+        }
+
+        document.getElementById('scheduleForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const payload = {
+                ma_nhan_vien: document.getElementById('select-staff').value,
+                ma_ca: document.getElementById('select-shift').value,
+                ngay: document.getElementById('select-date').value
+            };
+            try {
+                const res = await fetch(`${SHIFT_API}/schedules`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if(result.success) {
+                    closeModal('scheduleModal');
+                    loadSchedules();
+                } else {
+                    alert('LỖI: ' + result.message);
+                }
+            } catch (err) { alert('Lỗi kết nối server!'); }
+        };
+
+        async function deleteSchedule(id) {
+            if(confirm('Xác nhận hủy lịch làm việc này?')) {
+                await fetch(`${SHIFT_API}/schedules/${id}`, {method: 'DELETE'});
+                loadSchedules();
+            }
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    </script>
+</body>
+
+</html>

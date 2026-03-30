@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,23 +12,104 @@
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="admin-responsive.css">
     <style>
-        body { background: #f0f4f8; }
-        .sidebar { background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%); }
-        .sidebar-item { color: #94a3b8; transition: all 0.2s; }
-        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .sidebar-item.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; }
-        .kpi-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
-        .kpi-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-        .kpi-value { font-size: 2rem; font-weight: 700; color: #1e3a5f; }
-        .kpi-label { font-size: 0.875rem; color: #64748b; margin-bottom: 4px; }
-        .kpi-compare { font-size: 0.75rem; color: #64748b; }
-        .kpi-compare .up { color: #10b981; }
-        .kpi-compare .down { color: #ef4444; }
-        .chart-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
-        .chart-title { font-size: 1rem; font-weight: 600; color: #1e3a5f; margin-bottom: 20px; }
-        .filter-section { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(30,58,95,0.08); }
-        .filter-group { margin-bottom: 20px; }
-        .filter-label { font-size: 0.75rem; font-weight: 600; color: #1e3a5f; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        body {
+            background: #f0f4f8;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #1e3a5f 0%, #0f2744 100%);
+        }
+
+        .sidebar-item {
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff;
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .kpi-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .kpi-compare {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .kpi-compare .up {
+            color: #10b981;
+        }
+
+        .kpi-compare .down {
+            color: #ef4444;
+        }
+
+        .chart-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .filter-btn { padding: 8px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s; border: 1px solid #e2e8f0; }
         .filter-btn.active { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; border-color: transparent; }
         .filter-btn:not(.active) { background: #f8fafc; color: #475569; }
@@ -38,165 +120,31 @@
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #64748b; }
         .legend-dot { width: 12px; height: 12px; border-radius: 4px; }
         .admin-card { background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; }
-        /* Daily Revenue Chart Filter Buttons */
-        .daily-filter-btn { 
-            padding: 6px 12px; 
-            border-radius: 6px; 
-            font-size: 0.75rem; 
-            font-weight: 500; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            border: 1px solid #e2e8f0; 
-            background: #f8fafc; 
-            color: #3b82f6;
+        .daily-filter-btn {
+            padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s; border: 1px solid #e2e8f0; background: #f8fafc; color: #3b82f6;
         }
-        .daily-filter-btn.active { 
-            background: #3b82f6; 
-            color: #fff; 
-            border-color: #3b82f6; 
-        }
-        .daily-filter-btn:hover:not(.active) { 
-            background: #e0f2fe; 
-            border-color: #3b82f6; 
-        }
+        .daily-filter-btn.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+        .daily-filter-btn:hover:not(.active) { background: #e0f2fe; }
         #daily-revenue-change.up { background: #dcfce7; color: #16a34a; }
         #daily-revenue-change.down { background: #fee2e2; color: #dc2626; }
     </style>
 </head>
+
 <body>
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-72 flex-shrink-0">
-            <div class="h-full flex flex-col">
-                <div class="p-5 border-b border-white/10">
-                    <div class="flex items-center space-x-3">
-                        <img src="../images/Green Simple Clean Vegan Food Logo.png" alt="Logo" class="w-11 h-11 rounded-xl object-contain bg-white p-1">
-                        <div><h1 class="font-bold text-white text-lg">Phương Nam</h1><p class="text-xs text-blue-300">Hệ thống quản trị</p></div>
-                    </div>
-                </div>
-                <nav class="flex-1 overflow-y-auto p-4">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Menu chính</p>
-                    <div class="space-y-1">
-                        <a href="dashboard.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="text-sm">Tổng quan</span></a>
-                        <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-utensils w-5"></i><span class="text-sm">Món ăn</span></a>
-                        <a href="nguyen-lieu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-boxes w-5"></i><span class="text-sm">Nguyên liệu</span></a>
-                        <a href="cong-thuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-clipboard-list w-5"></i><span class="text-sm">Công thức</span></a>
-                        <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="text-sm font-medium">Đơn hàng</span></a>
-                        <a href="reservations.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-calendar-check w-5"></i><span class="text-sm">Đặt bàn</span></a>
-                        <a href="tables.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
-                            <i class="fas fa-chair w-5"></i><span class="text-sm">Quản lý bàn</span>
-                        </a>
-                        <a href="customers.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-users w-5"></i><span class="text-sm">Khách hàng</span></a>
-                        <a href="staff.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-user-tie w-5"></i><span class="text-sm">Nhân viên</span></a>
-                        <a href="contacts.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-envelope w-5"></i><span class="text-sm">Liên hệ</span></a>
-                        <a href="chatbot-history.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-robot w-5"></i><span class="text-sm">Lịch sử Chatbot</span></a>
-                        <a href="reviews.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-star w-5"></i><span class="text-sm">Đánh giá</span></a>
-                        <a href="promotions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-ticket-alt w-5"></i><span class="text-sm">Khuyến mãi</span></a>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Nội dung</p>
-                    <div class="space-y-1">
-                        <a href="news.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-newspaper w-5"></i><span class="text-sm">Tin tức</span></a>
-                        <a href="quan-ly-binh-luan.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-comments w-5"></i><span class="text-sm">Bình luận tin tức</span></a>
-                        <a href="quan-ly-danh-gia-tin-tuc.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-thumbs-up w-5"></i><span class="text-sm">Reactions tin tức</span></a>
-                        <a href="albums.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-images w-5"></i><span class="text-sm">Album ảnh</span></a>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Hệ thống</p>
-                    <div class="space-y-1">
-                        <a href="settings.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl"><i class="fas fa-cog w-5"></i><span class="text-sm">Cài đặt</span></a>
-                    </div>
-                </nav>
-                <div class="p-4 border-t border-white/10">
-                    <div class="admin-card">
-                        <div class="flex items-center space-x-3">
-                            <img id="admin-avatar" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-400">
-                            <div class="flex-1 min-w-0"><p id="admin-name" class="font-semibold text-sm text-white truncate">Đang tải...</p><p id="admin-email" class="text-xs text-blue-300 truncate">admin@example.com</p></div>
-                        </div>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
-                            <span class="text-xs text-blue-300"><i class="fab fa-google mr-1"></i>Google</span>
-                            <button onclick="logout()" class="text-xs text-red-400 hover:text-red-300"><i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.getAttribute('href') === currentPage) {
-                item.classList.add('active');
-            }
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            if (item.getAttribute('href') === currentPage) {
-                item.classList.add('active');
-            }
-        });
-    });
-</script>
-</aside>
-
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Sidebar Overlay -->
-            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
-            
-            <!-- Header Bar -->
-            <header class="header-bar flex items-center justify-between">
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                    <button onclick="toggleSidebar()" class="mobile-menu-btn lg:hidden text-white"><i class="fas fa-bars text-xl"></i></button>
-                    <div>
-                        <h2 class="text-base sm:text-xl font-bold">Dashboard</h2>
-                        <p class="text-xs sm:text-sm text-blue-200 hidden sm:block">Báo cáo tổng quan nhà hàng</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <!-- Admin Notification Bell -->
-                    <div id="admin-notification-container" class="relative">
-                        <button id="admin-notification-btn" class="relative text-white hover:text-blue-200 transition cursor-pointer">
-                            <i class="fas fa-bell text-lg"></i>
-                            <span id="admin-notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
-                        </button>
-                        <!-- Notification Dropdown -->
-                        <div id="admin-notification-dropdown" class="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-100 hidden" style="z-index: 9999;">
-                            <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-800">Thông báo quản trị</h3>
-                                <button id="admin-mark-all-read-btn" class="text-xs text-orange-600 hover:text-orange-700 cursor-pointer">Đánh dấu đã đọc</button>
-                            </div>
-                            <div id="admin-notification-list" class="max-h-96 overflow-y-auto">
-                                <div class="text-center py-8 text-gray-400">
-                                    <i class="fas fa-bell-slash text-3xl mb-2"></i>
-                                    <p class="text-sm">Chưa có thông báo</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <a href="../index.html" target="_blank" class="text-white hover:text-blue-200 transition" title="Xem website">
-                        <i class="fas fa-external-link-alt text-lg"></i>
-                    </a>
-                    <div class="hidden md:flex items-center space-x-3 pl-4 border-l border-white/20">
-                        <img id="admin-avatar-header" referrerpolicy="no-referrer" src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin" class="w-10 h-10 rounded-full border-2 border-blue-400">
-                        <div>
-                            <p id="admin-name-header" class="font-semibold text-sm text-white">Admin</p>
-                            <p class="text-xs text-blue-200">Quản trị viên</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
 
-            <!-- Dashboard Content -->
             <main class="flex-1 overflow-y-auto p-6">
                 <div class="flex gap-6">
-                    <!-- Main Content Area -->
                     <div class="flex-1">
-                        <!-- KPI Cards -->
+                        <!-- Row 1: KPI Cards -->
                         <div class="grid grid-cols-4 gap-5 mb-6">
                             <div class="kpi-card">
                                 <div class="flex items-center gap-4">
@@ -266,7 +214,6 @@
                                 </div>
                             </div>
                             <div id="goals-container" class="grid grid-cols-5 gap-4">
-                                <!-- Goals will be loaded here -->
                                 <div class="col-span-5 text-center py-8 text-gray-400">
                                     <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                                     <p class="text-sm">Đang tải mục tiêu...</p>
@@ -295,7 +242,7 @@
                             </div>
                         </div>
 
-                        <!-- Row: Biểu đồ doanh thu chi tiết theo ngày (giống thị trường chứng khoán) -->
+                        <!-- Row: Biểu đồ doanh thu chi tiết theo ngày -->
                         <div class="chart-card mb-6">
                             <div class="flex items-center justify-between mb-4">
                                 <div>
@@ -325,7 +272,7 @@
                             </div>
                         </div>
 
-                        <!-- Row 3: Orders + Top Products + Customers -->
+                        <!-- Row: Orders + Top Products + Customers -->
                         <div class="grid grid-cols-3 gap-5 mb-6">
                             <div class="chart-card">
                                 <p class="chart-title"><i class="fas fa-chart-pie text-green-500 mr-2"></i>Đơn hàng theo trạng thái</p>
@@ -341,7 +288,7 @@
                             </div>
                         </div>
 
-                        <!-- Row 4: Reservations + Payment Methods + Recent Orders -->
+                        <!-- Row: Reservations + Payment Methods + Recent Orders -->
                         <div class="grid grid-cols-3 gap-5 mb-6">
                             <div class="chart-card">
                                 <p class="chart-title"><i class="fas fa-clock text-orange-500 mr-2"></i>Đặt bàn theo khung giờ</p>
@@ -357,7 +304,7 @@
                             </div>
                         </div>
 
-                        <!-- Row 5: Reviews Stats -->
+                        <!-- Row: Reviews Stats -->
                         <div class="grid grid-cols-3 gap-5 mb-6">
                             <div class="chart-card">
                                 <p class="chart-title"><i class="fas fa-star text-yellow-500 mr-2"></i>Phân bố đánh giá sao</p>
@@ -380,7 +327,7 @@
                             </div>
                         </div>
 
-                        <!-- Row 6: News Stats -->
+                        <!-- Row: News Stats -->
                         <div class="grid grid-cols-3 gap-5">
                             <div class="chart-card">
                                 <p class="chart-title"><i class="fas fa-newspaper text-pink-500 mr-2"></i>Lượt xem bài viết theo tháng</p>
@@ -408,7 +355,6 @@
                                     <i class="fas fa-redo mr-1"></i>Reset
                                 </button>
                             </div>
-                            
                             <div class="filter-group">
                                 <p class="filter-label">Năm</p>
                                 <div class="flex flex-wrap gap-2">
@@ -446,7 +392,6 @@
                                     <button class="filter-btn" data-status="cancelled">Đã hủy</button>
                                 </div>
                             </div>
-                            
                             <!-- Filter Summary -->
                             <div id="filter-summary" class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs">
                                 <p class="font-semibold text-blue-800 mb-1">Đang xem:</p>
@@ -459,10 +404,8 @@
         </div>
     </div>
 
-    <!-- check-auth.js đã bị xóa để tránh xung đột với admin-layout.js -->
     <script src="admin-layout.js"></script>
     <script src="admin-mobile.js"></script>
-
     <script>
         // API_URL đã được khai báo trong admin-layout.js
         const API_BASE = API_URL; // Alias để tương thích
