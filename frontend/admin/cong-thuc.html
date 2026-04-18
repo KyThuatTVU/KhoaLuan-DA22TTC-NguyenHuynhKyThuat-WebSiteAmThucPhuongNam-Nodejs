@@ -245,28 +245,46 @@
             let optionsHTML = '<option value="">-- Chọn nguyên liệu --</option>';
             allIngredients.forEach(ing => {
                 const selected = ing.ma_nguyen_lieu == ma_nguyen_lieu ? 'selected' : '';
-                optionsHTML += `<option value="${ing.ma_nguyen_lieu}" data-unit="${ing.don_vi_tinh}" ${selected}>${ing.ten_nguyen_lieu} (${ing.don_vi_tinh})</option>`;
+                optionsHTML += `<option value="${ing.ma_nguyen_lieu}" data-unit="${ing.don_vi_tinh}" data-natural-unit="${ing.don_vi_tu_nhien || ''}" data-avg-weight="${ing.trong_luong_trung_binh || ''}" ${selected}>${ing.ten_nguyen_lieu} (${ing.don_vi_tinh})</option>`;
             });
 
             // Xác định step/min phù hợp dựa trên đơn vị
             let selectedUnit = '';
+            let naturalUnit = '';
+            let avgWeight = 0;
+            let naturalQty = '';
+            
             if (ma_nguyen_lieu) {
                 const selectedIng = allIngredients.find(i => i.ma_nguyen_lieu == ma_nguyen_lieu);
-                if (selectedIng) selectedUnit = selectedIng.don_vi_tinh;
+                if (selectedIng) {
+                    selectedUnit = selectedIng.don_vi_tinh;
+                    naturalUnit = selectedIng.don_vi_tu_nhien;
+                    avgWeight = selectedIng.trong_luong_trung_binh;
+                    
+                    // Tính số lượng tự nhiên
+                    if (naturalUnit && avgWeight && so_luong_can) {
+                        const qty = Math.floor(parseFloat(so_luong_can) / parseFloat(avgWeight));
+                        naturalQty = `<span class="text-xs text-blue-600 font-semibold ml-2">≈ ${qty} ${naturalUnit}</span>`;
+                    }
+                }
             }
+            
             const stepVal = isIntegerUnit(selectedUnit) ? '1' : '0.01';
             const minVal = isIntegerUnit(selectedUnit) ? '1' : '0.01';
             const displayQty = isIntegerUnit(selectedUnit) ? Math.round(so_luong_can || 0) : so_luong_can;
 
             row.innerHTML = `
                 <div class="flex-1">
-                    <select class="ing-select w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" onchange="updateQtyStep(this); fireDraftUpdate()">
+                    <select class="ing-select w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" onchange="updateQtyStep(this); updateNaturalUnit(this); fireDraftUpdate()">
                         ${optionsHTML}
                     </select>
                 </div>
                 <div class="w-36 relative">
-                    <input type="number" class="ing-qty w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 pr-12" placeholder="Số lượng..." value="${displayQty}" min="${minVal}" step="${stepVal}" oninput="fireDraftUpdate()">
+                    <input type="number" class="ing-qty w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 pr-12" placeholder="Số lượng..." value="${displayQty}" min="${minVal}" step="${stepVal}" oninput="updateNaturalUnit(this.closest('.recipe-row').querySelector('.ing-select')); fireDraftUpdate()">
                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] uppercase font-bold text-slate-400 pointer-events-none">${selectedUnit}</span>
+                </div>
+                <div class="natural-unit-display min-w-[80px]">
+                    ${naturalQty || ''}
                 </div>
                 <button type="button" onclick="this.closest('.recipe-row').remove(); fireDraftUpdate()" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition">
                     <i class="fas fa-trash"></i>
@@ -275,6 +293,24 @@
             list.appendChild(row);
 
             if (triggerUpdate) fireDraftUpdate();
+        }
+
+        function updateNaturalUnit(selectEl) {
+            const row = selectEl.closest('.recipe-row');
+            const qtyInput = row.querySelector('.ing-qty');
+            const naturalDisplay = row.querySelector('.natural-unit-display');
+            
+            const selectedOption = selectEl.options[selectEl.selectedIndex];
+            const naturalUnit = selectedOption.dataset.naturalUnit;
+            const avgWeight = parseFloat(selectedOption.dataset.avgWeight);
+            const qty = parseFloat(qtyInput.value);
+            
+            if (naturalUnit && avgWeight && qty) {
+                const naturalQty = Math.floor(qty / avgWeight);
+                naturalDisplay.innerHTML = `<span class="text-xs text-blue-600 font-semibold">≈ ${naturalQty} ${naturalUnit}</span>`;
+            } else {
+                naturalDisplay.innerHTML = '';
+            }
         }
 
         function updateQtyStep(selectEl) {

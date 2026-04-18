@@ -36,14 +36,21 @@
                 </div>
                 <!-- Filters -->
                 <div class="content-card mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm kiếm nguyên liệu..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        <select id="category-filter" onchange="applyFilters()" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">Tất cả loại nguyên liệu</option>
+                        </select>
                         <select id="status-filter" onchange="applyFilters()" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
                             <option value="">Tất cả trạng thái</option>
                             <option value="con_hang">Còn hàng (> Cảnh báo)</option>
                             <option value="sap_het">Sắp hết (<= Cảnh báo)</option>
                             <option value="het_hang">Hết hàng (0)</option>
                         </select>
+                        <button onclick="resetFilters()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all">
+                            <i class="fas fa-redo"></i>
+                            Đặt lại
+                        </button>
                     </div>
                 </div>
 
@@ -141,6 +148,60 @@
                     <input type="number" id="muc_canh_bao" required min="1" value="1000" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500">
                     <p class="text-xs text-slate-500 mt-1"><i class="fas fa-info-circle text-blue-500"></i> Sẽ cảnh báo lên hệ thống nếu tồn kho rớt xuống dưới mức này.</p>
                 </div>
+                
+                <!-- Đơn vị tự nhiên -->
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 text-sm font-bold text-blue-800">
+                            <i class="fas fa-fish text-blue-600"></i>
+                            Đơn vị tự nhiên (con, quả, trái...)
+                        </label>
+                        <input type="checkbox" id="has_natural_unit" onchange="toggleNaturalUnitFields()" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div id="natural-unit-fields" class="hidden space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Đơn vị tự nhiên</label>
+                                <input type="text" id="don_vi_tu_nhien" placeholder="Ví dụ: con, quả, củ..." class="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                                <p class="text-[10px] text-slate-500 mt-0.5">Đơn vị hiển thị cho người dùng</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">1 kg = bao nhiêu <span id="unit-label-preview" class="text-blue-600 font-bold">con</span>?</label>
+                                <input type="number" id="so_luong_tren_kg" placeholder="Ví dụ: 50" min="1" step="1" class="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-bold text-blue-600" oninput="updateNaturalUnitConversion()">
+                                <p class="text-[10px] text-slate-500 mt-0.5">Nhập số lượng <span id="unit-preview">đơn vị</span> trong 1 kg</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Hiển thị quy đổi ngược: 1 con = ? gram -->
+                        <div id="conversion-display" class="hidden bg-gradient-to-r from-emerald-50 to-blue-50 border-2 border-emerald-200 rounded-lg p-3">
+                            <p class="text-xs font-bold text-emerald-700 mb-1 flex items-center">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Hệ thống tự tính:
+                            </p>
+                            <div class="text-sm font-bold text-slate-800">
+                                1 <span id="unit-name-display" class="text-emerald-600">con</span> = <span id="grams-per-unit" class="text-2xl text-emerald-600">20</span> gram
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1 italic">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Trọng lượng trung bình được tính tự động
+                            </p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 border border-blue-200">
+                            <p class="text-xs text-blue-700 font-medium mb-1"><i class="fas fa-lightbulb mr-1"></i> Ví dụ:</p>
+                            <ul class="text-[11px] text-slate-600 space-y-0.5 ml-4">
+                                <li>• Tôm: 1 kg = 50 con → Hệ thống tính: 1 con = 20g</li>
+                                <li>• Trứng: 1 kg = 16 quả → Hệ thống tính: 1 quả = 62.5g</li>
+                                <li>• Cà chua: 1 kg = 6 quả → Hệ thống tính: 1 quả = 166.7g</li>
+                                <li>• Cua: 1 kg = 3 con → Hệ thống tính: 1 con = 333.3g</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-2">
+                            <p class="text-[10px] text-amber-700"><i class="fas fa-info-circle mr-1"></i> <strong>Lưu ý:</strong> Trọng lượng này là giá trị trung bình, có thể thay đổi tùy kích cỡ thực tế. Bạn có thể cập nhật lại bất cứ lúc nào.</p>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
                     <button type="submit" class="btn-primary">Lưu</button>
@@ -151,19 +212,39 @@
 
     <!-- Nhập Kho Modal -->
     <div id="add-stock-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl">
             <div class="p-6 border-b flex items-center justify-between bg-emerald-600 text-white rounded-t-2xl">
                 <h3 class="text-xl font-bold">Nhập Kho/Bổ Sung</h3>
                 <button onclick="closeAddStockModal()" class="text-white/70 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="add-stock-form" class="p-6 space-y-4">
                 <input type="hidden" id="stock-ingredient-id" class="no-draft">
-                <p id="stock-ingredient-name" class="font-bold text-center text-lg text-slate-800"></p>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Số lượng nhập thêm (<span id="stock-unit"></span>) *</label>
-                    <input type="number" id="stock-amount" required min="1" placeholder="Nhập số lượng..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-center text-xl focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-600 no-draft">
-                    <p class="text-xs text-slate-500 mt-2 text-center">Hệ thống sẽ cộng thêm <span class="font-bold text-emerald-600" id="stock-hint">0</span> <span id="stock-base-unit"></span> vào tồn kho<br>(<span id="stock-rate-calc">Quy đổi: 1 đơn vị nhập = x đơn vị xuất</span>).</p>
+                <p id="stock-ingredient-name" class="font-bold text-center text-lg text-slate-800 mb-4"></p>
+                
+                <!-- Tab chọn đơn vị nhập -->
+                <div id="stock-unit-tabs" class="flex gap-2 mb-4">
+                    <button type="button" onclick="switchStockTab('import')" id="tab-import" class="flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all bg-emerald-600 text-white">
+                        <i class="fas fa-box mr-1"></i>
+                        Nhập theo <span id="tab-import-unit">kg</span>
+                    </button>
+                    <button type="button" onclick="switchStockTab('natural')" id="tab-natural" class="flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all bg-slate-100 text-slate-600 hidden">
+                        <i class="fas fa-fish mr-1"></i>
+                        Nhập theo <span id="tab-natural-unit">con</span>
+                    </button>
                 </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                        Số lượng nhập thêm (<span id="stock-unit-display"></span>) *
+                    </label>
+                    <input type="number" id="stock-amount" required min="0.01" step="any" placeholder="Nhập số lượng..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-center text-xl focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-600 no-draft" oninput="updateStockHint()">
+                    <p class="text-xs text-slate-500 mt-2 text-center">
+                        Hệ thống sẽ cộng thêm <span class="font-bold text-emerald-600" id="stock-hint">0</span> <span id="stock-base-unit">g</span> vào tồn kho
+                        <br>
+                        <span id="stock-rate-calc" class="text-[10px]"></span>
+                    </p>
+                </div>
+                
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="closeAddStockModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50">Hủy</button>
                     <button type="submit" class="bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700 shadow-md transform hover:-translate-y-0.5 px-6 py-2.5 rounded-xl transition font-bold">Nhập Kho</button>
@@ -241,9 +322,17 @@
                 const result = await res.json();
                 if (result.success) {
                     categories = result.data;
+                    
+                    // Populate dropdown trong form thêm/sửa
                     const select = document.getElementById('ma_loai_nglieu');
                     select.innerHTML = '<option value="">-- Chưa phân loại --</option>' + 
                         categories.map(c => `<option value="${c.ma_loai_nglieu}">${c.ten_loai_nglieu}</option>`).join('');
+                    
+                    // Populate dropdown lọc
+                    const filterSelect = document.getElementById('category-filter');
+                    filterSelect.innerHTML = '<option value="">Tất cả loại nguyên liệu</option>' + 
+                        categories.map(c => `<option value="${c.ma_loai_nglieu}">${c.ten_loai_nglieu}</option>`).join('') +
+                        '<option value="null">Chưa phân loại</option>';
                 }
             } catch (err) { console.error(err); }
         }
@@ -294,7 +383,7 @@
         function renderIngredients(items) {
             const container = document.getElementById('ingredients-container');
             if (items.length === 0) {
-                container.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Không có dữ liệu nguyên liệu.</td></tr>`;
+                container.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">Không có dữ liệu nguyên liệu.</td></tr>`;
                 return;
             }
             container.innerHTML = items.map(item => {
@@ -307,6 +396,28 @@
                 else badgeHTML = '<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Tốt</span>';
 
                 const categoryName = item.ten_loai_nglieu || '<span class="text-slate-300 italic">Chưa phân loại</span>';
+                
+                // Hiển thị tồn kho với đơn vị tự nhiên nếu có
+                let stockDisplay;
+                if (item.don_vi_tu_nhien && item.trong_luong_trung_binh && item.so_luong_tu_nhien !== null) {
+                    stockDisplay = `
+                        <div class="flex flex-col">
+                            <span class="font-bold ${outOfStock ? 'text-red-600' : stockWarning ? 'text-amber-500' : 'text-slate-800'}">
+                                ${formatStock(item.so_luong_ton, item.don_vi_tinh)} <span class="text-[10px] uppercase font-bold text-slate-400">${item.don_vi_tinh}</span>
+                            </span>
+                            <span class="text-xs text-blue-600 font-semibold">
+                                ≈ ${item.so_luong_tu_nhien} ${item.don_vi_tu_nhien}
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    stockDisplay = `
+                        <span class="font-bold ${outOfStock ? 'text-red-600' : stockWarning ? 'text-amber-500' : 'text-slate-800'}">
+                            ${formatStock(item.so_luong_ton, item.don_vi_tinh)} <span class="text-[10px] uppercase font-bold text-slate-400">${item.don_vi_tinh}</span>
+                        </span>
+                    `;
+                }
+                
                 return `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#${item.ma_nguyen_lieu}</td>
@@ -315,8 +426,9 @@
                             <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-tight">${categoryName}</span>
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-500">${item.don_vi_tinh}</td>
-                        <td class="px-6 py-4 text-sm font-bold ${outOfStock ? 'text-red-600' : stockWarning ? 'text-amber-500' : 'text-slate-800'}">
-                            ${formatStock(item.so_luong_ton, item.don_vi_tinh)} <span class="text-[10px] uppercase font-bold text-slate-400">${item.don_vi_tinh}</span> / <span class="text-xs font-normal text-slate-400">Cảnh báo: ${formatStock(item.muc_canh_bao, item.don_vi_tinh)} ${item.don_vi_tinh}</span>
+                        <td class="px-6 py-4 text-sm">
+                            ${stockDisplay}
+                            <span class="text-xs font-normal text-slate-400 block mt-1">Cảnh báo: ${formatStock(item.muc_canh_bao, item.don_vi_tinh)} ${item.don_vi_tinh}</span>
                         </td>
                         <td class="px-6 py-4">${badgeHTML}</td>
                         <td class="px-6 py-4 text-center whitespace-nowrap">
@@ -335,15 +447,40 @@
         function applyFilters() {
             const search = document.getElementById('search').value.toLowerCase();
             const status = document.getElementById('status-filter').value;
+            const categoryFilter = document.getElementById('category-filter').value;
+            
             let filtered = ingredients.filter(i => {
+                // Lọc theo tên
                 const isMatchSearch = i.ten_nguyen_lieu.toLowerCase().includes(search);
+                
+                // Lọc theo trạng thái
                 let isMatchStatus = true;
                 if(status === 'con_hang') isMatchStatus = i.so_luong_ton > i.muc_canh_bao;
                 else if(status === 'sap_het') isMatchStatus = i.so_luong_ton <= i.muc_canh_bao && i.so_luong_ton > 0;
                 else if(status === 'het_hang') isMatchStatus = i.so_luong_ton <= 0;
-                return isMatchSearch && isMatchStatus;
+                
+                // Lọc theo loại nguyên liệu
+                let isMatchCategory = true;
+                if(categoryFilter) {
+                    if(categoryFilter === 'null') {
+                        // Lọc những nguyên liệu chưa phân loại
+                        isMatchCategory = !i.ma_loai_nglieu;
+                    } else {
+                        // Lọc theo loại cụ thể
+                        isMatchCategory = i.ma_loai_nglieu == categoryFilter;
+                    }
+                }
+                
+                return isMatchSearch && isMatchStatus && isMatchCategory;
             });
             renderIngredients(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('category-filter').value = '';
+            renderIngredients(ingredients);
         }
 
         function openAddModal(isAutoOpen = false) {
@@ -366,6 +503,16 @@
             sltInput.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed');
             const unlockBtn = document.getElementById('btn-unlock-ton-kho');
             if(unlockBtn) unlockBtn.classList.remove('hidden');
+            
+            // Reset natural unit fields
+            document.getElementById('has_natural_unit').checked = false;
+            document.getElementById('natural-unit-fields').classList.add('hidden');
+            document.getElementById('don_vi_tu_nhien').value = '';
+            document.getElementById('so_luong_tren_kg').value = '';
+            document.getElementById('unit-preview').textContent = 'đơn vị';
+            document.getElementById('unit-name-display').textContent = 'con';
+            document.getElementById('unit-label-preview').textContent = 'con';
+            document.getElementById('conversion-display').classList.add('hidden');
             
             document.getElementById('ingredient-modal').classList.remove('hidden');
             updateFormStepByUnit();
@@ -418,6 +565,26 @@
             
             document.getElementById('muc_canh_bao').value = item.muc_canh_bao;
             document.getElementById('ma_loai_nglieu').value = item.ma_loai_nglieu || '';
+            
+            // Load natural unit data
+            if (item.don_vi_tu_nhien && item.trong_luong_trung_binh) {
+                document.getElementById('has_natural_unit').checked = true;
+                document.getElementById('natural-unit-fields').classList.remove('hidden');
+                document.getElementById('don_vi_tu_nhien').value = item.don_vi_tu_nhien;
+                
+                // Tính ngược: nếu DB lưu 20g/con → hiển thị 1kg = 50 con
+                const unitsPerKg = Math.round(1000 / item.trong_luong_trung_binh);
+                document.getElementById('so_luong_tren_kg').value = unitsPerKg;
+                
+                document.getElementById('unit-preview').textContent = item.don_vi_tu_nhien;
+                document.getElementById('unit-name-display').textContent = item.don_vi_tu_nhien;
+                document.getElementById('unit-label-preview').textContent = item.don_vi_tu_nhien;
+                // Hiển thị quy đổi 1 con = ? gram
+                updateNaturalUnitConversion();
+            } else {
+                document.getElementById('has_natural_unit').checked = false;
+                document.getElementById('natural-unit-fields').classList.add('hidden');
+            }
             
             // Hiện disabled phần số lượng tồn vì nên update kho qua nút Nhập kho cho minh bạch, nhưng vẫn cho phép ở form sửa
             document.getElementById('so-luong-group').classList.remove('hidden');
@@ -551,6 +718,17 @@
             }
 
             const id = document.getElementById('ingredient-id').value;
+            const hasNaturalUnit = document.getElementById('has_natural_unit').checked;
+            
+            // Tính trong_luong_trung_binh từ so_luong_tren_kg
+            let trongLuongTrungBinh = null;
+            if (hasNaturalUnit) {
+                const soLuongTrenKg = parseFloat(document.getElementById('so_luong_tren_kg').value);
+                if (soLuongTrenKg > 0) {
+                    trongLuongTrungBinh = 1000 / soLuongTrenKg; // 1kg = 1000g
+                }
+            }
+            
             const dataObj = {
                 ten_nguyen_lieu: document.getElementById('ten_nguyen_lieu').value,
                 so_luong_ton: parseInt(document.getElementById('so_luong_ton').value),
@@ -559,7 +737,10 @@
                 ti_le_chuyen_doi: parseFloat(document.getElementById('ti_le_chuyen_doi').value),
                 muc_canh_bao: parseInt(document.getElementById('muc_canh_bao').value),
                 ma_loai_nglieu: document.getElementById('ma_loai_nglieu').value || null,
-                trang_thai: 1
+                trang_thai: 1,
+                don_vi_tu_nhien: hasNaturalUnit ? document.getElementById('don_vi_tu_nhien').value : null,
+                trong_luong_trung_binh: trongLuongTrungBinh,
+                don_vi_chuan: 'g'
             };
 
             const url = id ? `${API_URL}/inventory/${id}` : `${API_URL}/inventory`;
@@ -588,6 +769,8 @@
 
         // Add Stock Modal Handling
         let currentSelectedRate = 1;
+        let currentStockTab = 'import'; // 'import' hoặc 'natural'
+        let currentIngredientData = null;
 
         function openAddStockModal(id, isAutoOpen = false) {
             const item = ingredients.find(i => i.ma_nguyen_lieu === id);
@@ -595,17 +778,31 @@
                 sessionStorage.removeItem('adminUiState_nguyen_lieu');
                 return;
             }
+            
+            currentIngredientData = item;
+            currentStockTab = 'import';
+            
             document.getElementById('stock-ingredient-id').value = id;
             document.getElementById('stock-ingredient-name').textContent = item.ten_nguyen_lieu;
             
-            const importUnit = item.don_vi_nhap || item.don_vi_tinh;
-            const conversionRate = item.ti_le_chuyen_doi || 1;
+            // Setup tabs
+            const tabImport = document.getElementById('tab-import');
+            const tabNatural = document.getElementById('tab-natural');
+            const tabImportUnit = document.getElementById('tab-import-unit');
+            const tabNaturalUnit = document.getElementById('tab-natural-unit');
             
-            document.getElementById('stock-unit').textContent = importUnit;
-            currentSelectedRate = parseFloat(conversionRate);
-            document.getElementById('stock-hint').textContent = '0';
-            document.getElementById('stock-base-unit').textContent = item.don_vi_tinh;
-            document.getElementById('stock-rate-calc').textContent = `1 ${importUnit} = ${conversionRate} ${item.don_vi_tinh}`;
+            tabImportUnit.textContent = item.don_vi_nhap || item.don_vi_tinh;
+            
+            // Hiển thị tab natural nếu có đơn vị tự nhiên
+            if (item.don_vi_tu_nhien && item.trong_luong_trung_binh) {
+                tabNatural.classList.remove('hidden');
+                tabNaturalUnit.textContent = item.don_vi_tu_nhien;
+            } else {
+                tabNatural.classList.add('hidden');
+            }
+            
+            // Set active tab
+            switchStockTab('import');
             
             document.getElementById('stock-amount').value = '';
             document.getElementById('add-stock-modal').classList.remove('hidden');
@@ -613,13 +810,47 @@
 
             if (!isAutoOpen) sessionStorage.setItem('adminUiState_nguyen_lieu', JSON.stringify({ action: 'stock', id: id }));
         }
-
-        document.getElementById('stock-amount').addEventListener('input', (e) => {
-             const amt = parseFloat(e.target.value) || 0;
-             const total = amt * currentSelectedRate;
-             const unit = document.getElementById('stock-base-unit').textContent;
-             document.getElementById('stock-hint').textContent = formatStock(total, unit);
-        });
+        
+        function switchStockTab(tab) {
+            currentStockTab = tab;
+            const item = currentIngredientData;
+            
+            const tabImport = document.getElementById('tab-import');
+            const tabNatural = document.getElementById('tab-natural');
+            const stockUnitDisplay = document.getElementById('stock-unit-display');
+            const stockBaseUnit = document.getElementById('stock-base-unit');
+            const stockRateCalc = document.getElementById('stock-rate-calc');
+            
+            if (tab === 'import') {
+                // Tab nhập theo kg/thùng...
+                tabImport.className = 'flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all bg-emerald-600 text-white';
+                tabNatural.className = 'flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all bg-slate-100 text-slate-600';
+                
+                stockUnitDisplay.textContent = item.don_vi_nhap || item.don_vi_tinh;
+                stockBaseUnit.textContent = item.don_vi_tinh;
+                stockRateCalc.textContent = `Quy đổi: 1 ${item.don_vi_nhap} = ${item.ti_le_chuyen_doi} ${item.don_vi_tinh}`;
+                
+                currentSelectedRate = item.ti_le_chuyen_doi || 1;
+            } else {
+                // Tab nhập theo con/quả...
+                tabImport.className = 'flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all bg-slate-100 text-slate-600';
+                tabNatural.className = 'flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all bg-emerald-600 text-white';
+                
+                stockUnitDisplay.textContent = item.don_vi_tu_nhien;
+                stockBaseUnit.textContent = item.don_vi_tinh;
+                stockRateCalc.textContent = `Quy đổi: 1 ${item.don_vi_tu_nhien} = ${item.trong_luong_trung_binh} ${item.don_vi_tinh}`;
+                
+                currentSelectedRate = item.trong_luong_trung_binh || 1;
+            }
+            
+            updateStockHint();
+        }
+        
+        function updateStockHint() {
+            const amount = parseFloat(document.getElementById('stock-amount').value) || 0;
+            const actualAmount = amount * currentSelectedRate;
+            document.getElementById('stock-hint').textContent = actualAmount.toLocaleString('vi-VN');
+        }
 
         function closeAddStockModal() {
             document.getElementById('add-stock-modal').classList.add('hidden');
@@ -629,7 +860,7 @@
         document.getElementById('add-stock-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('stock-ingredient-id').value;
-            const amount = parseInt(document.getElementById('stock-amount').value);
+            const amount = parseFloat(document.getElementById('stock-amount').value);
             if(amount <= 0 || isNaN(amount)) {
                 alert('Số lượng không hợp lệ');
                 return;
@@ -777,6 +1008,54 @@
         });
 
         loadIngredients();
+        
+        // Toggle natural unit fields
+        function toggleNaturalUnitFields() {
+            const checkbox = document.getElementById('has_natural_unit');
+            const fields = document.getElementById('natural-unit-fields');
+            const unitInput = document.getElementById('don_vi_tu_nhien');
+            const weightInput = document.getElementById('trong_luong_trung_binh');
+            
+            if (checkbox.checked) {
+                fields.classList.remove('hidden');
+            } else {
+                fields.classList.add('hidden');
+                unitInput.value = '';
+                weightInput.value = '';
+            }
+        }
+        
+        // Update unit preview
+        document.getElementById('don_vi_tu_nhien').addEventListener('input', function() {
+            const preview = document.getElementById('unit-preview');
+            const unitNameDisplay = document.getElementById('unit-name-display');
+            const unitLabelPreview = document.getElementById('unit-label-preview');
+            const unitValue = this.value || 'đơn vị';
+            preview.textContent = unitValue;
+            unitNameDisplay.textContent = unitValue;
+            unitLabelPreview.textContent = unitValue;
+            updateNaturalUnitConversion();
+        });
+        
+        // Tính toán và hiển thị "1 con = ? gram" (đảo ngược từ "1kg = ? con")
+        function updateNaturalUnitConversion() {
+            const unitsPerKgInput = document.getElementById('so_luong_tren_kg');
+            const unitInput = document.getElementById('don_vi_tu_nhien');
+            const conversionDisplay = document.getElementById('conversion-display');
+            const gramsPerUnitSpan = document.getElementById('grams-per-unit');
+            
+            const unitsPerKg = parseFloat(unitsPerKgInput.value);
+            const unit = unitInput.value.trim();
+            
+            if (unitsPerKg > 0 && unit) {
+                // 1 kg = 1000g, chia cho số lượng con trong 1kg
+                const gramsPerUnit = (1000 / unitsPerKg).toFixed(2);
+                gramsPerUnitSpan.textContent = gramsPerUnit;
+                conversionDisplay.classList.remove('hidden');
+            } else {
+                conversionDisplay.classList.add('hidden');
+            }
+        }
     </script>
 </body>
 </html>
