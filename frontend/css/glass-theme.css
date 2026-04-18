@@ -1,0 +1,90 @@
+
+/* Glassmorphism Effect */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.25);
+    border-radius: 48px;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Scrollbar for the glass-card */
+.glass-card::-webkit-scrollbar {
+    width: 6px;
+}
+.glass-card::-webkit-scrollbar-track {
+    background: transparent;
+}
+.glass-card::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.bg-3d {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.bg-3d::before, .bg-3d::after {
+    content: '';
+    position: absolute;
+    width: 40vmax;
+    height: 40vmax;
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+.bg-3d::before {
+    background: radial-gradient(circle, #ea580c 0%, transparent 70%);
+    top: -10%;
+    left: -10%;
+    animation: floating 25s infinite alternate ease-in-out;
+}
+
+.bg-3d::after {
+    background: radial-gradient(circle, #f97316 0%, transparent 70%);
+    bottom: -10%;
+    right: -10%;
+    animation: floating 30s infinite alternate-reverse ease-in-out;
+}
+
+@keyframes floating {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(20%, 15%) scale(1.1); }
+}
+
+/* Form Styles */
+.input-glass {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s;
+}
+
+.input-glass:focus {
+    background: white !important;
+    border-color: #ea580c !important;
+    box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+}

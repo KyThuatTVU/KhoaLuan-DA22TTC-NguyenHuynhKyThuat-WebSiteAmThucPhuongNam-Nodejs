@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ Đồ Hoạt Động - Hệ Thống Quản Lý Nhà Hàng Phương Nam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border-left: 5px solid #667eea;
+        }
+
+        .toc h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc li:last-child {
+            border-bottom: none;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            padding-left: 10px;
+        }
+
+        .diagram-section {
+            margin-bottom: 60px;
+            page-break-inside: avoid;
+        }
+
+        .diagram-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .diagram-description {
+            background: #f0f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+            color: #2c3e50;
+        }
+
+        .diagram {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 30px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* UML Activity Diagram Styles */
+        .activity-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            min-width: 600px;
+        }
+
+        .start-end {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-size: 0.9em;
+        }
+
+        .activity {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            min-width: 250px;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .activity:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .decision {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .decision-text {
+            transform: rotate(-45deg);
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.95em;
+        }
+
+        .arrow {
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #764ba2;
+        }
+
+        .arrow-label {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .parallel-split {
+            width: 300px;
+            height: 8px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .parallel-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .parallel-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .note {
+            background: #fff9e6;
+            border: 2px dashed #ffd700;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 0.9em;
+            color: #856404;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+        }
+
+        .swimlane-container {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 0;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .swimlane-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 2px solid #667eea;
+        }
+
+        .swimlane-content {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .diagram-section {
+                page-break-after: always;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .parallel-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .activity-diagram {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ SƠ ĐỒ HOẠT ĐỘNG</h1>
+        <div class="subtitle">Hệ Thống Quản Lý Nhà Hàng Ẩm Thực Phương Nam</div>
+
+        <!-- Mục lục -->
+        <div class="toc">
+            <h2>📋 Danh Sách Sơ Đồ Hoạt Động</h2>
+            <ul>
+                <li><a href="#diagram1">1. Đăng Ký Tài Khoản Khách Hàng</a></li>
+                <li><a href="#diagram2">2. Đăng Nhập Hệ Thống</a></li>
+                <li><a href="#diagram3">3. Đặt Hàng Online</a></li>
+                <li><a href="#diagram4">4. Đặt Bàn Trước</a></li>
+                <li><a href="#diagram5">5. Thanh Toán MoMo</a></li>
+                <li><a href="#diagram6">6. Quản Lý Đơn Hàng (Admin)</a></li>
+                <li><a href="#diagram7">7. Bán Hàng Tại Quầy (POS)</a></li>
+                <li><a href="#diagram8">8. Chatbot AI Hỗ Trợ Khách Hàng</a></li>
+                <li><a href="#diagram9">9. Gợi Ý Món Ăn Thông Minh</a></li>
+                <li><a href="#diagram10">10. Quản Lý Kho Nguyên Liệu</a></li>
+                <li><a href="#diagram11">11. Chấm Công Nhân Viên</a></li>
+                <li><a href="#diagram12">12. Tính Lương Nhân Viên</a></li>
+            </ul>
+        </div>
+
+        <!-- Sơ đồ 1: Đăng ký tài khoản -->
+        <div class="diagram-section" id="diagram1">
+            <h2 class="diagram-title">1. Đăng Ký Tài Khoản Khách Hàng</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình đăng ký tài khoản mới cho khách hàng với xác thực email 2 bước.
+                <br><strong>Actor:</strong> Khách hàng
+                <br><strong>Hệ thống:</strong> Backend API, Email Service
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng nhập thông tin đăng ký<br>(Tên, Email, SĐT, Mật khẩu)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Hệ thống validate dữ liệu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Email đã<br>tồn tại?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Thông báo lỗi: Email đã được sử dụng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo mã xác thực 6 số</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu thông tin tạm vào bảng xac_thuc_email</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi email chứa mã xác thực</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng nhập mã xác thực</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Mã xác thực<br>đúng?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Tạo tài khoản trong bảng nguoi_dung</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi email chào mừng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo JWT token và đăng nhập tự động</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">⏱️ Mã xác thực có hiệu lực 10 phút</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 2: Đăng nhập -->
+        <div class="diagram-section" id="diagram2">
+            <h2 class="diagram-title">2. Đăng Nhập Hệ Thống</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình đăng nhập cho khách hàng, hỗ trợ cả đăng nhập thường và Google OAuth.
+                <br><strong>Actor:</strong> Khách hàng
+                <br><strong>Phương thức:</strong> Email/Password hoặc Google OAuth
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Chọn phương<br>thức đăng nhập</div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    
+                    <div class="parallel-container">
+                        <div class="parallel-branch">
+                            <div class="activity">Đăng nhập Email/Password</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhập email và mật khẩu</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Kiểm tra thông tin trong DB</div>
+                            <div class="arrow"></div>
+                            <div class="decision">
+                                <div class="decision-text">Thông tin<br>đúng?</div>
+                            </div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Đăng nhập Google</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Chuyển hướng đến Google</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Google xác thực</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhận thông tin từ Google</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo JWT token</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu session</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Trả về thông tin user và token</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">🔐 Token có hiệu lực 7 ngày</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 3: Đặt hàng online -->
+        <div class="diagram-section" id="diagram3">
+            <h2 class="diagram-title">3. Đặt Hàng Online</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình đặt hàng online từ giỏ hàng, bao gồm kiểm tra kho và áp dụng khuyến mãi.
+                <br><strong>Actor:</strong> Khách hàng đã đăng nhập
+                <br><strong>Liên quan:</strong> Giỏ hàng, Kho nguyên liệu, Khuyến mãi
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng thêm món vào giỏ hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhấn "Đặt hàng"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhập thông tin giao hàng<br>(Tên, SĐT, Địa chỉ)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chọn phương thức thanh toán<br>(COD / MoMo)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Có mã<br>khuyến mãi?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Kiểm tra và áp dụng mã khuyến mãi</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lấy danh sách món từ giỏ hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Kiểm tra công thức món ăn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính tổng nguyên liệu cần thiết</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Đủ nguyên<br>liệu?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Không</span>
+                    </div>
+                    
+                    <div class="activity">Thông báo: Không đủ nguyên liệu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo đơn hàng trong bảng don_hang</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo chi tiết đơn hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Trừ kho nguyên liệu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật sức chứa món ăn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo bản ghi thanh toán</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo hóa đơn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi email xác nhận đơn hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo thông báo cho Admin</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">📦 Giỏ hàng vẫn giữ nguyên cho đến khi thanh toán thành công</div>
+                </div>
+            </div>
+        </div>
+        <!-- Sơ đồ 4: Đặt bàn trước -->
+        <div class="diagram-section" id="diagram4">
+            <h2 class="diagram-title">4. Đặt Bàn Trước</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình đặt bàn trước với yêu cầu đặt món ăn trước ít nhất 3 tiếng.
+                <br><strong>Actor:</strong> Khách hàng đã đăng nhập
+                <br><strong>Ràng buộc:</strong> Phải đặt trước ít nhất 3 tiếng, phải chọn món ăn
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng chọn "Đặt bàn"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhập thông tin đặt bàn<br>(Tên, SĐT, Ngày, Giờ, Số người)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chọn khu vực<br>(Trong nhà / Sân vườn / VIP)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chọn món ăn đặt trước</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Có chọn<br>món ăn?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Không</span>
+                    </div>
+                    
+                    <div class="activity">Thông báo: Phải chọn ít nhất 1 món</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Đặt trước<br>≥ 3 tiếng?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Không</span>
+                    </div>
+                    
+                    <div class="activity">Thông báo: Phải đặt trước ít nhất 3 tiếng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Trong giờ<br>mở cửa?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Kiểm tra món ăn còn phục vụ</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính tổng tiền dự kiến</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo đặt bàn trong bảng dat_ban</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu chi tiết món ăn vào chi_tiet_dat_ban</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi email xác nhận đặt bàn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo thông báo cho Admin</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">⏰ Giờ mở cửa: 7:00 - 23:00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 5: Thanh toán MoMo -->
+        <div class="diagram-section" id="diagram5">
+            <h2 class="diagram-title">5. Thanh Toán MoMo</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình thanh toán online qua cổng MoMo Payment Gateway.
+                <br><strong>Actor:</strong> Khách hàng
+                <br><strong>Tích hợp:</strong> MoMo API
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng chọn thanh toán MoMo</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Hệ thống tạo yêu cầu thanh toán</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo chữ ký HMAC SHA256</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi request đến MoMo API</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhận payUrl từ MoMo</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chuyển hướng khách hàng đến MoMo</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng thanh toán trên MoMo</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Thanh toán<br>thành công?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">MoMo gọi IPN callback</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xác thực chữ ký từ MoMo</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật trạng thái thanh toán = 'success'</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật trạng thái đơn hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xóa giỏ hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi thông báo cho khách hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chuyển hướng về trang thành công</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">💳 Hỗ trợ thanh toán qua ví MoMo và thẻ ATM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 6: Quản lý đơn hàng Admin -->
+        <div class="diagram-section" id="diagram6">
+            <h2 class="diagram-title">6. Quản Lý Đơn Hàng (Admin)</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình quản lý và cập nhật trạng thái đơn hàng của Admin.
+                <br><strong>Actor:</strong> Admin
+                <br><strong>Trạng thái:</strong> pending → confirmed → preparing → delivered / cancelled
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Admin đăng nhập hệ thống</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xem danh sách đơn hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lọc theo trạng thái / ngày</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chọn đơn hàng cần xử lý</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xem chi tiết đơn hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Hành động<br>nào?</div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    
+                    <div class="parallel-container">
+                        <div class="parallel-branch">
+                            <div class="activity">Xác nhận đơn</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật: confirmed</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Gửi thông báo cho khách</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Đang chuẩn bị</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật: preparing</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Gửi thông báo cho khách</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Hoàn thành</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật: delivered</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Gửi thông báo cho khách</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Hủy đơn</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật: cancelled</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Hoàn kho nguyên liệu</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu lịch sử thay đổi trạng thái</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">📊 Có thống kê doanh thu theo ngày/tháng/năm</div>
+                </div>
+            </div>
+        </div>
+        <!-- Sơ đồ 7: Bán hàng tại quầy POS -->
+        <div class="diagram-section" id="diagram7">
+            <h2 class="diagram-title">7. Bán Hàng Tại Quầy (POS)</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình bán hàng trực tiếp tại nhà hàng qua hệ thống POS.
+                <br><strong>Actor:</strong> Nhân viên phục vụ
+                <br><strong>Chức năng:</strong> Order tại bàn, thanh toán trực tiếp
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhân viên đăng nhập POS</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xem danh sách bàn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chọn bàn phục vụ</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Bàn đã có<br>order?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Không</span>
+                    </div>
+                    
+                    <div class="activity">Tạo order mới cho bàn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Thêm món ăn vào order</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhập số lượng và ghi chú</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Thêm món<br>khác?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Không</span>
+                    </div>
+                    
+                    <div class="activity">Gửi order đến bếp</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">In phiếu bếp (Kitchen Slip)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật trạng thái bàn: "Đang phục vụ"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách dùng bữa...</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách yêu cầu thanh toán</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhân viên xem chi tiết order</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính tổng tiền</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Phương thức<br>thanh toán?</div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    
+                    <div class="parallel-container">
+                        <div class="parallel-branch">
+                            <div class="activity">Tiền mặt</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhận tiền từ khách</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tính tiền thừa</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Chuyển khoản</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Quét mã QR</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Xác nhận đã nhận tiền</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật trạng thái order: "Đã thanh toán"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Trừ kho nguyên liệu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">In hóa đơn cho khách</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật trạng thái bàn: "Trống"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">🍽️ Có thể thêm món trong khi khách đang dùng bữa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 8: Chatbot AI -->
+        <div class="diagram-section" id="diagram8">
+            <h2 class="diagram-title">8. Chatbot AI Hỗ Trợ Khách Hàng</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình xử lý câu hỏi của khách hàng qua Chatbot AI sử dụng Groq API (LLaMA 3.1).
+                <br><strong>Actor:</strong> Khách hàng
+                <br><strong>AI Model:</strong> Groq LLaMA 3.1 70B
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng mở Chatbot</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo hoặc lấy session_id</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng nhập câu hỏi</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu tin nhắn vào lich_su_chatbot</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lấy lịch sử chat gần đây (10 tin)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tìm kiếm tri thức liên quan trong DB</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xây dựng context cho AI<br>(Lịch sử + Tri thức + System prompt)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi request đến Groq API</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhận phản hồi từ AI</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Câu hỏi về<br>món ăn?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Truy vấn thông tin món ăn từ DB</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Bổ sung thông tin chi tiết món ăn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu phản hồi của bot</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Hiển thị phản hồi cho khách hàng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Khách hỏi<br>tiếp?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Quay lại nhập câu hỏi</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">🤖 AI có thể trả lời về thực đơn, giá cả, khuyến mãi, đặt bàn</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 9: Gợi ý món ăn thông minh -->
+        <div class="diagram-section" id="diagram9">
+            <h2 class="diagram-title">9. Gợi Ý Món Ăn Thông Minh</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Hệ thống gợi ý món ăn dựa trên Machine Learning (Collaborative Filtering + Content-based).
+                <br><strong>Actor:</strong> Khách hàng đã đăng nhập
+                <br><strong>Thuật toán:</strong> Hybrid Recommendation System
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Khách hàng truy cập trang chủ</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Hệ thống lấy ma_nguoi_dung</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Thu thập hành vi người dùng<br>(view, click, add_to_cart, purchase)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu vào bảng hanh_vi_nguoi_dung</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="parallel-split"></div>
+                    
+                    <div class="parallel-container">
+                        <div class="parallel-branch">
+                            <div class="activity">Collaborative Filtering</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tìm người dùng tương tự</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Lấy món họ thích</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Content-based</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Phân tích món đã xem</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tìm món tương tự</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Association Rules</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Phân tích đơn hàng</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tìm món thường mua cùng</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Kết hợp kết quả từ 3 thuật toán</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính điểm tổng hợp cho mỗi món</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Sắp xếp theo điểm giảm dần</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lọc món còn phục vụ</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu kết quả vào bảng goi_y_san_pham</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Hiển thị top 10 món gợi ý</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">🎯 Độ chính xác gợi ý tăng theo thời gian sử dụng</div>
+                </div>
+            </div>
+        </div>
+        <!-- Sơ đồ 10: Quản lý kho nguyên liệu -->
+        <div class="diagram-section" id="diagram10">
+            <h2 class="diagram-title">10. Quản Lý Kho Nguyên Liệu</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình quản lý kho nguyên liệu tập trung, nhập kho và kiểm kê.
+                <br><strong>Actor:</strong> Quản lý kho
+                <br><strong>Tính năng:</strong> Cảnh báo tồn kho thấp, theo dõi nhà cung cấp
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Quản lý kho đăng nhập</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Xem danh sách nguyên liệu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Hành động<br>nào?</div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    
+                    <div class="parallel-container">
+                        <div class="parallel-branch">
+                            <div class="activity">Nhập kho</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Chọn nhà cung cấp</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhập thông tin phiếu nhập</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Thêm nguyên liệu và số lượng</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật số lượng tồn</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật giá nhập gần nhất</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Lưu lịch sử nhập kho</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Kiểm kê</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tạo phiếu kiểm kê</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhập số lượng thực tế</div>
+                            <div class="arrow"></div>
+                            <div class="activity">So sánh với số lượng hệ thống</div>
+                            <div class="arrow"></div>
+                            <div class="decision">
+                                <div class="decision-text">Có chênh<br>lệch?</div>
+                            </div>
+                            <div class="arrow">
+                                <span class="arrow-label">Có</span>
+                            </div>
+                            <div class="activity">Ghi nhận lý do chênh lệch</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Cập nhật số lượng thực tế</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Xuất hủy</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tạo phiếu xuất hủy</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Chọn nguyên liệu hỏng</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhập số lượng và lý do</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Upload ảnh minh chứng</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Trừ số lượng tồn kho</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Lưu vào bảng wastage</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Kiểm tra cảnh báo tồn kho</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Tồn kho <br>mức cảnh báo?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Gửi thông báo cho quản lý</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật sức chứa món ăn</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">📦 Hệ thống tự động tính sức chứa món ăn dựa trên công thức</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 11: Chấm công nhân viên -->
+        <div class="diagram-section" id="diagram11">
+            <h2 class="diagram-title">11. Chấm Công Nhân Viên</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình chấm công tự động và thủ công cho nhân viên.
+                <br><strong>Actor:</strong> Nhân viên, Quản lý
+                <br><strong>Tính năng:</strong> Check-in/out, tính giờ làm, phân ca
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Phương thức<br>chấm công?</div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    
+                    <div class="parallel-container">
+                        <div class="parallel-branch">
+                            <div class="activity">Tự động (Nhân viên)</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhân viên đăng nhập</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhấn "Check In"</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Lưu giờ vào (gio_vao)</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Làm việc...</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhấn "Check Out"</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Lưu giờ ra (gio_ra)</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tính số giờ làm</div>
+                        </div>
+                        
+                        <div class="parallel-branch">
+                            <div class="activity">Thủ công (Quản lý)</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Quản lý đăng nhập</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Chọn nhân viên</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Chọn ngày chấm công</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhập giờ vào, giờ ra</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Nhập ghi chú (nếu có)</div>
+                            <div class="arrow"></div>
+                            <div class="activity">Tính số giờ làm</div>
+                        </div>
+                    </div>
+                    
+                    <div class="parallel-split"></div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Kiểm tra ca làm việc</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Đúng giờ<br>ca làm?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Không</span>
+                    </div>
+                    
+                    <div class="activity">Đánh dấu: "Đi muộn" hoặc "Về sớm"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu vào bảng cham_cong</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Cập nhật tổng giờ làm trong tháng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">⏰ Hỗ trợ nhiều ca: Sáng, Chiều, Tối, Khuya</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sơ đồ 12: Tính lương nhân viên -->
+        <div class="diagram-section" id="diagram12">
+            <h2 class="diagram-title">12. Tính Lương Nhân Viên</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quy trình tính lương tự động dựa trên chấm công và các khoản phụ cấp.
+                <br><strong>Actor:</strong> Quản lý / Kế toán
+                <br><strong>Công thức:</strong> Lương = Lương cơ bản + (Giờ làm × Lương giờ) + Thưởng - Phạt
+            </div>
+            <div class="diagram">
+                <div class="activity-diagram">
+                    <div class="start-end">Bắt đầu</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Quản lý chọn "Tính lương"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Chọn tháng/năm cần tính</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lấy danh sách nhân viên đang làm</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Với mỗi nhân viên:</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lấy dữ liệu chấm công trong tháng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính tổng giờ làm việc</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lấy lương cơ bản từ hồ sơ NV</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lấy lương theo giờ từ hồ sơ NV</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính: Lương giờ = Tổng giờ × Lương/giờ</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhập khoản thưởng (nếu có)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Nhập khoản phạt (nếu có)</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tính tổng lương:<br>Lương CB + Lương giờ + Thưởng - Phạt</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Lưu vào bảng bang_luong</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Đánh dấu trạng thái: "Chưa thanh toán"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Tạo báo cáo lương tháng</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Duyệt<br>lương?</div>
+                    </div>
+                    <div class="arrow">
+                        <span class="arrow-label">Có</span>
+                    </div>
+                    
+                    <div class="activity">Cập nhật trạng thái: "Đã thanh toán"</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">Gửi thông báo cho nhân viên</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="activity">In phiếu lương</div>
+                    <div class="arrow"></div>
+                    
+                    <div class="start-end">Kết thúc</div>
+                    
+                    <div class="note">💰 Hỗ trợ xuất báo cáo Excel</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="margin-top: 60px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white; text-align: center;">
+            <h3 style="margin-bottom: 15px;">📊 Tổng Kết</h3>
+            <p style="font-size: 1.1em; line-height: 1.8;">
+                Hệ thống bao gồm <strong>12 sơ đồ hoạt động chính</strong> mô tả đầy đủ các quy trình nghiệp vụ<br>
+                từ quản lý khách hàng, đặt hàng, thanh toán, đến quản lý nội bộ nhà hàng.<br><br>
+                <strong>Công nghệ:</strong> Node.js, Express, MySQL, Groq AI, MoMo Payment, GraphQL<br>
+                <strong>Tác giả:</strong> Nhóm phát triển Hệ thống Quản lý Nhà hàng Phương Nam<br>
+                <strong>Năm:</strong> 2024-2025
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // Smooth scroll cho các link trong mục lục
+        document.querySelectorAll('.toc a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        // Thêm animation khi scroll đến sơ đồ
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '0';
+                    entry.target.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        entry.target.style.transition = 'all 0.6s ease';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.diagram-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

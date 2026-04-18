@@ -1052,3 +1052,5 @@ SELECT * FROM lich_su_chat;
 SELECT * FROM password_reset;
 SELECT * FROM thong_ke_ngay;
 SELECT * FROM CHAM_CONG;
+select * from nha_cung_cap;
+select * from nhan_vien;

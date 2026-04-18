@@ -99,8 +99,116 @@ const createAuditSession = async (req, res) => {
     }
 };
 
+// Cập nhật phiếu kiểm kê
+const updateAuditSession = async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+        const { id } = req.params;
+        const { ma_nhan_vien, ghi_chu, items } = req.body;
+
+        // 1. Kiểm tra tồn tại
+        const [oldAudit] = await connection.query('SELECT * FROM kiem_ke WHERE ma_kiem_ke = ?', [id]);
+        if (oldAudit.length === 0) throw new Error('Không tìm thấy phiếu kiểm kê');
+
+        // 2. Cập nhật thông tin chung
+        await connection.query(
+            'UPDATE kiem_ke SET ma_nhan_vien = ?, ghi_chu = ? WHERE ma_kiem_ke = ?',
+            [ma_nhan_vien || null, ghi_chu, id]
+        );
+
+        if (items && items.length > 0) {
+            // Hoàn tác tồn kho của các chi tiết cũ
+            const [oldItems] = await connection.query('SELECT * FROM chi_tiet_kiem_ke WHERE ma_kiem_ke = ?', [id]);
+            for (const oldItem of oldItems) {
+                await connection.query(
+                    'UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton - ? WHERE ma_nguyen_lieu = ?',
+                    [oldItem.chenh_lech, oldItem.ma_nguyen_lieu]
+                );
+            }
+
+            // Xóa chi tiết cũ
+            await connection.query('DELETE FROM chi_tiet_kiem_ke WHERE ma_kiem_ke = ?', [id]);
+
+            // Thêm chi tiết mới và cập nhật tồn kho mới
+            for (const item of items) {
+                const [ing] = await connection.query('SELECT so_luong_ton FROM nguyen_lieu WHERE ma_nguyen_lieu = ?', [item.ma_nguyen_lieu]);
+                const systemStock = ing[0] ? (ing[0].so_luong_ton || 0) : 0;
+                const discrepancy = item.so_luong_thuc_te - systemStock;
+
+                await connection.query(
+                    `INSERT INTO chi_tiet_kiem_ke 
+                    (ma_kiem_ke, ma_nguyen_lieu, so_luong_he_thong, so_luong_thuc_te, chenh_lech, ly_do) 
+                    VALUES (?, ?, ?, ?, ?, ?)`,
+                    [id, item.ma_nguyen_lieu, systemStock, item.so_luong_thuc_te, discrepancy, item.ly_do || 'Cập nhật kiểm kê']
+                );
+
+                await connection.query(
+                    'UPDATE nguyen_lieu SET so_luong_ton = ? WHERE ma_nguyen_lieu = ?',
+                    [item.so_luong_thuc_te, item.ma_nguyen_lieu]
+                );
+            }
+        }
+
+        const inventoryController = require('./inventoryController');
+        await inventoryController.updateAllDishMaxPortions(connection);
+
+        await connection.commit();
+        res.json({ success: true, message: 'Cập nhật phiếu kiểm kê thành công' });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error updating audit session:', error);
+        res.status(500).json({ success: false, message: error.message || 'Lỗi server' });
+    } finally {
+        connection.release();
+    }
+};
+
+// Xóa phiếu kiểm kê và hoàn tác tồn kho
+const deleteAuditSession = async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+        const { id } = req.params;
+
+        // 1. Lấy chi tiết để hoàn tác tồn kho
+        const [items] = await connection.query('SELECT * FROM chi_tiet_kiem_ke WHERE ma_kiem_ke = ?', [id]);
+        
+        for (const item of items) {
+            // Hoàn tác: trừ đi phần chênh lệch đã cộng vào lúc kiểm kê
+            // Nếu lúc kiểm kê Thực tế 10, Hệ thống 8 -> Chênh lệch +2 -> Tồn kho đã được set là 10.
+            // Hoàn tác: Tồn kho (10) - Chênh lệch (2) = 8 (về lại hệ thống cũ)
+            await connection.query(
+                'UPDATE nguyen_lieu SET so_luong_ton = so_luong_ton - ? WHERE ma_nguyen_lieu = ?',
+                [item.chenh_lech, item.ma_nguyen_lieu]
+            );
+        }
+
+        // 2. Xóa phiếu (Cascade sẽ tự xóa chi tiết)
+        const [result] = await connection.query('DELETE FROM kiem_ke WHERE ma_kiem_ke = ?', [id]);
+        
+        if (result.affectedRows === 0) {
+            throw new Error('Không tìm thấy phiếu kiểm kê để xóa');
+        }
+
+        const inventoryController = require('./inventoryController');
+        await inventoryController.updateAllDishMaxPortions(connection);
+
+        await connection.commit();
+        res.json({ success: true, message: 'Đã xóa phiếu kiểm kê và hoàn tác tồn kho' });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error deleting audit session:', error);
+        res.status(500).json({ success: false, message: error.message || 'Lỗi server' });
+    } finally {
+        connection.release();
+    }
+};
+
 module.exports = {
     getAuditSessions,
     getAuditDetail,
-    createAuditSession
+    createAuditSession,
+    updateAuditSession,
+    deleteAuditSession
 };

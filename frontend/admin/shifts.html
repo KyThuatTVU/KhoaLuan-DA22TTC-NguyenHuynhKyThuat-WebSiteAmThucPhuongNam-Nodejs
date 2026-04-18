@@ -268,13 +268,13 @@
                         <td class="py-4 px-4 text-gray-600 font-medium">${s.gio_ket_thuc}</td>
                         <td class="py-4 px-4"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg font-bold">x${s.he_so_luong}</span></td>
                         <td class="py-4 px-4 text-center">
-                            <button onclick="editShift(${s.id})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
-                            <button onclick="deleteShift(${s.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
+                            <button onclick="editShift(${s.ma_ca})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition mr-2"><i class="fas fa-edit text-xs"></i></button>
+                            <button onclick="deleteShift(${s.ma_ca})" class="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash text-xs"></i></button>
                         </td>
                     </tr>
                 `).join('');
 
-                selectShift.innerHTML = data.data.map(s => `<option value="${s.id}">${s.ten_ca} (${s.gio_bat_dau} - ${s.gio_ket_thuc})</option>`).join('');
+                selectShift.innerHTML = data.data.map(s => `<option value="${s.ma_ca}">${s.ten_ca} (${s.gio_bat_dau} - ${s.gio_ket_thuc})</option>`).join('');
             } catch (err) { console.error('Error loading shifts:', err); }
         }
 
@@ -316,7 +316,7 @@
                             <td class="py-4 px-4">${statusBadge}</td>
                             <td class="py-4 px-4 text-center">
                                 ${s.trang_thai === 'scheduled' ? `
-                                    <button onclick="deleteSchedule(${s.id})" class="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-times"></i></button>
+                                    <button onclick="deleteSchedule(${s.ma_phan_ca})" class="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-times"></i></button>
                                 ` : '-'}
                             </td>
                         </tr>
@@ -350,9 +350,9 @@
             try {
                 const res = await fetch(SHIFT_API);
                 const data = await res.json();
-                const s = data.data.find(x => x.id === id);
+                const s = data.data.find(x => x.ma_ca === id || x.ma_ca === parseInt(id));
                 if(s) {
-                    document.getElementById('shift-id').value = s.id;
+                    document.getElementById('shift-id').value = s.ma_ca;
                     document.getElementById('shift-name').value = s.ten_ca;
                     document.getElementById('shift-start').value = s.gio_bat_dau;
                     document.getElementById('shift-end').value = s.gio_ket_thuc;

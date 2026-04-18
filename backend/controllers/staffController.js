@@ -14,7 +14,7 @@ const getAllStaff = async (req, res) => {
                 ma_nhan_vien, ma_nv_code, ten_nhan_vien, tai_khoan, 
                 so_dien_thoai, dia_chi, ngay_sinh, gioi_tinh, vai_tro, 
                 luong_theo_gio, luong_co_ban, trang_thai, ngay_vao_lam, 
-                anh_dai_dien, cccd, ngay_tao
+                anh_dai_dien, cccd, anh_cccd, anh_cccd_sau, ngay_tao
             FROM nhan_vien
             WHERE is_deleted = 0
         `;
@@ -66,7 +66,7 @@ const createStaff = async (req, res) => {
         const { 
             ten_nhan_vien, tai_khoan, mat_khau, so_dien_thoai, 
             vai_tro, luong_theo_gio, luong_co_ban, dia_chi, 
-            ngay_sinh, gioi_tinh, cccd, ngay_vao_lam, anh_dai_dien 
+            ngay_sinh, gioi_tinh, anh_cccd, anh_cccd_sau, ngay_vao_lam, anh_dai_dien 
         } = req.body;
         
         // Validate
@@ -85,11 +85,11 @@ const createStaff = async (req, res) => {
         
         const [result] = await db.query(
             `INSERT INTO nhan_vien 
-            (ma_nv_code, ten_nhan_vien, tai_khoan, mat_khau_hash, so_dien_thoai, dia_chi, ngay_sinh, gioi_tinh, cccd, ngay_vao_lam, anh_dai_dien, vai_tro, luong_theo_gio, luong_co_ban, trang_thai)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+            (ma_nv_code, ten_nhan_vien, tai_khoan, mat_khau_hash, so_dien_thoai, dia_chi, ngay_sinh, gioi_tinh, anh_cccd, anh_cccd_sau, ngay_vao_lam, anh_dai_dien, vai_tro, luong_theo_gio, luong_co_ban, trang_thai)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
             [
                 ma_nv_code, ten_nhan_vien, tai_khoan, hashedPassword, so_dien_thoai, 
-                dia_chi, ngay_sinh || null, gioi_tinh, cccd, ngay_vao_lam || null, 
+                dia_chi, ngay_sinh || null, gioi_tinh, anh_cccd || null, anh_cccd_sau || null, ngay_vao_lam || null, 
                 anh_dai_dien, vai_tro || 'waiter', luong_theo_gio || 0, luong_co_ban || 0
             ]
         );
@@ -110,20 +110,20 @@ const updateStaff = async (req, res) => {
     try {
         const { id } = req.params;
         const { 
-            ten_nhan_vien, so_dien_thoai, dia_chi, ngay_sinh, 
-            gioi_tinh, cccd, ngay_vao_lam, anh_dai_dien, 
+            ten_nhan_vien, tai_khoan, so_dien_thoai, dia_chi, ngay_sinh, 
+            gioi_tinh, anh_cccd, anh_cccd_sau, ngay_vao_lam, anh_dai_dien, 
             vai_tro, luong_theo_gio, luong_co_ban, trang_thai 
         } = req.body;
         
         const [result] = await db.query(
             `UPDATE nhan_vien 
-            SET ten_nhan_vien = ?, so_dien_thoai = ?, dia_chi = ?, ngay_sinh = ?, 
-                gioi_tinh = ?, cccd = ?, ngay_vao_lam = ?, anh_dai_dien = ?, 
+            SET ten_nhan_vien = ?, tai_khoan = ?, so_dien_thoai = ?, dia_chi = ?, ngay_sinh = ?, 
+                gioi_tinh = ?, anh_cccd = ?, anh_cccd_sau = ?, ngay_vao_lam = ?, anh_dai_dien = ?, 
                 vai_tro = ?, luong_theo_gio = ?, luong_co_ban = ?, trang_thai = ?
             WHERE ma_nhan_vien = ?`,
             [
-                ten_nhan_vien, so_dien_thoai, dia_chi, ngay_sinh || null, 
-                gioi_tinh, cccd, ngay_vao_lam || null, anh_dai_dien, 
+                ten_nhan_vien, tai_khoan, so_dien_thoai, dia_chi, ngay_sinh || null, 
+                gioi_tinh, anh_cccd || null, anh_cccd_sau || null, ngay_vao_lam || null, anh_dai_dien, 
                 vai_tro, luong_theo_gio || 0, luong_co_ban || 0, trang_thai, id
             ]
         );

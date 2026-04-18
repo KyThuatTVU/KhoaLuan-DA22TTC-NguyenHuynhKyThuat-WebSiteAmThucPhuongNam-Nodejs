@@ -6,5 +6,7 @@ const auditController = require('../controllers/auditController');
 router.get('/', auditController.getAuditSessions);
 router.get('/:id', auditController.getAuditDetail);
 router.post('/', auditController.createAuditSession);
+router.put('/:id', auditController.updateAuditSession);
+router.delete('/:id', auditController.deleteAuditSession);
 
 module.exports = router;

@@ -97,8 +97,7 @@
                             <thead>
                                 <tr class="border-b bg-gray-50">
                                     <th class="text-left py-4 px-4 text-xs font-bold text-gray-600 uppercase">Nhân viên / Vai trò</th>
-                                    <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Lương Cơ Bản</th>
-                                    <th class="text-center py-4 px-4 text-xs font-bold text-gray-600 uppercase">Số Giờ</th>
+                                    <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Chi tiết lương</th>
                                     <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Thưởng/Phụ cấp</th>
                                     <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Khấu trừ</th>
                                     <th class="text-right py-4 px-4 text-xs font-bold text-gray-600 uppercase">Thực Lĩnh</th>
@@ -193,7 +192,7 @@
 
                 body.innerHTML = data.data.map(p => {
                     const baseSalary = parseFloat(p.luong_co_ban || 0);
-                    const hourlyPay = parseFloat(p.tong_gio_lam || 0) * parseFloat(p.luong_theo_gio || 0);
+                    const hourlyRate = parseFloat(p.luong_theo_gio || 0);
                     const netSalary = parseFloat(p.tong_luong || 0);
                     
                     total += netSalary;
@@ -207,19 +206,41 @@
                     
                     const statusLabel = isPaid ? 'Đã thanh toán' : 'Chưa thanh toán';
 
+                    // HTML logic gộp Thông tin lương
+                    let salaryDetailsHtml = '';
+                    if (baseSalary > 0 && hourlyRate > 0) {
+                        salaryDetailsHtml = `
+                            <div class="flex flex-col items-end space-y-1.5">
+                                <p class="text-xs text-gray-600" title="Chiết khấu theo số ngày đi làm" >Cứng (theo ngày làm): <span class="font-bold text-gray-800 ml-1">${baseSalary.toLocaleString()}đ</span></p>
+                                <p class="text-xs text-gray-600">Làm thêm: <span class="font-bold text-blue-600 ml-1">${p.tong_gio_lam}h</span> <span class="text-[10px] text-gray-400 ml-1">(Đơn giá: ${hourlyRate.toLocaleString()}đ/h)</span></p>
+                            </div>
+                        `;
+                    } else if (baseSalary > 0) {
+                        salaryDetailsHtml = `
+                            <div class="text-right space-y-1" title="Chiết khấu theo tỷ lệ ngày đi làm thực tế">
+                                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Lương cứng theo ngày làm</p>
+                                <p class="font-black text-gray-800 text-lg">${baseSalary.toLocaleString()}đ</p>
+                            </div>
+                        `;
+                    } else if (hourlyRate > 0) {
+                        salaryDetailsHtml = `
+                            <div class="text-right space-y-0.5">
+                                <p class="text-xs text-gray-500">Số giờ làm thực tế: <span class="font-black text-blue-600 ml-1 text-sm">${p.tong_gio_lam}h</span></p>
+                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Mức lương: ${hourlyRate.toLocaleString()}đ / 1 giờ</p>
+                            </div>
+                        `;
+                    } else {
+                        salaryDetailsHtml = `<span class="block text-gray-400 italic text-sm text-right">Chưa cấu hình</span>`;
+                    }
+
                     return `
                         <tr class="border-b hover:bg-slate-50 transition">
                             <td class="py-4 px-4">
                                 <p class="font-black text-gray-800">${p.ten_nhan_vien}</p>
                                 <p class="text-[10px] uppercase font-bold text-blue-500 tracking-wider">${p.vai_tro}</p>
                             </td>
-                            <td class="py-4 px-4 text-right font-medium">
-                                <span class="block text-gray-800">${baseSalary.toLocaleString()}đ</span>
-                                <span class="text-[10px] text-gray-400">Fixed</span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <p class="font-black text-blue-600">${p.tong_gio_lam}h</p>
-                                <p class="text-[10px] text-gray-400">@${parseFloat(p.luong_theo_gio).toLocaleString()}đ/h</p>
+                            <td class="py-4 px-4">
+                                ${salaryDetailsHtml}
                             </td>
                             <td class="py-4 px-4 text-right text-emerald-600 font-bold">+${parseFloat(p.thuong || 0).toLocaleString()}đ</td>
                             <td class="py-4 px-4 text-right text-rose-600 font-bold">-${parseFloat(p.phat || 0).toLocaleString()}đ</td>

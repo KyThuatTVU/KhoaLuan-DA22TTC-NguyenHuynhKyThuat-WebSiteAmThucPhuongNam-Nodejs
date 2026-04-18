@@ -52,9 +52,9 @@ const generatePayroll = async (req, res) => {
         let updatedCount = 0;
 
         for (const s of staff) {
-            // 2. Tính tổng giờ làm trong tháng/năm từ bảng cham_cong
+            // 2. Tính tổng giờ làm và số ngày làm việc trong tháng/năm từ bảng cham_cong
             const [[attendance]] = await db.query(`
-                SELECT SUM(so_gio_lam) as tong_gio
+                SELECT SUM(so_gio_lam) as tong_gio, COUNT(DISTINCT ngay) as tong_ngay
                 FROM cham_cong 
                 WHERE ma_nhan_vien = ? 
                 AND MONTH(ngay) = ? 
@@ -62,8 +62,21 @@ const generatePayroll = async (req, res) => {
             `, [s.ma_nhan_vien, thang, nam]);
 
             const tongGio = attendance.tong_gio || 0;
+            const tongNgayLam = attendance.tong_ngay || 0;
             const luongTheoGio = s.luong_theo_gio || 0;
-            const luongCoBan = s.luong_co_ban || 0;
+            
+            // Tính Lương cơ bản được chiết khấu theo số ngày thực tế đi làm
+            // Tháng trong Javascript (Date(year, monthIndex, 0)) sẽ trả về ngày cuối cùng của tháng đó.
+            const soNgayTrongThang = new Date(nam, thang, 0).getDate();
+            const luongCoBanGoc = parseFloat(s.luong_co_ban || 0);
+            
+            // Công thức: Lấy tiền lương chia cho số ngày trong tháng đó và nhân lại cho số ngày thực tế đã làm
+            let luongCoBan = luongCoBanGoc;
+            if (luongCoBanGoc > 0) {
+                // Đảm bảo không vượt quá 100% nếu số ngày làm lớn hơn ngày của tháng do lỗi nhập
+                const daysToCalculate = Math.min(tongNgayLam, soNgayTrongThang);
+                luongCoBan = (luongCoBanGoc / soNgayTrongThang) * daysToCalculate;
+            }
 
             // 3. Kiểm tra bản ghi lương hiện tại để giữ lại Thưởng/Phạt nếu đã nhập thủ công
             const [existing] = await db.query(
