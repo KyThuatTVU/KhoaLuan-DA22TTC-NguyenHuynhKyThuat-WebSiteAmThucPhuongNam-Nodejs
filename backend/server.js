@@ -443,6 +443,7 @@ const ingredientCategoryRoutes = require('./routes/ingredientCategories');
 const wastageRoutes = require('./routes/wastage');
 const uploadRoutes = require('./routes/upload');
 const expenseRoutes = require('./routes/expenses');
+const expenseCategoryRoutes = require('./routes/expenseCategories');
 
 
 // Register routes
@@ -485,6 +486,7 @@ app.use('/api/ingredient-categories', ingredientCategoryRoutes);
 app.use('/api/wastage', wastageRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/expenses', expenseRoutes);
+app.use('/api/expense-categories', expenseCategoryRoutes);
 
 
 // Admin notifications routes

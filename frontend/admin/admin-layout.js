@@ -27,6 +27,9 @@ const SIDEBAR_TEMPLATE = `
                 <a href="chi-phi-hang-ngay.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-money-bill-wave w-5"></i><span class="text-sm">Chi phí hàng ngày</span>
                 </a>
+                <a href="loai-chi-phi.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-tags w-5"></i><span class="text-sm">Loại chi phí</span>
+                </a>
             </div>
 
             <!-- 2. Nghiệp vụ bán hàng -->

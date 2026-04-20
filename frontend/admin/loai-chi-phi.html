@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Loại Chi Phí - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body class="bg-slate-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Page Title -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Quản Lý Loại Chi Phí</h1>
+                        <p class="text-slate-500 text-sm">Tạo và quản lý các danh mục chi phí cho nhà hàng</p>
+                    </div>
+                    <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-200">
+                        <i class="fas fa-plus"></i>
+                        Thêm Loại Chi Phí
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tổng loại</p>
+                                <h3 id="total-categories" class="text-2xl font-black text-blue-600">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-tags text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Đang sử dụng</p>
+                                <h3 id="used-categories" class="text-2xl font-black text-green-600">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tổng chi phí</p>
+                                <h3 id="total-amount" class="text-2xl font-black text-red-600">0đ</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-money-bill-wave text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Grid -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-list text-blue-600"></i>
+                            Danh Sách Loại Chi Phí
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Loại chi phí</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mô tả</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Số lần sử dụng</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase">Tổng chi phí</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thứ tự</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-container" class="bg-white divide-y divide-slate-200">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>Đang tải dữ liệu...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="category-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold" id="modal-title">Thêm Loại Chi Phí Mới</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="category-form" class="p-6 space-y-4 overflow-y-auto flex-1">
+                <input type="hidden" id="category-id">
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Tên loại chi phí *</label>
+                    <input type="text" id="ten_loai_chi_phi" required placeholder="Ví dụ: Bảo hiểm xã hội" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Mô tả</label>
+                    <textarea id="mo_ta" rows="3" placeholder="Mô tả chi tiết về loại chi phí này..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Màu sắc</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="mau_sac" value="#6b7280" class="w-12 h-10 border border-slate-200 rounded-lg cursor-pointer">
+                            <input type="text" id="mau_sac_text" value="#6b7280" class="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm font-mono">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Thứ tự hiển thị</label>
+                        <input type="number" id="thu_tu_hien_thi" min="0" value="0" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Icon FontAwesome</label>
+                    <div class="flex items-center gap-2">
+                        <div id="icon-preview" class="w-12 h-10 border border-slate-200 rounded-lg flex items-center justify-center bg-slate-50">
+                            <i class="fas fa-money-bill-wave text-slate-600"></i>
+                        </div>
+                        <input type="text" id="icon" value="fas fa-money-bill-wave" placeholder="fas fa-icon-name" class="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-sm">
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">
+                        <i class="fas fa-info-circle"></i> 
+                        Xem danh sách icon tại: <a href="https://fontawesome.com/icons" target="_blank" class="text-blue-600 hover:underline">fontawesome.com/icons</a>
+                    </p>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 transition">Hủy</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold transition">
+                        <i class="fas fa-save mr-2"></i>Lưu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let categories = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Sync color picker with text input
+            document.getElementById('mau_sac').addEventListener('input', (e) => {
+                document.getElementById('mau_sac_text').value = e.target.value;
+            });
+            
+            document.getElementById('mau_sac_text').addEventListener('input', (e) => {
+                document.getElementById('mau_sac').value = e.target.value;
+            });
+            
+            // Preview icon
+            document.getElementById('icon').addEventListener('input', (e) => {
+                const iconPreview = document.getElementById('icon-preview');
+                iconPreview.innerHTML = `<i class="${e.target.value} text-slate-600"></i>`;
+            });
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_URL}/expense-categories/stats`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    categories = data.data;
+                    renderCategories(categories);
+                    updateStats(categories);
+                } else {
+                    Swal.fire('Lỗi!', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                Swal.fire('Lỗi!', 'Không thể tải dữ liệu', 'error');
+            }
+        }
+
+        function updateStats(data) {
+            const totalCategories = data.length;
+            const usedCategories = data.filter(c => c.so_luong_su_dung > 0).length;
+            const totalAmount = data.reduce((sum, c) => sum + parseFloat(c.tong_chi_phi), 0);
+            
+            document.getElementById('total-categories').textContent = totalCategories;
+            document.getElementById('used-categories').textContent = usedCategories;
+            document.getElementById('total-amount').textContent = formatCurrency(totalAmount);
+        }
+
+        function renderCategories(items) {
+            const container = document.getElementById('categories-container');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-slate-400">
+                            <i class="fas fa-inbox text-4xl mb-2"></i><br>
+                            Chưa có loại chi phí nào
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            container.innerHTML = items.map(item => {
+                const isUsed = item.so_luong_su_dung > 0;
+                
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: ${item.mau_sac}20; color: ${item.mau_sac}">
+                                    <i class="${item.icon}"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-800">${item.ten_loai_chi_phi}</p>
+                                    ${isUsed ? '<span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold">Đang sử dụng</span>' : '<span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Chưa sử dụng</span>'}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600 max-w-xs">
+                            ${item.mo_ta || '<span class="text-slate-300 italic">Chưa có mô tả</span>'}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="font-bold ${isUsed ? 'text-green-600' : 'text-slate-400'}">${item.so_luong_su_dung}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right font-bold ${parseFloat(item.tong_chi_phi) > 0 ? 'text-red-600' : 'text-slate-400'}">
+                            ${formatCurrency(item.tong_chi_phi)}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold">${item.thu_tu_hien_thi || 0}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <button onclick="editCategory(${item.ma_loai_chi_phi})" class="text-blue-600 hover:text-blue-800 mr-3" title="Sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteCategory(${item.ma_loai_chi_phi}, ${isUsed})" class="text-red-600 hover:text-red-800" title="Xóa">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Thêm Loại Chi Phí Mới';
+            document.getElementById('category-form').reset();
+            document.getElementById('category-id').value = '';
+            document.getElementById('mau_sac').value = '#6b7280';
+            document.getElementById('mau_sac_text').value = '#6b7280';
+            document.getElementById('icon').value = 'fas fa-money-bill-wave';
+            document.getElementById('icon-preview').innerHTML = '<i class="fas fa-money-bill-wave text-slate-600"></i>';
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        async function editCategory(id) {
+            try {
+                const response = await fetch(`${API_URL}/expense-categories/${id}`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const category = data.data;
+                    document.getElementById('modal-title').textContent = 'Sửa Loại Chi Phí';
+                    document.getElementById('category-id').value = category.ma_loai_chi_phi;
+                    document.getElementById('ten_loai_chi_phi').value = category.ten_loai_chi_phi;
+                    document.getElementById('mo_ta').value = category.mo_ta || '';
+                    document.getElementById('mau_sac').value = category.mau_sac;
+                    document.getElementById('mau_sac_text').value = category.mau_sac;
+                    document.getElementById('icon').value = category.icon;
+                    document.getElementById('thu_tu_hien_thi').value = category.thu_tu_hien_thi;
+                    document.getElementById('icon-preview').innerHTML = `<i class="${category.icon} text-slate-600"></i>`;
+                    document.getElementById('category-modal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading category:', error);
+                Swal.fire('Lỗi!', 'Không thể tải thông tin loại chi phí', 'error');
+            }
+        }
+
+        async function deleteCategory(id, isUsed) {
+            const message = isUsed 
+                ? 'Loại chi phí này đang được sử dụng. Bạn có muốn ẩn nó không?' 
+                : 'Bạn có chắc muốn xóa loại chi phí này?';
+                
+            const result = await Swal.fire({
+                title: 'Xác nhận',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: isUsed ? 'Ẩn' : 'Xóa',
+                cancelButtonText: 'Hủy'
+            });
+            
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${API_URL}/expense-categories/${id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        Swal.fire('Thành công!', data.message, 'success');
+                        loadCategories();
+                    } else {
+                        Swal.fire('Lỗi!', data.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting category:', error);
+                    Swal.fire('Lỗi!', 'Không thể xóa loại chi phí', 'error');
+                }
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('category-modal').classList.add('hidden');
+        }
+
+        document.getElementById('category-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('category-id').value;
+            const formData = {
+                ten_loai_chi_phi: document.getElementById('ten_loai_chi_phi').value,
+                mo_ta: document.getElementById('mo_ta').value,
+                mau_sac: document.getElementById('mau_sac').value,
+                icon: document.getElementById('icon').value,
+                thu_tu_hien_thi: parseInt(document.getElementById('thu_tu_hien_thi').value) || 0
+            };
+            
+            try {
+                const url = id ? `${API_URL}/expense-categories/${id}` : `${API_URL}/expense-categories`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    Swal.fire('Thành công!', data.message, 'success');
+                    closeModal();
+                    loadCategories();
+                } else {
+                    Swal.fire('Lỗi!', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving category:', error);
+                Swal.fire('Lỗi!', 'Không thể lưu loại chi phí', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

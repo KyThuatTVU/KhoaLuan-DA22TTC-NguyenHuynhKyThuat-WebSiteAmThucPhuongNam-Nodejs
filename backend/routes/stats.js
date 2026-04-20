@@ -461,8 +461,18 @@ router.get('/financial-summary', requireAdmin, async (req, res) => {
               AND MONTH(thoi_gian_thanh_toan) = ?
               AND YEAR(thoi_gian_thanh_toan) = ?
             GROUP BY DATE(thoi_gian_thanh_toan)
+            
+            UNION ALL
+            
+            SELECT DATE(thoi_gian_thanh_toan) as ngay, SUM(so_tien) as thu
+            FROM thanh_toan_dat_ban
+            WHERE trang_thai = 'paid'
+              AND MONTH(thoi_gian_thanh_toan) = ?
+              AND YEAR(thoi_gian_thanh_toan) = ?
+            GROUP BY DATE(thoi_gian_thanh_toan)
+            
             ORDER BY ngay ASC
-        `, [targetMonth, targetYear]);
+        `, [targetMonth, targetYear, targetMonth, targetYear]);
 
         // 2. Lấy chi phí hàng ngày từ 2 nguồn: phiếu nhập kho + chi phí hàng ngày
         const [expenseData] = await db.query(`
@@ -539,18 +549,16 @@ router.get('/daily-detail', requireAdmin, async (req, res) => {
             return res.status(400).json({ success: false, message: 'Thiếu tham số ngày' });
         }
 
-        // 1. Lấy chi tiết doanh thu (từ thanh toán)
+        // 1. Lấy chi tiết doanh thu (từ thanh toán đơn hàng)
         const [revenueDetails] = await db.query(`
             SELECT 
                 tp.so_tien,
                 tp.phuong_thuc,
                 tp.thoi_gian_thanh_toan,
                 dh.ma_don_hang,
-                dh.loai_don_hang,
                 CASE 
-                    WHEN dh.loai_don_hang = 'online' THEN CONCAT('Đơn online #', dh.ma_don_hang)
-                    WHEN dh.loai_don_hang = 'pos' THEN CONCAT('Bán tại quầy #', dh.ma_don_hang)
-                    WHEN dh.loai_don_hang = 'reservation' THEN CONCAT('Đặt bàn #', dh.ma_don_hang)
+                    WHEN dh.ma_nguoi_dung IS NOT NULL THEN CONCAT('Đơn online #', dh.ma_don_hang)
+                    WHEN dh.ten_khach_vang_lai IS NOT NULL THEN CONCAT('Bán tại quầy #', dh.ma_don_hang)
                     ELSE CONCAT('Đơn hàng #', dh.ma_don_hang)
                 END as mo_ta
             FROM thanh_toan tp
@@ -559,6 +567,24 @@ router.get('/daily-detail', requireAdmin, async (req, res) => {
               AND tp.trang_thai = 'success'
             ORDER BY tp.thoi_gian_thanh_toan DESC
         `, [date]);
+        
+        // 1b. Lấy chi tiết doanh thu từ thanh toán đặt bàn
+        const [reservationRevenue] = await db.query(`
+            SELECT 
+                ttdb.so_tien,
+                'Chuyển khoản' as phuong_thuc,
+                ttdb.thoi_gian_thanh_toan,
+                db.ma_dat_ban,
+                CONCAT('Đặt bàn #', db.ma_dat_ban, ' - ', db.ten_nguoi_dat) as mo_ta
+            FROM thanh_toan_dat_ban ttdb
+            JOIN dat_ban db ON ttdb.ma_dat_ban = db.ma_dat_ban
+            WHERE DATE(ttdb.thoi_gian_thanh_toan) = ?
+              AND ttdb.trang_thai = 'paid'
+            ORDER BY ttdb.thoi_gian_thanh_toan DESC
+        `, [date]);
+        
+        // Kết hợp cả 2 nguồn doanh thu
+        const allRevenue = [...revenueDetails, ...reservationRevenue];
 
         // 2. Lấy chi tiết chi phí từ nhập kho
         const [importExpenses] = await db.query(`
@@ -603,14 +629,14 @@ router.get('/daily-detail', requireAdmin, async (req, res) => {
         ];
 
         // 5. Tính tổng
-        const totalRevenue = revenueDetails.reduce((sum, r) => sum + parseFloat(r.so_tien), 0);
+        const totalRevenue = allRevenue.reduce((sum, r) => sum + parseFloat(r.so_tien), 0);
         const totalExpenses = allExpenses.reduce((sum, e) => sum + parseFloat(e.so_tien), 0);
 
         res.json({
             success: true,
             data: {
                 date,
-                revenue: revenueDetails,
+                revenue: allRevenue,
                 expenses: allExpenses,
                 summary: {
                     totalRevenue,

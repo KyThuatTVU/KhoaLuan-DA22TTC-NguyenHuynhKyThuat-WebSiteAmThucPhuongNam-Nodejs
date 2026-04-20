@@ -135,13 +135,52 @@ const updatePayrollReport = async (req, res) => {
         // Tính lại tổng lương
         const tongLuongMoi = (parseFloat(report.luong_co_ban) + (report.tong_gio_lam * report.luong_theo_gio) + newThuong - newPhat).toFixed(2);
 
+        // Lấy thông tin nhân viên
+        const [[nhanVien]] = await db.query('SELECT ten_nhan_vien, ma_nv_code FROM nhan_vien WHERE ma_nhan_vien = ?', [report.ma_nhan_vien]);
+        
+        // Kiểm tra nếu chuyển từ "chưa thanh toán" sang "đã thanh toán"
+        const oldStatus = report.trang_thai || 'chua_thanh_toan';
+        const newStatus = trang_thai || oldStatus;
+        
+        if (oldStatus !== 'da_thanh_toan' && newStatus === 'da_thanh_toan') {
+            // Tự động ghi nhận vào bảng chi phí hàng ngày
+            const tenNhanVien = nhanVien ? nhanVien.ten_nhan_vien : 'Nhân viên';
+            const maNV = nhanVien ? nhanVien.ma_nv_code : '';
+            
+            // Tìm loại chi phí "Lương nhân viên"
+            const [[loaiChiPhi]] = await db.query(
+                'SELECT ma_loai_chi_phi FROM loai_chi_phi WHERE ten_loai_chi_phi = ? AND trang_thai = "active"',
+                ['Lương nhân viên']
+            );
+            
+            const maLoaiChiPhi = loaiChiPhi ? loaiChiPhi.ma_loai_chi_phi : null;
+            
+            // Tạo bản ghi chi phí
+            await db.query(`
+                INSERT INTO chi_phi_hang_ngay 
+                (ngay_chi, loai_chi_phi, ma_loai_chi_phi, ten_chi_phi, so_tien, mo_ta, nguoi_nhan, phuong_thuc_thanh_toan)
+                VALUES (CURDATE(), 'Lương nhân viên', ?, ?, ?, ?, ?, 'Chuyển khoản')
+            `, [
+                maLoaiChiPhi,
+                `Lương tháng ${report.thang}/${report.nam} - ${tenNhanVien}`,
+                tongLuongMoi,
+                `Lương cơ bản: ${parseFloat(report.luong_co_ban).toLocaleString('vi-VN')}đ, Giờ làm: ${report.tong_gio_lam}h x ${report.luong_theo_gio.toLocaleString('vi-VN')}đ, Thưởng: ${newThuong.toLocaleString('vi-VN')}đ, Phạt: ${newPhat.toLocaleString('vi-VN')}đ`,
+                `${tenNhanVien}${maNV ? ' (' + maNV + ')' : ''}`
+            ]);
+        }
+
         await db.query(`
             UPDATE bang_luong 
             SET thuong = ?, phat = ?, tong_luong = ?, trang_thai = ?
             WHERE ma_luong = ?
-        `, [newThuong, newPhat, tongLuongMoi, trang_thai || report.trang_thai, id]);
+        `, [newThuong, newPhat, tongLuongMoi, newStatus, id]);
         
-        res.json({ success: true, message: 'Cập nhật bảng lương (Thưởng/Phạt) thành công!' });
+        res.json({ 
+            success: true, 
+            message: newStatus === 'da_thanh_toan' && oldStatus !== 'da_thanh_toan' 
+                ? 'Thanh toán lương thành công và đã ghi nhận vào chi phí!' 
+                : 'Cập nhật bảng lương thành công!'
+        });
     } catch (error) {
         console.error('Update Payroll Error:', error);
         res.status(500).json({ success: false, message: error.message });

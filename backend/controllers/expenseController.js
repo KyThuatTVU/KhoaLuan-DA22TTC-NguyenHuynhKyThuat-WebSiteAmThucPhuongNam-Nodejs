@@ -167,15 +167,30 @@ exports.createExpense = async (req, res) => {
             });
         }
         
+        // Tìm ma_loai_chi_phi từ tên loại chi phí
+        let ma_loai_chi_phi = null;
+        try {
+            const [categoryResult] = await db.query(
+                'SELECT ma_loai_chi_phi FROM loai_chi_phi WHERE ten_loai_chi_phi = ? AND trang_thai = "active"',
+                [loai_chi_phi]
+            );
+            if (categoryResult.length > 0) {
+                ma_loai_chi_phi = categoryResult[0].ma_loai_chi_phi;
+            }
+        } catch (err) {
+            console.warn('Could not find category ID, using name only:', err.message);
+        }
+        
         const query = `
             INSERT INTO chi_phi_hang_ngay 
-            (ngay_chi, loai_chi_phi, ten_chi_phi, so_tien, mo_ta, nguoi_nhan, phuong_thuc_thanh_toan, nguoi_tao)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (ngay_chi, loai_chi_phi, ma_loai_chi_phi, ten_chi_phi, so_tien, mo_ta, nguoi_nhan, phuong_thuc_thanh_toan, nguoi_tao)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         
         const [result] = await db.query(query, [
             ngay_chi,
             loai_chi_phi,
+            ma_loai_chi_phi,
             ten_chi_phi,
             so_tien,
             mo_ta || null,
@@ -243,10 +258,25 @@ exports.updateExpense = async (req, res) => {
             });
         }
         
+        // Tìm ma_loai_chi_phi từ tên loại chi phí
+        let ma_loai_chi_phi = null;
+        try {
+            const [categoryResult] = await db.query(
+                'SELECT ma_loai_chi_phi FROM loai_chi_phi WHERE ten_loai_chi_phi = ? AND trang_thai = "active"',
+                [loai_chi_phi]
+            );
+            if (categoryResult.length > 0) {
+                ma_loai_chi_phi = categoryResult[0].ma_loai_chi_phi;
+            }
+        } catch (err) {
+            console.warn('Could not find category ID, using name only:', err.message);
+        }
+        
         const query = `
             UPDATE chi_phi_hang_ngay 
             SET ngay_chi = ?,
                 loai_chi_phi = ?,
+                ma_loai_chi_phi = ?,
                 ten_chi_phi = ?,
                 so_tien = ?,
                 mo_ta = ?,
@@ -258,6 +288,7 @@ exports.updateExpense = async (req, res) => {
         await db.query(query, [
             ngay_chi,
             loai_chi_phi,
+            ma_loai_chi_phi,
             ten_chi_phi,
             so_tien,
             mo_ta || null,
@@ -360,7 +391,49 @@ exports.getMonthlyExpenseStats = async (req, res) => {
 // Lấy danh sách loại chi phí
 exports.getExpenseCategories = async (req, res) => {
     try {
-        const categories = [
+        // Lấy từ database nếu có bảng loai_chi_phi
+        const [categories] = await db.query(`
+            SELECT ten_loai_chi_phi 
+            FROM loai_chi_phi 
+            WHERE trang_thai = 'active' 
+            ORDER BY thu_tu_hien_thi ASC, ten_loai_chi_phi ASC
+        `);
+        
+        if (categories.length > 0) {
+            // Trả về từ database
+            res.json({
+                success: true,
+                data: categories.map(c => c.ten_loai_chi_phi)
+            });
+        } else {
+            // Fallback về danh sách cũ nếu chưa có dữ liệu
+            const fallbackCategories = [
+                'Nguyên liệu',
+                'Điện nước',
+                'Tiền thuê mặt bằng',
+                'Lương nhân viên',
+                'Bảo trì sửa chữa',
+                'Marketing',
+                'Văn phòng phẩm',
+                'Vận chuyển',
+                'Bảo hiểm',
+                'Thuế phí',
+                'Đào tạo nhân viên',
+                'Khấu hao thiết bị',
+                'Chi phí pháp lý',
+                'Khác'
+            ];
+            
+            res.json({
+                success: true,
+                data: fallbackCategories
+            });
+        }
+    } catch (error) {
+        console.error('Lỗi lấy danh sách loại chi phí:', error);
+        
+        // Fallback về danh sách cũ nếu có lỗi database
+        const fallbackCategories = [
             'Nguyên liệu',
             'Điện nước',
             'Tiền thuê mặt bằng',
@@ -369,19 +442,17 @@ exports.getExpenseCategories = async (req, res) => {
             'Marketing',
             'Văn phòng phẩm',
             'Vận chuyển',
+            'Bảo hiểm',
+            'Thuế phí',
+            'Đào tạo nhân viên',
+            'Khấu hao thiết bị',
+            'Chi phí pháp lý',
             'Khác'
         ];
         
         res.json({
             success: true,
-            data: categories
-        });
-    } catch (error) {
-        console.error('Lỗi lấy danh sách loại chi phí:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Lỗi server',
-            error: error.message
+            data: fallbackCategories
         });
     }
 };

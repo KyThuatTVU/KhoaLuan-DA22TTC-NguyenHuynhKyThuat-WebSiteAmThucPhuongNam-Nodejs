@@ -230,6 +230,10 @@
             loadCategories();
             setDefaultDates();
             loadExpenses();
+            
+            // Tự động lọc khi thay đổi
+            document.getElementById('category-filter').addEventListener('change', applyClientSideFilters);
+            document.getElementById('search').addEventListener('input', applyClientSideFilters);
         });
 
         function setDefaultDates() {
@@ -243,11 +247,43 @@
 
         async function loadCategories() {
             try {
-                const response = await fetch(`${API_URL}/expenses/categories`, { credentials: 'include' });
+                const response = await fetch(`${API_URL}/expense-categories`, { credentials: 'include' });
                 const data = await response.json();
                 
-                if (data.success) {
-                    categories = data.data;
+                if (data.success && data.data) {
+                    // Lấy tên loại chi phí từ mảng objects
+                    categories = data.data.map(cat => cat.ten_loai_chi_phi);
+                    
+                    // Populate form select
+                    const formSelect = document.getElementById('loai_chi_phi');
+                    formSelect.innerHTML = '<option value="">-- Chọn loại --</option>' + 
+                        categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                    
+                    // Populate filter select
+                    const filterSelect = document.getElementById('category-filter');
+                    filterSelect.innerHTML = '<option value="">Tất cả loại</option>' + 
+                        categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                    
+                    console.log('✅ Đã load', categories.length, 'loại chi phí');
+                } else {
+                    console.warn('⚠️ Không có dữ liệu loại chi phí, sử dụng fallback');
+                    // Fallback về danh sách cũ
+                    categories = [
+                        'Nguyên liệu',
+                        'Điện nước',
+                        'Tiền thuê mặt bằng',
+                        'Lương nhân viên',
+                        'Bảo trì sửa chữa',
+                        'Marketing',
+                        'Văn phòng phẩm',
+                        'Vận chuyển',
+                        'Bảo hiểm',
+                        'Thuế phí',
+                        'Đào tạo nhân viên',
+                        'Khấu hao thiết bị',
+                        'Chi phí pháp lý',
+                        'Khác'
+                    ];
                     
                     // Populate form select
                     const formSelect = document.getElementById('loai_chi_phi');
@@ -260,7 +296,34 @@
                         categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
                 }
             } catch (error) {
-                console.error('Error loading categories:', error);
+                console.error('❌ Lỗi load categories:', error);
+                // Fallback về danh sách cũ
+                categories = [
+                    'Nguyên liệu',
+                    'Điện nước',
+                    'Tiền thuê mặt bằng',
+                    'Lương nhân viên',
+                    'Bảo trì sửa chữa',
+                    'Marketing',
+                    'Văn phòng phẩm',
+                    'Vận chuyển',
+                    'Bảo hiểm',
+                    'Thuế phí',
+                    'Đào tạo nhân viên',
+                    'Khấu hao thiết bị',
+                    'Chi phí pháp lý',
+                    'Khác'
+                ];
+                
+                // Populate form select
+                const formSelect = document.getElementById('loai_chi_phi');
+                formSelect.innerHTML = '<option value="">-- Chọn loại --</option>' + 
+                    categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                
+                // Populate filter select
+                const filterSelect = document.getElementById('category-filter');
+                filterSelect.innerHTML = '<option value="">Tất cả loại</option>' + 
+                    categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
             }
         }
 
@@ -277,13 +340,36 @@
                 
                 if (data.success) {
                     expenses = data.data;
-                    renderExpenses(expenses);
+                    applyClientSideFilters(); // Áp dụng filter phía client
                     updateStats(data);
                 }
             } catch (error) {
                 console.error('Error loading expenses:', error);
                 Swal.fire('Lỗi!', 'Không thể tải dữ liệu chi phí', 'error');
             }
+        }
+
+        function applyClientSideFilters() {
+            const categoryFilter = document.getElementById('category-filter').value;
+            const searchText = document.getElementById('search').value.toLowerCase();
+            
+            let filtered = expenses;
+            
+            // Lọc theo loại chi phí
+            if (categoryFilter) {
+                filtered = filtered.filter(e => e.loai_chi_phi === categoryFilter);
+            }
+            
+            // Lọc theo tìm kiếm
+            if (searchText) {
+                filtered = filtered.filter(e => 
+                    e.ten_chi_phi.toLowerCase().includes(searchText) ||
+                    (e.mo_ta && e.mo_ta.toLowerCase().includes(searchText)) ||
+                    (e.nguoi_nhan && e.nguoi_nhan.toLowerCase().includes(searchText))
+                );
+            }
+            
+            renderExpenses(filtered);
         }
 
         function updateStats(data) {
@@ -414,7 +500,7 @@
         }
 
         function applyFilters() {
-            loadExpenses();
+            applyClientSideFilters();
         }
 
         function resetFilters() {
