@@ -270,6 +270,58 @@ Hệ thống bao gồm **12 sơ đồ hoạt động (Activity Diagrams)** mô t
 
 ---
 
+### 13. 💸 Quản Lý Chi Phí Hàng Ngày
+**Mô tả:** Quy trình ghi chép và theo dõi các khoản chi tiêu hàng ngày
+- **Actor:** Admin / Quản lý / Kế toán
+- **Mục đích:** Tính toán doanh thu thuần và lợi nhuận chính xác
+- **Loại chi phí:**
+  - Nguyên liệu
+  - Điện nước
+  - Tiền thuê mặt bằng
+  - Lương nhân viên
+  - Bảo trì sửa chữa
+  - Marketing
+  - Văn phòng phẩm
+  - Vận chuyển
+  - Khác
+- **Luồng chính:**
+  1. Người quản lý đăng nhập
+  2. Chọn "Thêm Chi Phí"
+  3. Nhập thông tin:
+     - Ngày chi
+     - Loại chi phí
+     - Tên chi phí cụ thể
+     - Số tiền
+     - Người nhận/Đơn vị cung cấp
+     - Phương thức thanh toán (Tiền mặt/Chuyển khoản/Thẻ)
+     - Mô tả chi tiết
+  4. Lưu vào bảng chi_phi_hang_ngay
+  5. Hệ thống tự động tính:
+     - Tổng chi hôm nay
+     - Tổng chi tuần này
+     - Tổng chi tháng này
+  6. Tạo báo cáo chi phí theo:
+     - Ngày
+     - Tuần
+     - Tháng
+     - Loại chi phí
+  7. Tính doanh thu thuần:
+     - Doanh thu = Tổng thu - Tổng chi
+  8. Xuất báo cáo Excel/PDF
+- **Tính năng:**
+  - Lọc theo khoảng thời gian
+  - Lọc theo loại chi phí
+  - Tìm kiếm theo tên
+  - Thống kê theo danh mục
+  - Biểu đồ chi phí
+- **Báo cáo:**
+  - Top chi phí cao nhất
+  - Xu hướng chi tiêu
+  - So sánh theo tháng
+  - Phân tích tỷ lệ chi phí
+
+---
+
 ## 🛠️ Công Nghệ Sử Dụng
 
 ### Backend
@@ -296,9 +348,9 @@ Hệ thống bao gồm **12 sơ đồ hoạt động (Activity Diagrams)** mô t
 
 ## 📊 Thống Kê Hệ Thống
 
-- **Tổng số bảng database:** 40+ bảng
-- **Tổng số API endpoints:** 100+ endpoints
-- **Tổng số sơ đồ hoạt động:** 12 sơ đồ
+- **Tổng số bảng database:** 41+ bảng (bao gồm chi_phi_hang_ngay)
+- **Tổng số API endpoints:** 110+ endpoints
+- **Tổng số sơ đồ hoạt động:** 13 sơ đồ
 - **Số lượng actors:** 4 (Khách hàng, Admin, Nhân viên, Quản lý kho)
 
 ---

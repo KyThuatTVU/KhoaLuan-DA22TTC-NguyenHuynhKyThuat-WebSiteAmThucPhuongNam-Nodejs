@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Chi Phí Hàng Ngày - Admin</title>
+    <link rel="icon" type="image/png" href="../images/Green Simple Clean Vegan Food Logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-responsive.css">
+</head>
+<body class="bg-slate-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Placeholder -->
+        <div id="sidebar-placeholder"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Sidebar Overlay -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"></div>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Page Title -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-800">Quản Lý Chi Phí Hàng Ngày</h1>
+                        <p class="text-slate-500 text-sm">Ghi chép và theo dõi các khoản chi tiêu hàng ngày để tính doanh thu chính xác</p>
+                    </div>
+                    <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-200">
+                        <i class="fas fa-plus"></i>
+                        Thêm Chi Phí
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Hôm nay</p>
+                                <h3 id="today-expense" class="text-2xl font-black text-red-600">0đ</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-calendar-day text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tuần này</p>
+                                <h3 id="week-expense" class="text-2xl font-black text-orange-600">0đ</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-calendar-week text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tháng này</p>
+                                <h3 id="month-expense" class="text-2xl font-black text-amber-600">0đ</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-calendar-alt text-amber-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tổng số khoản</p>
+                                <h3 id="total-count" class="text-2xl font-black text-slate-800">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-receipt text-slate-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-2">Từ ngày</label>
+                            <input type="date" id="from-date" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-2">Đến ngày</label>
+                            <input type="date" id="to-date" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-2">Loại chi phí</label>
+                            <select id="category-filter" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                                <option value="">Tất cả loại</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-2">Tìm kiếm</label>
+                            <input type="text" id="search" placeholder="Tên chi phí..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <button onclick="applyFilters()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium transition-all">
+                                <i class="fas fa-search mr-2"></i>Lọc
+                            </button>
+                            <button onclick="resetFilters()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl transition-all">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expenses Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Ngày chi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Loại chi phí</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Tên chi phí</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Số tiền</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Người nhận</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Phương thức</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenses-container" class="bg-white divide-y divide-slate-200">
+                                <tr>
+                                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">
+                                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i><br>Đang tải dữ liệu...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-4 border-t border-slate-200">
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm text-slate-600">Tổng: <span id="filtered-count" class="font-bold">0</span> khoản chi</p>
+                            <p class="text-lg font-bold text-red-600">Tổng chi: <span id="filtered-total">0đ</span></p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="expense-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            <div class="p-6 border-b flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-2xl">
+                <h3 class="text-xl font-bold" id="modal-title">Thêm Chi Phí Mới</h3>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="expense-form" class="p-6 space-y-4 overflow-y-auto flex-1">
+                <input type="hidden" id="expense-id">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Ngày chi *</label>
+                        <input type="date" id="ngay_chi" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Loại chi phí *</label>
+                        <select id="loai_chi_phi" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- Chọn loại --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Tên chi phí *</label>
+                    <input type="text" id="ten_chi_phi" required placeholder="Ví dụ: Mua rau củ quả tươi" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Số tiền (VNĐ) *</label>
+                        <input type="number" id="so_tien" required min="0" step="1000" placeholder="0" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-bold text-red-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Phương thức thanh toán</label>
+                        <select id="phuong_thuc_thanh_toan" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Chuyển khoản">Chuyển khoản</option>
+                            <option value="Thẻ">Thẻ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Người nhận / Đơn vị cung cấp</label>
+                    <input type="text" id="nguoi_nhan" placeholder="Ví dụ: Chợ đầu mối, Công ty ABC..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Mô tả chi tiết</label>
+                    <textarea id="mo_ta" rows="3" placeholder="Ghi chú thêm về khoản chi này..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-200 rounded-xl hover:bg-slate-50 transition">Hủy</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold transition">
+                        <i class="fas fa-save mr-2"></i>Lưu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-layout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let expenses = [];
+        let categories = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            setDefaultDates();
+            loadExpenses();
+        });
+
+        function setDefaultDates() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('from-date').valueAsDate = firstDay;
+            document.getElementById('to-date').valueAsDate = today;
+            document.getElementById('ngay_chi').valueAsDate = today;
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_URL}/expenses/categories`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    categories = data.data;
+                    
+                    // Populate form select
+                    const formSelect = document.getElementById('loai_chi_phi');
+                    formSelect.innerHTML = '<option value="">-- Chọn loại --</option>' + 
+                        categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                    
+                    // Populate filter select
+                    const filterSelect = document.getElementById('category-filter');
+                    filterSelect.innerHTML = '<option value="">Tất cả loại</option>' + 
+                        categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        async function loadExpenses() {
+            try {
+                const fromDate = document.getElementById('from-date').value;
+                const toDate = document.getElementById('to-date').value;
+                
+                const response = await fetch(
+                    `${API_URL}/expenses/range?tu_ngay=${fromDate}&den_ngay=${toDate}`,
+                    { credentials: 'include' }
+                );
+                const data = await response.json();
+                
+                if (data.success) {
+                    expenses = data.data;
+                    renderExpenses(expenses);
+                    updateStats(data);
+                }
+            } catch (error) {
+                console.error('Error loading expenses:', error);
+                Swal.fire('Lỗi!', 'Không thể tải dữ liệu chi phí', 'error');
+            }
+        }
+
+        function updateStats(data) {
+            const today = new Date().toISOString().split('T')[0];
+            const todayExpenses = expenses.filter(e => e.ngay_chi === today);
+            const todayTotal = todayExpenses.reduce((sum, e) => sum + parseFloat(e.so_tien), 0);
+            
+            // Calculate week
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const weekExpenses = expenses.filter(e => new Date(e.ngay_chi) >= weekAgo);
+            const weekTotal = weekExpenses.reduce((sum, e) => sum + parseFloat(e.so_tien), 0);
+            
+            // Calculate month
+            const monthStart = new Date();
+            monthStart.setDate(1);
+            const monthExpenses = expenses.filter(e => new Date(e.ngay_chi) >= monthStart);
+            const monthTotal = monthExpenses.reduce((sum, e) => sum + parseFloat(e.so_tien), 0);
+            
+            document.getElementById('today-expense').textContent = formatCurrency(todayTotal);
+            document.getElementById('week-expense').textContent = formatCurrency(weekTotal);
+            document.getElementById('month-expense').textContent = formatCurrency(monthTotal);
+            document.getElementById('total-count').textContent = expenses.length;
+        }
+
+        function renderExpenses(items) {
+            const container = document.getElementById('expenses-container');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-400">
+                            <i class="fas fa-inbox text-4xl mb-2"></i><br>
+                            Không có dữ liệu chi phí
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('filtered-count').textContent = '0';
+                document.getElementById('filtered-total').textContent = '0đ';
+                return;
+            }
+            
+            const total = items.reduce((sum, item) => sum + parseFloat(item.so_tien), 0);
+            
+            container.innerHTML = items.map(item => {
+                const categoryColor = getCategoryColor(item.loai_chi_phi);
+                const paymentIcon = getPaymentIcon(item.phuong_thuc_thanh_toan);
+                
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                            ${formatDate(item.ngay_chi)}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 ${categoryColor} rounded-lg text-xs font-bold">
+                                ${item.loai_chi_phi}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 font-semibold text-slate-800">
+                            ${item.ten_chi_phi}
+                            ${item.mo_ta ? `<br><span class="text-xs text-slate-500">${item.mo_ta}</span>` : ''}
+                        </td>
+                        <td class="px-6 py-4 font-bold text-red-600">
+                            ${formatCurrency(item.so_tien)}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-600">
+                            ${item.nguoi_nhan || '<span class="text-slate-300">-</span>'}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-xs text-slate-600">
+                                <i class="${paymentIcon} mr-1"></i>${item.phuong_thuc_thanh_toan}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <button onclick="editExpense(${item.ma_chi_phi})" class="text-blue-600 hover:text-blue-800 mr-3" title="Sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteExpense(${item.ma_chi_phi})" class="text-red-600 hover:text-red-800" title="Xóa">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            document.getElementById('filtered-count').textContent = items.length;
+            document.getElementById('filtered-total').textContent = formatCurrency(total);
+        }
+
+        function getCategoryColor(category) {
+            const colors = {
+                'Nguyên liệu': 'bg-emerald-100 text-emerald-700',
+                'Điện nước': 'bg-blue-100 text-blue-700',
+                'Tiền thuê mặt bằng': 'bg-purple-100 text-purple-700',
+                'Lương nhân viên': 'bg-pink-100 text-pink-700',
+                'Bảo trì sửa chữa': 'bg-orange-100 text-orange-700',
+                'Marketing': 'bg-indigo-100 text-indigo-700',
+                'Văn phòng phẩm': 'bg-cyan-100 text-cyan-700',
+                'Vận chuyển': 'bg-amber-100 text-amber-700',
+                'Khác': 'bg-slate-100 text-slate-700'
+            };
+            return colors[category] || 'bg-slate-100 text-slate-700';
+        }
+
+        function getPaymentIcon(method) {
+            const icons = {
+                'Tiền mặt': 'fas fa-money-bill-wave',
+                'Chuyển khoản': 'fas fa-exchange-alt',
+                'Thẻ': 'fas fa-credit-card'
+            };
+            return icons[method] || 'fas fa-wallet';
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function applyFilters() {
+            loadExpenses();
+        }
+
+        function resetFilters() {
+            setDefaultDates();
+            document.getElementById('category-filter').value = '';
+            document.getElementById('search').value = '';
+            loadExpenses();
+        }
+
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Thêm Chi Phí Mới';
+            document.getElementById('expense-form').reset();
+            document.getElementById('expense-id').value = '';
+            document.getElementById('ngay_chi').valueAsDate = new Date();
+            document.getElementById('expense-modal').classList.remove('hidden');
+        }
+
+        async function editExpense(id) {
+            try {
+                const response = await fetch(`${API_URL}/expenses/${id}`, { credentials: 'include' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const expense = data.data;
+                    document.getElementById('modal-title').textContent = 'Sửa Chi Phí';
+                    document.getElementById('expense-id').value = expense.ma_chi_phi;
+                    document.getElementById('ngay_chi').value = expense.ngay_chi;
+                    document.getElementById('loai_chi_phi').value = expense.loai_chi_phi;
+                    document.getElementById('ten_chi_phi').value = expense.ten_chi_phi;
+                    document.getElementById('so_tien').value = expense.so_tien;
+                    document.getElementById('nguoi_nhan').value = expense.nguoi_nhan || '';
+                    document.getElementById('phuong_thuc_thanh_toan').value = expense.phuong_thuc_thanh_toan;
+                    document.getElementById('mo_ta').value = expense.mo_ta || '';
+                    document.getElementById('expense-modal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading expense:', error);
+                Swal.fire('Lỗi!', 'Không thể tải thông tin chi phí', 'error');
+            }
+        }
+
+        async function deleteExpense(id) {
+            const result = await Swal.fire({
+                title: 'Xác nhận xóa?',
+                text: 'Bạn có chắc muốn xóa khoản chi này?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            });
+            
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${API_URL}/expenses/${id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        Swal.fire('Thành công!', 'Đã xóa chi phí', 'success');
+                        loadExpenses();
+                    } else {
+                        Swal.fire('Lỗi!', data.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting expense:', error);
+                    Swal.fire('Lỗi!', 'Không thể xóa chi phí', 'error');
+                }
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('expense-modal').classList.add('hidden');
+        }
+
+        document.getElementById('expense-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('expense-id').value;
+            const formData = {
+                ngay_chi: document.getElementById('ngay_chi').value,
+                loai_chi_phi: document.getElementById('loai_chi_phi').value,
+                ten_chi_phi: document.getElementById('ten_chi_phi').value,
+                so_tien: document.getElementById('so_tien').value,
+                nguoi_nhan: document.getElementById('nguoi_nhan').value,
+                phuong_thuc_thanh_toan: document.getElementById('phuong_thuc_thanh_toan').value,
+                mo_ta: document.getElementById('mo_ta').value
+            };
+            
+            try {
+                const url = id ? `${API_URL}/expenses/${id}` : `${API_URL}/expenses`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    Swal.fire('Thành công!', id ? 'Đã cập nhật chi phí' : 'Đã thêm chi phí mới', 'success');
+                    closeModal();
+                    loadExpenses();
+                } else {
+                    Swal.fire('Lỗi!', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving expense:', error);
+                Swal.fire('Lỗi!', 'Không thể lưu chi phí', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

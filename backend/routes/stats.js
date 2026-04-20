@@ -464,7 +464,7 @@ router.get('/financial-summary', requireAdmin, async (req, res) => {
             ORDER BY ngay ASC
         `, [targetMonth, targetYear]);
 
-        // 2. Lấy chi phí hàng ngày từ phiếu nhập kho hoàn tất
+        // 2. Lấy chi phí hàng ngày từ 2 nguồn: phiếu nhập kho + chi phí hàng ngày
         const [expenseData] = await db.query(`
             SELECT DATE(thoi_gian_nhap) as ngay, SUM(tong_tien) as chi
             FROM phieu_nhap
@@ -472,8 +472,17 @@ router.get('/financial-summary', requireAdmin, async (req, res) => {
               AND MONTH(thoi_gian_nhap) = ?
               AND YEAR(thoi_gian_nhap) = ?
             GROUP BY DATE(thoi_gian_nhap)
+            
+            UNION ALL
+            
+            SELECT DATE(ngay_chi) as ngay, SUM(so_tien) as chi
+            FROM chi_phi_hang_ngay
+            WHERE MONTH(ngay_chi) = ?
+              AND YEAR(ngay_chi) = ?
+            GROUP BY DATE(ngay_chi)
+            
             ORDER BY ngay ASC
-        `, [targetMonth, targetYear]);
+        `, [targetMonth, targetYear, targetMonth, targetYear]);
 
         // 3. Kết hợp dữ liệu theo ngày
         const dailyStats = {};
@@ -495,7 +504,7 @@ router.get('/financial-summary', requireAdmin, async (req, res) => {
         expenseData.forEach(e => {
             const d = new Date(e.ngay).toISOString().split('T')[0];
             if (dailyStats[d]) {
-                dailyStats[d].chi = parseFloat(e.chi) || 0;
+                dailyStats[d].chi += parseFloat(e.chi) || 0; // Cộng dồn chi phí từ nhiều nguồn
             }
         });
 
@@ -517,6 +526,102 @@ router.get('/financial-summary', requireAdmin, async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching financial summary:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+    }
+});
+
+// API lấy chi tiết thu chi theo ngày cụ thể
+router.get('/daily-detail', requireAdmin, async (req, res) => {
+    try {
+        const { date } = req.query;
+        
+        if (!date) {
+            return res.status(400).json({ success: false, message: 'Thiếu tham số ngày' });
+        }
+
+        // 1. Lấy chi tiết doanh thu (từ thanh toán)
+        const [revenueDetails] = await db.query(`
+            SELECT 
+                tp.so_tien,
+                tp.phuong_thuc,
+                tp.thoi_gian_thanh_toan,
+                dh.ma_don_hang,
+                dh.loai_don_hang,
+                CASE 
+                    WHEN dh.loai_don_hang = 'online' THEN CONCAT('Đơn online #', dh.ma_don_hang)
+                    WHEN dh.loai_don_hang = 'pos' THEN CONCAT('Bán tại quầy #', dh.ma_don_hang)
+                    WHEN dh.loai_don_hang = 'reservation' THEN CONCAT('Đặt bàn #', dh.ma_don_hang)
+                    ELSE CONCAT('Đơn hàng #', dh.ma_don_hang)
+                END as mo_ta
+            FROM thanh_toan tp
+            JOIN don_hang dh ON tp.ma_don_hang = dh.ma_don_hang
+            WHERE DATE(tp.thoi_gian_thanh_toan) = ?
+              AND tp.trang_thai = 'success'
+            ORDER BY tp.thoi_gian_thanh_toan DESC
+        `, [date]);
+
+        // 2. Lấy chi tiết chi phí từ nhập kho
+        const [importExpenses] = await db.query(`
+            SELECT 
+                pn.tong_tien as so_tien,
+                pn.thoi_gian_nhap,
+                CONCAT('Nhập kho từ ', ncc.ten_nha_cung_cap) as mo_ta,
+                'Nhập nguyên liệu' as loai_chi_phi,
+                ncc.ten_nha_cung_cap as nguoi_nhan
+            FROM phieu_nhap pn
+            LEFT JOIN nha_cung_cap ncc ON pn.ma_nha_cung_cap = ncc.ma_nha_cung_cap
+            WHERE DATE(pn.thoi_gian_nhap) = ?
+              AND pn.trang_thai = 'hoan_tat'
+            ORDER BY pn.thoi_gian_nhap DESC
+        `, [date]);
+
+        // 3. Lấy chi tiết chi phí hàng ngày
+        const [dailyExpenses] = await db.query(`
+            SELECT 
+                cp.so_tien,
+                cp.ngay_chi as thoi_gian_nhap,
+                cp.ten_chi_phi as mo_ta,
+                cp.loai_chi_phi,
+                cp.nguoi_nhan,
+                cp.phuong_thuc_thanh_toan
+            FROM chi_phi_hang_ngay cp
+            WHERE DATE(cp.ngay_chi) = ?
+            ORDER BY cp.ngay_tao DESC
+        `, [date]);
+
+        // 4. Kết hợp chi phí
+        const allExpenses = [
+            ...importExpenses.map(e => ({
+                ...e,
+                phuong_thuc_thanh_toan: 'Chuyển khoản',
+                nguon: 'Nhập kho'
+            })),
+            ...dailyExpenses.map(e => ({
+                ...e,
+                nguon: 'Chi phí hàng ngày'
+            }))
+        ];
+
+        // 5. Tính tổng
+        const totalRevenue = revenueDetails.reduce((sum, r) => sum + parseFloat(r.so_tien), 0);
+        const totalExpenses = allExpenses.reduce((sum, e) => sum + parseFloat(e.so_tien), 0);
+
+        res.json({
+            success: true,
+            data: {
+                date,
+                revenue: revenueDetails,
+                expenses: allExpenses,
+                summary: {
+                    totalRevenue,
+                    totalExpenses,
+                    netProfit: totalRevenue - totalExpenses
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching daily detail:', error);
         res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
     }
 });

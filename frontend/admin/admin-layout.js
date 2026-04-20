@@ -24,6 +24,9 @@ const SIDEBAR_TEMPLATE = `
                 <a href="doanh-thu.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
                     <i class="fas fa-wallet w-5"></i><span class="text-sm">Báo cáo Tài chính</span>
                 </a>
+                <a href="chi-phi-hang-ngay.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-xl">
+                    <i class="fas fa-money-bill-wave w-5"></i><span class="text-sm">Chi phí hàng ngày</span>
+                </a>
             </div>
 
             <!-- 2. Nghiệp vụ bán hàng -->

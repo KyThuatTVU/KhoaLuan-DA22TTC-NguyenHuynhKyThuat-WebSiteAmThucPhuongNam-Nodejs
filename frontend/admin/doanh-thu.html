@@ -171,7 +171,7 @@
                     <div>
                         <div class="flex items-center gap-2 mb-6">
                             <div class="w-2 h-6 bg-rose-600 rounded-full"></div>
-                            <h4 class="font-black text-slate-800 uppercase tracking-widest text-sm">Khoản Chi (Nhập hàng)</h4>
+                            <h4 class="font-black text-slate-800 uppercase tracking-widest text-sm">Khoản Chi (Tất cả chi phí)</h4>
                         </div>
                         <div id="expense-list" class="space-y-3">
                             <!-- Items -->
@@ -366,62 +366,74 @@
             modal.classList.remove('invisible', 'opacity-0');
             
             try {
-                const res = await fetch(`${API_URL}/stats/financial-day-details?date=${date}`, { credentials: 'include' });
+                const res = await fetch(`${API_URL}/stats/daily-detail?date=${date}`, { credentials: 'include' });
                 const result = await res.json();
                 
                 if (result.success) {
-                    renderDetailLists(result.income, result.expenses);
-                    updateModalSummary(result.income, result.expenses);
+                    renderDetailLists(result.data.revenue, result.data.expenses);
+                    updateModalSummary(result.data.summary);
+                } else {
+                    incomeList.innerHTML = '<p class="text-center py-8 text-red-400">Lỗi: ' + result.message + '</p>';
+                    expenseList.innerHTML = '<p class="text-center py-8 text-red-400">Lỗi: ' + result.message + '</p>';
                 }
             } catch (err) {
                 console.error(err);
+                incomeList.innerHTML = '<p class="text-center py-8 text-red-400">Không thể kết nối máy chủ</p>';
+                expenseList.innerHTML = '<p class="text-center py-8 text-red-400">Không thể kết nối máy chủ</p>';
             }
         }
 
-        function renderDetailLists(income, expenses) {
+        function renderDetailLists(revenue, expenses) {
             const incomeList = document.getElementById('income-list');
             const expenseList = document.getElementById('expense-list');
             
-            // Render Income
-            if (income.length === 0) {
+            // Render Revenue (Thu)
+            if (revenue.length === 0) {
                 incomeList.innerHTML = '<p class="text-center py-8 text-slate-400 italic text-xs">Không có khoản thu</p>';
             } else {
-                incomeList.innerHTML = income.map(item => `
+                incomeList.innerHTML = revenue.map(item => `
                     <div class="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
                         <div>
-                            <p class="text-xs font-bold text-slate-800">${item.source}</p>
-                            <p class="text-[10px] text-slate-400 font-medium">${new Date(item.time).toLocaleTimeString('vi-VN')} • ${item.method}</p>
+                            <p class="text-xs font-bold text-slate-800">${item.mo_ta}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">${new Date(item.thoi_gian_thanh_toan).toLocaleTimeString('vi-VN')} • ${item.phuong_thuc}</p>
                         </div>
-                        <p class="font-black text-blue-600">${parseFloat(item.amount || 0).toLocaleString('vi-VN')}đ</p>
+                        <p class="font-black text-blue-600">${parseFloat(item.so_tien || 0).toLocaleString('vi-VN')}đ</p>
                     </div>
                 `).join('');
             }
             
-            // Render Expenses
+            // Render Expenses (Chi)
             if (expenses.length === 0) {
                 expenseList.innerHTML = '<p class="text-center py-8 text-slate-400 italic text-xs">Không có khoản chi</p>';
             } else {
-                expenseList.innerHTML = expenses.map(item => `
-                    <div class="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-100">
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">${item.source}</p>
-                            <p class="text-[10px] text-slate-400 font-medium">${new Date(item.time).toLocaleTimeString('vi-VN')} • ID: ${item.id}</p>
+                expenseList.innerHTML = expenses.map(item => {
+                    const time = item.thoi_gian_nhap ? new Date(item.thoi_gian_nhap).toLocaleTimeString('vi-VN') : 'N/A';
+                    const nguon = item.nguon || 'Không xác định';
+                    const phuongThuc = item.phuong_thuc_thanh_toan || 'N/A';
+                    
+                    return `
+                        <div class="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-100">
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-slate-800">${item.mo_ta}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] text-slate-400 font-medium">${time}</span>
+                                    <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">${nguon}</span>
+                                    ${item.nguoi_nhan ? `<span class="text-[10px] text-slate-400">• ${item.nguoi_nhan}</span>` : ''}
+                                </div>
+                                ${item.loai_chi_phi ? `<span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold mt-1 inline-block">${item.loai_chi_phi}</span>` : ''}
+                            </div>
+                            <p class="font-black text-rose-600 ml-4">${parseFloat(item.so_tien || 0).toLocaleString('vi-VN')}đ</p>
                         </div>
-                        <p class="font-black text-rose-600">${parseFloat(item.amount || 0).toLocaleString('vi-VN')}đ</p>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
 
-        function updateModalSummary(income, expenses) {
-            const totalThu = income.reduce((sum, i) => sum + parseFloat(i.amount || 0), 0);
-            const totalChi = expenses.reduce((sum, i) => sum + parseFloat(i.amount || 0), 0);
-            const net = totalThu - totalChi;
-            
-            document.getElementById('modal-total-thu').textContent = (totalThu || 0).toLocaleString('vi-VN') + 'đ';
-            document.getElementById('modal-total-chi').textContent = (totalChi || 0).toLocaleString('vi-VN') + 'đ';
-            document.getElementById('modal-net').textContent = (net || 0).toLocaleString('vi-VN') + 'đ';
-            document.getElementById('modal-net').className = `text-2xl font-black ${net >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+        function updateModalSummary(summary) {
+            document.getElementById('modal-total-thu').textContent = (summary.totalRevenue || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('modal-total-chi').textContent = (summary.totalExpenses || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('modal-net').textContent = (summary.netProfit || 0).toLocaleString('vi-VN') + 'đ';
+            document.getElementById('modal-net').className = `text-2xl font-black ${summary.netProfit >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
         }
 
         function closeModal() {

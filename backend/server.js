@@ -442,6 +442,7 @@ const kitchenSlipRoutes = require('./routes/kitchenSlips');
 const ingredientCategoryRoutes = require('./routes/ingredientCategories');
 const wastageRoutes = require('./routes/wastage');
 const uploadRoutes = require('./routes/upload');
+const expenseRoutes = require('./routes/expenses');
 
 
 // Register routes
@@ -483,6 +484,7 @@ app.use('/api/kitchen-slips', kitchenSlipRoutes);
 app.use('/api/ingredient-categories', ingredientCategoryRoutes);
 app.use('/api/wastage', wastageRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 
 // Admin notifications routes
