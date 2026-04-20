@@ -582,16 +582,121 @@ initializeCart();
 // Biến đánh dấu đã hiển thị lời chào chưa
 let chatbotGreeted = false;
 let currentChatSessionId = null;
-let chatHistoryList = [];
+let chatHistoryLoaded = false; // Đánh dấu đã load history chưa
 
-// Lấy hoặc tạo session ID cho chat
+// Load lịch sử chat từ backend theo session_id
+async function loadChatHistory() {
+    console.log('🎯 loadChatHistory() function called');
+    
+    const sessionId = getChatbotSessionId();
+    const messages = document.getElementById('chatbotMessages');
+    
+    console.log('🔍 Debug loadChatHistory:');
+    console.log('- sessionId:', sessionId);
+    console.log('- messages element:', !!messages);
+    console.log('- chatHistoryLoaded:', chatHistoryLoaded);
+    
+    if (!messages || !sessionId) {
+        console.log('❌ Missing messages element or sessionId');
+        return;
+    }
+    
+    try {
+        console.log('📜 Loading chat history for session:', sessionId);
+        
+        const response = await fetch(`http://localhost:3000/api/chatbot/history/${sessionId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token') || ''}`
+            }
+        });
+        
+        console.log('📡 Response status:', response.status);
+        const result = await response.json();
+        console.log('📡 Response data:', result);
+        
+        if (result.success && result.data && result.data.length > 0) {
+            console.log('✅ Loaded', result.data.length, 'messages from history');
+            
+            // Xóa nội dung cũ
+            messages.innerHTML = '';
+            
+            // Render lại lịch sử chat
+            result.data.forEach((msg, index) => {
+                console.log(`Rendering message ${index + 1}:`, msg.nguoi_gui, msg.noi_dung.substring(0, 50));
+                if (msg.nguoi_gui === 'user') {
+                    addUserMessageToUI(messages, msg.noi_dung, false);
+                } else {
+                    addBotMessageToUI(messages, msg.noi_dung, false);
+                }
+            });
+            
+            chatHistoryLoaded = true;
+            chatbotGreeted = true; // Đã có lịch sử thì không cần chào nữa
+            
+            // Scroll to bottom
+            messages.scrollTop = messages.scrollHeight;
+            console.log('✅ Chat history loaded successfully');
+        } else {
+            // Không có lịch sử -> hiển thị lời chào
+            console.log('ℹ️ No chat history found, showing greeting');
+            console.log('- chatbotGreeted before:', chatbotGreeted);
+            
+            // Luôn hiển thị lời chào nếu không có lịch sử
+            messages.innerHTML = '';
+            chatbotGreeted = false; // Reset flag
+            showChatbotGreeting();
+            
+            chatHistoryLoaded = true;
+            console.log('✅ Greeting displayed');
+        }
+    } catch (error) {
+        console.error('❌ Error loading chat history:', error);
+        // Fallback: hiển thị lời chào
+        messages.innerHTML = '';
+        chatbotGreeted = false; // Reset flag
+        showChatbotGreeting();
+        chatHistoryLoaded = true;
+    }
+}
+
+// Lấy hoặc tạo session ID cho chat - LƯU VÀO LOCALSTORAGE ĐỂ GIỮ PHIÊN CHAT
 function getChatbotSessionId() {
+    console.log('🔍 getChatbotSessionId called');
+    console.log('- currentChatSessionId:', currentChatSessionId);
+    
     if (!currentChatSessionId) {
-        currentChatSessionId = sessionStorage.getItem('chatbot_session_id');
+        // Thử lấy từ localStorage trước (persistent)
+        currentChatSessionId = localStorage.getItem('chatbot_session_id');
+        console.log('- localStorage value:', currentChatSessionId);
+        
+        // Nếu không có, tạo mới
         if (!currentChatSessionId) {
             currentChatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            sessionStorage.setItem('chatbot_session_id', currentChatSessionId);
+            localStorage.setItem('chatbot_session_id', currentChatSessionId);
+            console.log('🆕 Created new chat session:', currentChatSessionId);
+        } else {
+            console.log('♻️ Restored chat session:', currentChatSessionId);
         }
+    }
+    
+    console.log('- Final sessionId:', currentChatSessionId);
+    return currentChatSessionId;
+}
+
+// Hàm reset session chat (khi user muốn bắt đầu cuộc trò chuyện mới)
+function resetChatbotSession() {
+    currentChatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('chatbot_session_id', currentChatSessionId);
+    console.log('🔄 Reset chat session:', currentChatSessionId);
+    
+    // Xóa lịch sử chat hiển thị
+    const messages = document.getElementById('chatbotMessages');
+    if (messages) {
+        messages.innerHTML = '';
+        chatbotGreeted = false;
+        showChatbotGreeting();
     }
     return currentChatSessionId;
 }
@@ -648,169 +753,26 @@ function showChatbotGreeting() {
     messages.scrollTop = messages.scrollHeight;
 }
 
-// Toggle dropdown lịch sử
-window.toggleChatHistory = function() {
-    const dropdown = document.getElementById('chatHistoryDropdown');
-    if (dropdown) {
-        dropdown.classList.toggle('show');
-        if (dropdown.classList.contains('show')) {
-            loadChatHistory();
-        }
-    }
-};
+// Hàm toggleChatHistory đã được định nghĩa ở dưới (dòng ~1620)
 
 // Đóng dropdown khi click ra ngoài
 document.addEventListener('click', function(e) {
     const dropdown = document.getElementById('chatHistoryDropdown');
     const historyBtn = e.target.closest('[onclick*="toggleChatHistory"]');
-    if (dropdown && dropdown.classList.contains('show') && !dropdown.contains(e.target) && !historyBtn) {
-        dropdown.classList.remove('show');
+    if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !historyBtn) {
+        dropdown.classList.add('hidden');
     }
 });
 
-// Tải lịch sử chat
-async function loadChatHistory() {
-    const historyList = document.getElementById('historyList');
-    const loginPrompt = document.getElementById('historyLoginPrompt');
-    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
-    
-    if (!token) {
-        // Khách vãng lai - hiển thị prompt đăng nhập
-        if (loginPrompt) loginPrompt.classList.remove('hidden');
-        if (historyList) {
-            historyList.innerHTML = `
-                <div class="text-center text-gray-400 text-xs py-4">
-                    <i class="fas fa-lock mb-2 text-lg"></i>
-                    <p>Đăng nhập để xem lịch sử</p>
-                </div>
-            `;
-        }
-        return;
-    }
-    
-    if (loginPrompt) loginPrompt.classList.add('hidden');
-    
-    try {
-        console.log('📜 Loading chat history with token:', token ? 'exists' : 'none');
-        
-        const response = await fetch('http://localhost:3000/api/chatbot/sessions', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const result = await response.json();
-        
-        console.log('📜 Chat history response:', result);
-        
-        if (result.success && result.data && result.data.length > 0) {
-            chatHistoryList = result.data;
-            renderHistoryList();
-        } else {
-            historyList.innerHTML = `
-                <div class="text-center text-gray-400 text-sm py-6">
-                    <i class="fas fa-comments mb-2 text-2xl"></i>
-                    <p>Chưa có lịch sử chat</p>
-                    <p class="text-xs mt-1">Hãy bắt đầu trò chuyện với Trà My!</p>
-                </div>
-            `;
-        }
-    } catch (error) {
-        console.error('Error loading chat history:', error);
-        historyList.innerHTML = `<div class="text-center text-red-400 text-xs py-4">Lỗi tải lịch sử</div>`;
-    }
-}
+// Hàm loadChatHistory (load lịch sử của session hiện tại) đã được định nghĩa ở trên (dòng ~588)
+// Hàm loadSessionList (load danh sách các session) đã được định nghĩa ở dưới (dòng ~1520)
 
-// Render danh sách lịch sử
-function renderHistoryList() {
-    const historyList = document.getElementById('historyList');
-    if (!historyList || !chatHistoryList.length) {
-        historyList.innerHTML = `<div class="text-center text-gray-400 text-xs py-4">Chưa có lịch sử chat</div>`;
-        return;
-    }
-    
-    historyList.innerHTML = chatHistoryList.map(session => {
-        const isActive = session.session_id === currentChatSessionId;
-        const date = new Date(session.thoi_diem_chat);
-        const timeStr = date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'});
-        const preview = session.first_message ? session.first_message.substring(0, 35) + '...' : 'Cuộc trò chuyện';
-        
-        return `
-            <div class="history-item ${isActive ? 'active' : ''} px-3 py-2 cursor-pointer border-b border-gray-50" onclick="loadChatSession('${session.session_id}')">
-                <div class="flex items-start gap-2">
-                    <i class="fas fa-comment-dots text-green-500 mt-0.5"></i>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm text-gray-700 truncate">${escapeHtmlChat(preview)}</p>
-                        <p class="text-xs text-gray-400">${timeStr}</p>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// Tải một session chat cụ thể
-window.loadChatSession = async function(sessionId) {
-    const token = (localStorage.getItem('token') || sessionStorage.getItem('token'));
-    const messages = document.getElementById('chatbotMessages');
-    
-    try {
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        
-        const response = await fetch(`http://localhost:3000/api/chatbot/history/${sessionId}`, { headers });
-        const result = await response.json();
-        
-        if (result.success && result.data) {
-            // Cập nhật session hiện tại
-            currentChatSessionId = sessionId;
-            sessionStorage.setItem('chatbot_session_id', sessionId);
-            chatbotGreeted = true;
-            
-            // Clear và render messages
-            messages.innerHTML = '';
-            result.data.forEach(msg => {
-                if (msg.nguoi_gui === 'user') {
-                    addUserMessageToUI(messages, msg.noi_dung);
-                } else {
-                    addBotMessage(messages, msg.noi_dung);
-                }
-            });
-            
-            // Đóng dropdown
-            const dropdown = document.getElementById('chatHistoryDropdown');
-            if (dropdown) dropdown.classList.remove('show');
-            
-            // Cập nhật active state
-            renderHistoryList();
-        }
-    } catch (error) {
-        console.error('Error loading chat session:', error);
-    }
-};
-
-// Tạo cuộc trò chuyện mới
-window.startNewChat = function() {
-    const messages = document.getElementById('chatbotMessages');
-    
-    // Tạo session ID mới
-    currentChatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem('chatbot_session_id', currentChatSessionId);
-    
-    // Reset và hiển thị lời chào mới
-    chatbotGreeted = false;
-    messages.innerHTML = '';
-    showChatbotGreeting();
-    
-    // Đóng sidebar nếu đang mở
-    const sidebar = document.getElementById('chatHistorySidebar');
-    if (sidebar && sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-    }
-    
-    // Focus input
-    document.getElementById('chatbotInput')?.focus();
-};
+// Hàm renderHistoryList đã được thay thế bằng loadSessionList (dòng ~1520)
+// Hàm loadChatSession đã được định nghĩa ở dưới (dòng ~1590)
+// Hàm startNewChat đã được định nghĩa ở dưới (dòng ~1494)
 
 // Thêm tin nhắn user vào UI (không gửi API)
-function addUserMessageToUI(messages, text) {
+function addUserMessageToUI(messages, text, shouldScroll = true) {
     const userMsg = document.createElement('div');
     userMsg.className = 'flex justify-end';
     userMsg.innerHTML = `
@@ -819,6 +781,27 @@ function addUserMessageToUI(messages, text) {
         </div>
     `;
     messages.appendChild(userMsg);
+    if (shouldScroll) {
+        messages.scrollTop = messages.scrollHeight;
+    }
+}
+
+// Thêm tin nhắn bot vào UI (đơn giản, không có card)
+function addBotMessageToUI(messages, text, shouldScroll = true) {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'flex gap-2';
+    botMsg.innerHTML = `
+        <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-robot text-white text-sm"></i>
+        </div>
+        <div class="chat-bubble-bot px-3 py-2 max-w-[85%] bg-white rounded-2xl rounded-tl-none shadow-sm">
+            <p class="text-gray-700 text-sm leading-relaxed">${text}</p>
+        </div>
+    `;
+    messages.appendChild(botMsg);
+    if (shouldScroll) {
+        messages.scrollTop = messages.scrollHeight;
+    }
 }
 
 // Initialize Chatbot functionality
@@ -844,11 +827,50 @@ function initializeChatbot() {
                 chatbotPanel.classList.toggle('scale-90');
                 chatbotPanel.classList.toggle('pointer-events-none');
             }
-            // Hiển thị lời chào khi mở chatbot lần đầu
-            showChatbotGreeting();
+            
+            // Load history khi mở chatbot (backup method)
+            const isOpening = isMobile() 
+                ? chatbotPanel.classList.contains('mobile-open')
+                : !chatbotPanel.classList.contains('opacity-0');
+            
+            if (isOpening && !chatHistoryLoaded) {
+                console.log('🔄 Loading chat history on chatbot open (backup method)');
+                console.log('🔍 typeof loadChatHistory:', typeof loadChatHistory);
+                setTimeout(() => {
+                    console.log('⏰ Timeout executed, calling loadChatHistory()');
+                    console.log('🔍 loadChatHistory function exists:', typeof loadChatHistory === 'function');
+                    try {
+                        loadChatHistory();
+                    } catch (error) {
+                        console.error('❌ Error calling loadChatHistory():', error);
+                    }
+                }, 100);
+            }
+            
             // Focus input
             setTimeout(() => document.getElementById('chatbotInput')?.focus(), 100);
         });
+        
+        // Load lịch sử chat ngay khi trang load xong
+        // Đợi DOM hoàn toàn sẵn sàng và chatbot component được load
+        const waitForChatbotAndLoadHistory = () => {
+            const messages = document.getElementById('chatbotMessages');
+            if (messages) {
+                console.log('🚀 Chatbot element found, loading history');
+                loadChatHistory();
+            } else {
+                console.log('⏳ Chatbot element not ready, retrying in 200ms');
+                setTimeout(waitForChatbotAndLoadHistory, 200);
+            }
+        };
+        
+        if (document.readyState === 'complete') {
+            setTimeout(waitForChatbotAndLoadHistory, 100);
+        } else {
+            window.addEventListener('load', () => {
+                setTimeout(waitForChatbotAndLoadHistory, 100);
+            });
+        }
         
         // Đóng chat panel
         if (closeChatbot) {
@@ -1325,3 +1347,172 @@ function loadNotificationScript() {
 setTimeout(() => {
     loadNotificationScript();
 }, 600);
+
+
+// ==================== CHAT SESSION MANAGEMENT ====================
+
+// Bắt đầu cuộc trò chuyện mới
+window.startNewChat = function() {
+    if (!confirm('Bạn có muốn bắt đầu cuộc trò chuyện mới? Lịch sử chat hiện tại sẽ được lưu lại.')) {
+        return;
+    }
+    
+    // Reset session
+    resetChatbotSession();
+    
+    // Reset flag để load lại history
+    chatHistoryLoaded = false;
+    
+    // Đóng dropdown lịch sử nếu đang mở
+    const dropdown = document.getElementById('chatHistoryDropdown');
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+        dropdown.classList.add('hidden');
+    }
+    
+    // Focus input
+    document.getElementById('chatbotInput')?.focus();
+    
+    // Thông báo
+    console.log('✨ Started new chat session');
+};
+
+// Toggle lịch sử chat (placeholder - có thể mở rộng sau)
+window.toggleChatHistory = function() {
+    const dropdown = document.getElementById('chatHistoryDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        
+        // Load danh sách session (nếu cần)
+        if (!dropdown.classList.contains('hidden')) {
+            loadSessionList();
+        }
+    }
+};
+
+// Load danh sách các session chat
+async function loadSessionList() {
+    const historyList = document.getElementById('historyList');
+    const loginPrompt = document.getElementById('historyLoginPrompt');
+    
+    if (!historyList) return;
+    
+    historyList.innerHTML = '<div class="text-center text-gray-400 text-sm py-4"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+    
+    try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        
+        if (!token) {
+            historyList.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">📜 Chưa có lịch sử chat</div>';
+            if (loginPrompt) loginPrompt.classList.remove('hidden');
+            return;
+        }
+        
+        if (loginPrompt) loginPrompt.classList.add('hidden');
+        
+        console.log('📜 Loading chat history with token:', token ? 'exists' : 'none');
+        
+        const response = await fetch('http://localhost:3000/api/chatbot/sessions', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const result = await response.json();
+        console.log('📡 Sessions response:', result);
+        
+        if (result.success && result.data && result.data.length > 0) {
+            const currentSession = getChatbotSessionId();
+            
+            historyList.innerHTML = result.data.map(session => {
+                const isActive = session.session_id === currentSession;
+                const date = new Date(session.thoi_diem_chat);
+                const timeStr = formatChatTime(date);
+                const preview = session.first_message.length > 40 
+                    ? session.first_message.substring(0, 40) + '...' 
+                    : session.first_message;
+                
+                return `
+                    <div class="history-item ${isActive ? 'active' : ''} p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50" 
+                         onclick="loadChatSession('${session.session_id}')">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-gray-700 font-medium truncate">${escapeHtmlChat(preview)}</p>
+                                <p class="text-xs text-gray-400 mt-1">${timeStr} • ${session.message_count} tin nhắn</p>
+                            </div>
+                            ${isActive ? '<i class="fas fa-check-circle text-green-500 text-sm flex-shrink-0"></i>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            historyList.innerHTML = '<div class="text-center text-gray-400 text-sm py-4">📜 Chưa có lịch sử chat</div>';
+        }
+    } catch (error) {
+        console.error('Error loading session list:', error);
+        historyList.innerHTML = '<div class="text-center text-red-400 text-sm py-4">❌ Lỗi tải lịch sử</div>';
+    }
+}
+
+// Format thời gian chat
+function formatChatTime(date) {
+    const now = new Date();
+    const diff = now - date;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    
+    if (minutes < 1) return 'Vừa xong';
+    if (minutes < 60) return `${minutes} phút trước`;
+    if (hours < 24) return `${hours} giờ trước`;
+    if (days < 7) return `${days} ngày trước`;
+    
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// Load một session chat cụ thể
+window.loadChatSession = async function(sessionId) {
+    console.log('🔄 Loading chat session:', sessionId);
+    
+    const messages = document.getElementById('chatbotMessages');
+    if (!messages) return;
+    
+    try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const response = await fetch(`http://localhost:3000/api/chatbot/history/${sessionId}`, { headers });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+            // Cập nhật session hiện tại
+            currentChatSessionId = sessionId;
+            localStorage.setItem('chatbot_session_id', sessionId);
+            
+            chatbotGreeted = true;
+            
+            // Xóa nội dung cũ
+            messages.innerHTML = '';
+            
+            // Render lại lịch sử chat
+            result.data.forEach(msg => {
+                if (msg.nguoi_gui === 'user') {
+                    addUserMessageToUI(messages, msg.noi_dung, false);
+                } else {
+                    addBotMessageToUI(messages, msg.noi_dung, false);
+                }
+            });
+            
+            // Scroll to bottom
+            messages.scrollTop = messages.scrollHeight;
+            
+            // Đóng dropdown
+            const dropdown = document.getElementById('chatHistoryDropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+            
+            console.log('✅ Loaded session:', sessionId);
+        }
+    } catch (error) {
+        console.error('Error loading chat session:', error);
+    }
+};

@@ -1147,6 +1147,29 @@ router.get('/admin/session/:session_id', async (req, res) => {
     }
 });
 
+// API cho user load lịch sử chat của session hiện tại (không cần admin)
+router.get('/history/:session_id', async (req, res) => {
+    try {
+        const sessionId = req.params.session_id;
+        
+        // Lấy lịch sử chat của session này (giới hạn 50 tin nhắn gần nhất)
+        const [messages] = await db.query(
+            `SELECT ma_tin_nhan, session_id, nguoi_gui, noi_dung, thoi_diem_chat 
+             FROM lich_su_chatbot 
+             WHERE session_id = ? 
+             ORDER BY thoi_diem_chat ASC 
+             LIMIT 50`,
+            [sessionId]
+        );
+        
+        console.log(`📜 Loaded ${messages.length} messages for session: ${sessionId}`);
+        res.json({ success: true, data: messages });
+    } catch (error) {
+        console.error('Error loading chat history:', error);
+        res.status(500).json({ success: false, message: 'Lỗi tải lịch sử chat' });
+    }
+});
+
 router.delete('/admin/message/:id', async (req, res) => {
     try {
         await db.query('DELETE FROM lich_su_chatbot WHERE ma_tin_nhan = ?', [req.params.id]);

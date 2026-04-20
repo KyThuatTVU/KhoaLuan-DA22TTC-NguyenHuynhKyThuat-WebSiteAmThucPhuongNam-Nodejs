@@ -50,7 +50,23 @@ async function initTables() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
         
-        console.log('✅ Các bảng mục tiêu đã sẵn sàng');
+        // Bảng lịch sử chatbot (admin + user)
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS lich_su_chatbot (
+                ma_tin_nhan INT NOT NULL AUTO_INCREMENT,
+                ma_nguoi_dung INT NULL,
+                session_id VARCHAR(255) NOT NULL,
+                nguoi_gui ENUM('user', 'bot') NOT NULL,
+                noi_dung LONGTEXT NOT NULL,
+                thoi_diem_chat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (ma_tin_nhan),
+                INDEX idx_session (session_id),
+                INDEX idx_user (ma_nguoi_dung),
+                INDEX idx_user_session (ma_nguoi_dung, session_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+        
+        console.log('✅ Các bảng mục tiêu và chatbot đã sẵn sàng');
     } catch (error) {
         console.error('❌ Lỗi tạo bảng:', error.message);
     }
@@ -524,10 +540,29 @@ function generateAIResponse(query, stats) {
 // API: Chat với AI (Groq - Llama 3)
 router.post('/chat', requireAdmin, async (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, session_id } = req.body;
         
         if (!message) {
             return res.status(400).json({ success: false, message: 'Thiếu nội dung tin nhắn' });
+        }
+        
+        // Lấy admin ID từ session
+        const adminId = req.session?.admin?.ma_admin || null;
+        const sessionId = session_id || 'admin_guest_' + Date.now();
+        
+        console.log('🔍 Admin chat debug:');
+        console.log('- Admin ID:', adminId);
+        console.log('- Session ID:', sessionId);
+        console.log('- Session admin:', req.session?.admin);
+        
+        // Lưu tin nhắn user vào lịch sử
+        try {
+            await db.query(
+                `INSERT INTO lich_su_chatbot (ma_nguoi_dung, session_id, nguoi_gui, noi_dung) VALUES (?, ?, 'user', ?)`,
+                [adminId, sessionId, message]
+            );
+        } catch (historyError) {
+            console.error('Error saving user message to history:', historyError);
         }
         
         // Lấy dữ liệu thống kê
@@ -612,6 +647,16 @@ ${businessContext}`
         });
 
         const aiResponse = completion.choices[0]?.message?.content || 'Xin lỗi, tôi không thể xử lý yêu cầu này.';
+        
+        // Lưu tin nhắn bot vào lịch sử
+        try {
+            await db.query(
+                `INSERT INTO lich_su_chatbot (ma_nguoi_dung, session_id, nguoi_gui, noi_dung) VALUES (?, ?, 'bot', ?)`,
+                [adminId, sessionId, aiResponse]
+            );
+        } catch (historyError) {
+            console.error('Error saving bot message to history:', historyError);
+        }
         
         res.json({
             success: true,
@@ -1922,4 +1967,61 @@ FORMAT:
     }
 });
 
+// API: Lấy danh sách các session chat của admin
+router.get('/sessions', requireAdmin, async (req, res) => {
+    try {
+        const adminId = req.session.admin?.ma_admin;
+        if (!adminId) {
+            return res.status(401).json({ success: false, message: 'Chưa đăng nhập admin' });
+        }
+
+        const [sessions] = await db.query(
+            'SELECT session_id, MIN(thoi_diem_chat) as thoi_diem_chat, COUNT(*) as message_count FROM lich_su_chatbot WHERE ma_nguoi_dung = ? AND session_id LIKE "admin_session_%" GROUP BY session_id ORDER BY MIN(thoi_diem_chat) DESC LIMIT 50',
+            [adminId]
+        );
+
+        for (let session of sessions) {
+            const [firstMsg] = await db.query(
+                'SELECT noi_dung FROM lich_su_chatbot WHERE session_id = ? AND nguoi_gui = \'user\' ORDER BY thoi_diem_chat ASC LIMIT 1',
+                [session.session_id]
+            );
+            session.first_message = firstMsg.length > 0 ? firstMsg[0].noi_dung : 'Cuộc trò chuyện admin';
+        }
+
+        res.json({ success: true, data: sessions });
+    } catch (error) {
+        console.error('Error getting admin sessions:', error);
+        res.status(500).json({ success: false, message: 'Lỗi lấy danh sách session admin' });
+    }
+});
+
 module.exports = router;
+
+
+// API: Load lịch sử admin chat theo session_id
+router.get('/history/:session_id', requireAdmin, async (req, res) => {
+    try {
+        const sessionId = req.params.session_id;
+        const adminId = req.session?.admin?.ma_admin || null;
+        
+        console.log('🔍 Loading admin history debug:');
+        console.log('- Session ID:', sessionId);
+        console.log('- Admin ID:', adminId);
+        
+        // Lấy lịch sử chat của session này (giới hạn 50 tin nhắn gần nhất)
+        const [messages] = await db.query(
+            `SELECT ma_tin_nhan, session_id, nguoi_gui, noi_dung, thoi_diem_chat 
+             FROM lich_su_chatbot 
+             WHERE session_id = ? AND ma_nguoi_dung = ?
+             ORDER BY thoi_diem_chat ASC 
+             LIMIT 50`,
+            [sessionId, adminId]
+        );
+        
+        console.log(`📜 Found ${messages.length} admin messages for session: ${sessionId}`);
+        res.json({ success: true, data: messages });
+    } catch (error) {
+        console.error('Error loading admin chat history:', error);
+        res.status(500).json({ success: false, message: 'Lỗi tải lịch sử chat' });
+    }
+});
