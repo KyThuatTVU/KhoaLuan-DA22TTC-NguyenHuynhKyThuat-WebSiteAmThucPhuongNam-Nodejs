@@ -732,6 +732,119 @@ font-bold text-gray-800 mb-4 sm:mb-6 text-center">
         document.addEventListener('DOMContentLoaded', loadFeaturedDishes);
     </script>
 
+    <!-- Personalized Recommendations Section -->
+    <section class="py-8 sm:py-12 md:py-16 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-6 sm:mb-8 md:mb-12">
+                <h2 class="inline-block bg-gradient-to-r from-orange-200 via-orange-100 to-orange-200 text-orange-700 px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-dancing text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold shadow-sm">
+                    <span class="text-2xl mr-2">✨</span>Gợi Ý Dành Riêng Cho Bạn
+                </h2>
+                <p class="text-gray-600 mt-3 text-sm sm:text-base md:text-lg">Món ngon được chọn lọc dựa trên sở thích của bạn</p>
+            </div>
+
+            <div id="personalized-recommendations-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+                <!-- Loading skeleton -->
+                <div class="animate-pulse bg-white rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-200 h-48 sm:h-56 md:h-64"></div>
+                    <div class="p-3 sm:p-4">
+                        <div class="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Load personalized recommendations
+        async function loadPersonalizedRecommendations() {
+            const container = document.getElementById('personalized-recommendations-container');
+            if (!container) return;
+
+            try {
+                // Determine user token
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+
+                const response = await fetch('http://localhost:3000/api/recommendations?limit=4', { headers });
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    container.innerHTML = result.data.map(dish => {
+                        let imagePath = dish.anh_mon || 'default-food.jpg';
+                        if (!imagePath.startsWith('http') && !imagePath.startsWith('/images/')) {
+                            imagePath = '/images/' + imagePath.replace(/^\/+/, '');
+                        }
+                        const imageUrl = imagePath.startsWith('http') ? imagePath : `http://localhost:3000${imagePath}`;
+                        const price = new Intl.NumberFormat('vi-VN').format(dish.gia_tien);
+                        
+                        let badgeColor = 'bg-orange-500';
+                        let badgeIcon = 'fa-star';
+                        let badgeText = 'Gợi ý';
+                        
+                        if (dish.recommendation_type === 'collaborative') {
+                            badgeColor = 'bg-blue-500'; badgeIcon = 'fa-users'; badgeText = 'Nhiều người mua';
+                        } else if (dish.recommendation_type === 'content_based') {
+                            badgeColor = 'bg-purple-500'; badgeIcon = 'fa-heart'; badgeText = 'Theo sở thích';
+                        } else if (dish.recommendation_type === 'trending') {
+                            badgeColor = 'bg-red-500'; badgeIcon = 'fa-fire'; badgeText = 'Trending';
+                        } else if (dish.recommendation_type === 'top_rated') {
+                            badgeColor = 'bg-yellow-500'; badgeIcon = 'fa-medal'; badgeText = 'Đánh giá cao';
+                        } else if (dish.recommendation_type === 'chat_based') {
+                            badgeColor = 'bg-green-500'; badgeIcon = 'fa-comment-dots'; badgeText = 'Từ hội thoại';
+                        }
+                        
+                        return `
+                            <div class="card-hover bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                                <a href="chitietmonan.html?id=${dish.ma_mon}" class="block">
+                                    <div class="relative bg-gray-50">
+                                        <img src="${imageUrl}" alt="${dish.ten_mon}"
+                                            class="w-full h-48 sm:h-56 md:h-64 object-cover"
+                                            onerror="this.src='images/default-food.jpg'">
+                                        <span class="absolute top-2 left-2 sm:top-3 sm:left-3 ${badgeColor} text-white px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium">
+                                            <i class="fas ${badgeIcon} mr-1"></i>${badgeText}
+                                        </span>
+                                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4 opacity-0 hover:opacity-100 transition-opacity flex justify-center items-end">
+                                            <p class="text-white text-xs sm:text-sm text-center truncate">${dish.reason || 'Món ngon dành cho bạn'}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="p-3 sm:p-4">
+                                    <a href="chitietmonan.html?id=${dish.ma_mon}">
+                                        <h3 class="font-medium text-base sm:text-lg mb-2 text-gray-800 hover:text-orange-600 transition truncate" title="${dish.ten_mon}">${dish.ten_mon}</h3>
+                                    </a>
+                                    <div class="flex items-center mb-2">
+                                        <div class="text-yellow-400 text-xs sm:text-sm">
+                                            ${renderStarsHome(Number(dish.avg_rating) || 5)}
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="text-orange-600 font-bold text-lg sm:text-xl">${price}đ</span>
+                                        </div>
+                                        <button onclick="addToCartFromFeatured(${dish.ma_mon}, '${dish.ten_mon.replace(/'/g, "\\'")}', ${dish.gia_tien}, '${imageUrl}')"
+                                            class="bg-orange-500 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-orange-600 transition shadow-sm hover:shadow-md flex items-center justify-center">
+                                            <i class="fas fa-plus text-sm sm:text-base"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="col-span-4 text-center text-gray-500 py-8">Chưa có đủ dữ liệu để gợi ý. Hãy đặt món để chúng tôi hiểu bạn hơn!</p>';
+                }
+            } catch (error) {
+                console.error('Error loading personalized recommendations:', error);
+                container.innerHTML = '<p class="col-span-4 text-center text-gray-500 py-8">Không thể tải gợi ý. Vui lòng thử lại sau.</p>';
+            }
+        }
+
+        // Load after DOM is ready
+        document.addEventListener('DOMContentLoaded', loadPersonalizedRecommendations);
+    </script>
+
 
 
     <section class="py-16 md:py-20 

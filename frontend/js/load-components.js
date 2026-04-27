@@ -661,7 +661,7 @@ async function loadChatHistory() {
     }
 }
 
-// Lấy hoặc tạo session ID cho chat - LƯU VÀO LOCALSTORAGE ĐỂ GIỮ PHIÊN CHAT
+// Lấy hoặc tạo session ID cho chat - Có thời hạn để tự động làm mới
 function getChatbotSessionId() {
     console.log('🔍 getChatbotSessionId called');
     console.log('- currentChatSessionId:', currentChatSessionId);
@@ -669,16 +669,27 @@ function getChatbotSessionId() {
     if (!currentChatSessionId) {
         // Thử lấy từ localStorage trước (persistent)
         currentChatSessionId = localStorage.getItem('chatbot_session_id');
+        const lastActive = localStorage.getItem('chatbot_session_time');
+        
+        const now = Date.now();
+        // Cài đặt thời gian hết hạn phiên (Ví dụ: 1 giờ = 3600000 ms)
+        const SESSION_TIMEOUT = 1 * 60 * 60 * 1000;
+        
         console.log('- localStorage value:', currentChatSessionId);
         
-        // Nếu không có, tạo mới
-        if (!currentChatSessionId) {
+        // Nếu không có, hoặc đã quá thời gian timeout -> tạo phiên mới
+        if (!currentChatSessionId || !lastActive || (now - parseInt(lastActive)) > SESSION_TIMEOUT) {
             currentChatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('chatbot_session_id', currentChatSessionId);
+            localStorage.setItem('chatbot_session_time', now.toString());
             console.log('🆕 Created new chat session:', currentChatSessionId);
         } else {
             console.log('♻️ Restored chat session:', currentChatSessionId);
+            localStorage.setItem('chatbot_session_time', now.toString()); // Gia hạn
         }
+    } else {
+        // Cập nhật thời gian active liên tục mỗi khi gọi hàm này
+        localStorage.setItem('chatbot_session_time', Date.now().toString());
     }
     
     console.log('- Final sessionId:', currentChatSessionId);
@@ -689,6 +700,7 @@ function getChatbotSessionId() {
 function resetChatbotSession() {
     currentChatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('chatbot_session_id', currentChatSessionId);
+    localStorage.setItem('chatbot_session_time', Date.now().toString());
     console.log('🔄 Reset chat session:', currentChatSessionId);
     
     // Xóa lịch sử chat hiển thị

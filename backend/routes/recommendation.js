@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
+const axios = require('axios');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this';
+const PYTHON_API_URL = process.env.PYTHON_ML_URL || 'http://localhost:5000/api/ml/recommend/collaborative';
+const PYTHON_APRIORI_URL = process.env.PYTHON_APRIORI_URL || 'http://localhost:5000/api/ml/recommend/apriori';
 
 // ==================== ML RECOMMENDATION ENGINE ====================
 
@@ -234,9 +237,59 @@ async function findSimilarUsers(userId, limit = 5) {
 }
 
 /**
- * Gợi ý món từ người dùng tương tự (Collaborative Filtering)
+ * Gợi ý món từ người dùng tương tự (Collaborative Filtering - HYBRID WITH PYTHON)
  */
 async function getCollaborativeRecommendations(userId, limit = 5) {
+    try {
+        // [Cải tiến] Cố gắng gọi API qua mô hình Python SVD để tăng độ học sâu thay vì SQL đơn thuần
+        try {
+            const pythonResponse = await axios.get(PYTHON_API_URL, {
+                params: { user_id: userId, limit: limit },
+                timeout: 3000 // Tối đa 3 giây gọi API 
+            });
+
+            if (pythonResponse.data && pythonResponse.data.success && pythonResponse.data.data.length > 0) {
+                // Parse IDs do Python trả về ([101, 204, ...])
+                const recommendedItemIds = pythonResponse.data.data.map(i => i.item_id);
+                console.log(`🤖 [Python ML] Hybrid Recommendation success cho User: ${userId}`, recommendedItemIds);
+                
+                // Fetch thông tin chi tiết các id này từ database MySQL 
+                const query = `
+                    SELECT m.*, d.ten_danh_muc, AVG(dg.so_sao) as avg_rating
+                    FROM mon_an m
+                    LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                    LEFT JOIN danh_gia_san_pham dg ON m.ma_mon = dg.ma_mon
+                    WHERE m.ma_mon IN (?) AND m.trang_thai = 1
+                    GROUP BY m.ma_mon
+                `;
+                const [mlRecommendations] = await db.query(query, [recommendedItemIds]);
+                
+                // Format lại payload cho thẻ card HTML (index.html) như SQL logic truyền thống
+                if (mlRecommendations.length > 0) {
+                    return mlRecommendations.map(r => ({
+                        ...r,
+                        recommendation_type: 'collaborative',
+                        reason: 'Gợi ý từ AI Dữ liệu lớn (Collaborative - SVD)'
+                    }));
+                }
+            } 
+        } catch (pyErr) {
+            console.log("⚠️ [Node.js] Không kết nối được đến Python ML Service. Tự động dùng fallback SQL Database.");
+        }
+
+        // --- FALLBACK (Chế độ dự phòng SQL Truyền thống do bạn viết) ---
+        return await getSQLCollaborativeRecommendations(userId, limit);
+
+    } catch (error) {
+        console.error('Error getting collaborative recommendations:', error.message);
+        return [];
+    }
+}
+
+/**
+ * Gợi ý SQL gốc nếu Python tạch (Fall-back plan)
+ */
+async function getSQLCollaborativeRecommendations(userId, limit = 5) {
     try {
         const similarUsers = await findSimilarUsers(userId);
         if (similarUsers.length === 0) return [];
@@ -277,10 +330,10 @@ async function getCollaborativeRecommendations(userId, limit = 5) {
         return recommendations.map(r => ({
             ...r,
             recommendation_type: 'collaborative',
-            reason: 'Người dùng có sở thích tương tự đã mua món này'
+            reason: '✨ Gợi ý phân tích bằng Lọc cộng tác (Collaborative)'
         }));
     } catch (error) {
-        console.error('Error getting collaborative recommendations:', error.message);
+        console.error('Error getting collaborative SQL recommendations:', error.message);
         return [];
     }
 }
@@ -358,20 +411,62 @@ async function getContentBasedRecommendations(userId, limit = 5) {
 // ==================== ASSOCIATION RULES (Kết hợp món) ====================
 
 /**
- * Gợi ý món kèm theo dựa trên quy tắc kết hợp
+ * Gợi ý món kèm theo dựa trên quy tắc kết hợp (Apriori AI Service + Fallback rules)
  */
 async function getPairingRecommendations(dishIds, limit = 4) {
     try {
         if (!dishIds || dishIds.length === 0) return [];
         
-        // Lấy thông tin các món trong giỏ hàng
-        const [cartDishes] = await db.query(
-            `SELECT m.*, d.ten_danh_muc 
-             FROM mon_an m 
-             LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
-             WHERE m.ma_mon IN (?)`,
-            [dishIds]
-        );
+        let aiRecommendedIds = [];
+        
+        // Gọi Apriori API từ Python
+        try {
+            const response = await axios.get(PYTHON_APRIORI_URL, {
+                params: {
+                    cart: dishIds.join(','),
+                    limit: limit
+                },
+                timeout: 3000
+            });
+            
+            if (response.data && response.data.success && response.data.data.length > 0) {
+                // response.data.data looks like: [{ item_id: 101, score: 0.8 }, ...]
+                aiRecommendedIds = response.data.data.map(item => item.item_id);
+            }
+        } catch (apiError) {
+            console.error('Python Apriori API Error - Fallback to hardcoded rules:', apiError.message);
+        }
+
+        let recommendations = [];
+
+        // Nếu có kết quả từ AI, fetch thông tin các món đó
+        if (aiRecommendedIds.length > 0) {
+            const [aiFoods] = await db.query(
+                `SELECT m.*, d.ten_danh_muc 
+                 FROM mon_an m 
+                 LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                 WHERE m.ma_mon IN (?) AND m.trang_thai = 1`,
+                [aiRecommendedIds]
+            );
+            
+            recommendations.push(...aiFoods.map(d => ({
+                ...d,
+                recommendation_type: 'apriori_pairing',
+                reason: '💡 Món kèm thường được đặt chung!'
+            })));
+        }
+
+        // Nếu số lượng AI gợi ý chưa đủ limit, bù thêm từ hardcoded Rules
+        if (recommendations.length < limit) {
+        
+            // Lấy thông tin các món trong giỏ hàng
+            const [cartDishes] = await db.query(
+                `SELECT m.*, d.ten_danh_muc 
+                 FROM mon_an m 
+                 LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                 WHERE m.ma_mon IN (?)`,
+                [dishIds]
+            );
         
         // Phân tích các món trong giỏ để tìm category
         const cartCategories = new Set();
@@ -403,10 +498,10 @@ async function getPairingRecommendations(dishIds, limit = 4) {
         const hasLau = Array.from(cartCategories).some(c => c.includes('lau'));
         
         // Lấy món từ các category được gợi ý
-        let recommendations = [];
+        let remainingLimit = limit - recommendations.length;
         
         // Ưu tiên đồ uống nếu có lẩu
-        if (hasLau || suggestedCategories.has('nuoc_uong')) {
+        if (remainingLimit > 0 && (hasLau || suggestedCategories.has('nuoc_uong'))) {
             const [drinks] = await db.query(
                 `SELECT m.*, d.ten_danh_muc, 'Kết hợp hoàn hảo với món lẩu' as reason
                  FROM mon_an m
@@ -416,18 +511,19 @@ async function getPairingRecommendations(dishIds, limit = 4) {
                       OR m.ten_mon LIKE '%nước%' OR m.ten_mon LIKE '%trà%' 
                       OR m.ten_mon LIKE '%cà phê%' OR m.ten_mon LIKE '%sinh tố%')
                  AND m.ma_mon NOT IN (?)
-                 ORDER BY RAND() LIMIT 2`,
-                [dishIds]
+                 ORDER BY RAND() LIMIT ?`,
+                [dishIds, Math.min(2, remainingLimit)]
             );
             recommendations.push(...drinks.map(d => ({
                 ...d,
                 recommendation_type: 'pairing',
                 reason: hasLau ? '🍲 Kết hợp hoàn hảo với món lẩu!' : '🥤 Thêm đồ uống cho bữa ăn'
             })));
+            remainingLimit -= drinks.length;
         }
         
         // Gợi ý món tráng miệng
-        if (suggestedCategories.has('trang_mieng')) {
+        if (remainingLimit > 0 && suggestedCategories.has('trang_mieng')) {
             const [desserts] = await db.query(
                 `SELECT m.*, d.ten_danh_muc
                  FROM mon_an m
@@ -436,18 +532,19 @@ async function getPairingRecommendations(dishIds, limit = 4) {
                  AND (d.ten_danh_muc LIKE '%tráng miệng%' OR m.ten_mon LIKE '%chè%' 
                       OR m.ten_mon LIKE '%bánh%' OR m.ten_mon LIKE '%kem%')
                  AND m.ma_mon NOT IN (?)
-                 ORDER BY RAND() LIMIT 1`,
-                [dishIds]
+                 ORDER BY RAND() LIMIT ?`,
+                [dishIds, Math.min(2, remainingLimit)]
             );
             recommendations.push(...desserts.map(d => ({
                 ...d,
                 recommendation_type: 'pairing',
                 reason: '🍮 Tráng miệng hoàn hảo sau bữa ăn'
             })));
+            remainingLimit -= desserts.length;
         }
         
         // Gợi ý khai vị nếu chưa có
-        if (suggestedCategories.has('khai_vi')) {
+        if (remainingLimit > 0 && suggestedCategories.has('khai_vi')) {
             const [appetizers] = await db.query(
                 `SELECT m.*, d.ten_danh_muc
                  FROM mon_an m
@@ -456,8 +553,8 @@ async function getPairingRecommendations(dishIds, limit = 4) {
                  AND (d.ten_danh_muc LIKE '%khai vị%' OR m.ten_mon LIKE '%gỏi%' 
                       OR m.ten_mon LIKE '%cuốn%' OR m.ten_mon LIKE '%nem%')
                  AND m.ma_mon NOT IN (?)
-                 ORDER BY RAND() LIMIT 1`,
-                [dishIds]
+                 ORDER BY RAND() LIMIT ?`,
+                [dishIds, Math.min(2, remainingLimit)]
             );
             recommendations.push(...appetizers.map(d => ({
                 ...d,
@@ -466,6 +563,8 @@ async function getPairingRecommendations(dishIds, limit = 4) {
             })));
         }
         
+        } // Hết khối Fallback
+
         return recommendations.slice(0, limit);
     } catch (error) {
         console.error('Error getting pairing recommendations:', error.message);

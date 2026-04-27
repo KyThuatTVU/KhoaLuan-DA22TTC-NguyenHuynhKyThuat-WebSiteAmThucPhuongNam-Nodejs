@@ -1731,14 +1731,21 @@
             if (!adminChatSessionId) {
                 // Thử lấy từ localStorage
                 adminChatSessionId = localStorage.getItem('admin_chat_session_id');
+                const lastActive = localStorage.getItem('admin_chat_session_time');
+                const now = Date.now();
+                const TIMEOUT = 60 * 60 * 1000; // 1 giờ
                 
-                if (!adminChatSessionId) {
+                if (!adminChatSessionId || !lastActive || (now - parseInt(lastActive)) > TIMEOUT) {
                     adminChatSessionId = 'admin_session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     localStorage.setItem('admin_chat_session_id', adminChatSessionId);
+                    localStorage.setItem('admin_chat_session_time', now.toString());
                     console.log('🆕 Created new admin chat session:', adminChatSessionId);
                 } else {
                     console.log('♻️ Restored admin chat session:', adminChatSessionId);
+                    localStorage.setItem('admin_chat_session_time', now.toString()); // Gia hạn
                 }
+            } else {
+                localStorage.setItem('admin_chat_session_time', Date.now().toString());
             }
             return adminChatSessionId;
         }
@@ -1747,6 +1754,7 @@
         function resetAdminChatSession() {
             adminChatSessionId = 'admin_session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('admin_chat_session_id', adminChatSessionId);
+            localStorage.setItem('admin_chat_session_time', Date.now().toString());
             console.log('🔄 Reset admin chat session:', adminChatSessionId);
             
             // Xóa lịch sử hiển thị

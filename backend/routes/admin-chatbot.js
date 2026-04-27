@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
-const OpenAI = require('openai');
+const axios = require('axios'); // Add axios for communicating with Python AI Service
 
-// Khởi tạo Groq client (tương thích OpenAI SDK)
-const groq = new OpenAI({
-    apiKey: process.env.GROQ_API_KEY,
-    baseURL: 'https://api.groq.com/openai/v1'
-});
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5000/api/ml/admin/chat';
+
+// Bỏ đoạn khởi tạo Groq cũ bằng Node.js
 
 // Tự động tạo các bảng mục tiêu nếu chưa tồn tại
 async function initTables() {
@@ -537,7 +535,7 @@ function generateAIResponse(query, stats) {
     };
 }
 
-// API: Chat với AI (Groq - Llama 3)
+// API: Chat với AI (Python / Langchain - Llama 3)
 router.post('/chat', requireAdmin, async (req, res) => {
     try {
         const { message, session_id } = req.body;
@@ -550,10 +548,9 @@ router.post('/chat', requireAdmin, async (req, res) => {
         const adminId = req.session?.admin?.ma_admin || null;
         const sessionId = session_id || 'admin_guest_' + Date.now();
         
-        console.log('🔍 Admin chat debug:');
+        console.log('🔍 Admin chat debug: (Via Python AI Service)');
         console.log('- Admin ID:', adminId);
         console.log('- Session ID:', sessionId);
-        console.log('- Session admin:', req.session?.admin);
         
         // Lưu tin nhắn user vào lịch sử
         try {
@@ -565,89 +562,28 @@ router.post('/chat', requireAdmin, async (req, res) => {
             console.error('Error saving user message to history:', historyError);
         }
         
-        // Lấy dữ liệu thống kê
-        const stats = await getBusinessStats();
-        
-        if (!stats) {
-            return res.status(500).json({ success: false, message: 'Không thể lấy dữ liệu thống kê' });
+        // Gọi Python AI Service
+        let aiResponse = '';
+        try {
+            const pythonResponse = await axios.post(AI_SERVICE_URL, {
+                question: message,
+                session_id: sessionId
+            }, { timeout: 30000 }); // Langchain agent có thể cần thời gian chạy truy vấn
+
+            if (pythonResponse.data && pythonResponse.data.success) {
+                aiResponse = pythonResponse.data.answer;
+            } else {
+                throw new Error("Python API returned unsuccessful response");
+            }
+        } catch (pyError) {
+            console.error('Lỗi khi gọi Python AI service:', pyError.message);
+            
+            // Fallback về hệ thống cũ nếu Python timeout hoặc lỗi
+            const stats = await getBusinessStats();
+            const fallbackObj = generateAIResponse(message, stats);
+            aiResponse = fallbackObj.message;
         }
-        
-        // Tạo context từ dữ liệu thống kê
-        const revenueThisMonth = stats.revenue?.thisMonth || 0;
-        const revenueLastMonth = stats.revenue?.lastMonth || 0;
-        const revenueGrowth = stats.revenue?.change || 0;
-        const ordersThisMonth = stats.orders?.thisMonth || 0;
-        const ordersLastMonth = stats.orders?.lastMonth || 0;
-        const ordersGrowth = ordersLastMonth > 0 ? Math.round(((ordersThisMonth - ordersLastMonth) / ordersLastMonth) * 100) : 0;
-        const newCustomers = stats.customers?.newThisMonth || 0;
-        const reservationsThisMonth = stats.reservations?.thisMonth || 0;
-        
-        const businessContext = `
-Dữ liệu kinh doanh nhà hàng "Ẩm Thực Phương Nam" (Tháng ${stats.currentMonth}/${stats.currentYear}):
 
-📊 DOANH THU:
-- Tháng này: ${new Intl.NumberFormat('vi-VN').format(revenueThisMonth)}đ
-- Tháng trước: ${new Intl.NumberFormat('vi-VN').format(revenueLastMonth)}đ
-- Tăng trưởng: ${revenueGrowth > 0 ? '+' : ''}${revenueGrowth}%
-
-📦 ĐƠN HÀNG:
-- Tháng này: ${ordersThisMonth} đơn
-- Tháng trước: ${ordersLastMonth} đơn
-- Tăng trưởng: ${ordersGrowth > 0 ? '+' : ''}${ordersGrowth}%
-
-👥 KHÁCH HÀNG:
-- Mới tháng này: ${newCustomers} người
-
-🍽️ ĐẶT BÀN:
-- Tháng này: ${reservationsThisMonth} lượt
-
-⭐ ĐÁNH GIÁ:
-- Trung bình: ${stats.avgRating || 0}/5 sao
-- Tổng đánh giá: ${stats.totalReviews || 0}
-
-🏆 TOP MÓN BÁN CHẠY:
-${stats.topProducts && stats.topProducts.length > 0 ? stats.topProducts.map((p, i) => `${i+1}. ${p.ten_mon} - ${p.so_luong_ban} lượt`).join('\n') : 'Chưa có dữ liệu'}
-
-📈 MỤC TIÊU THÁNG:
-${stats.goals && stats.goals.length > 0 ? stats.goals.map(g => `- ${g.ten_muc_tieu}: ${g.tien_do}% (${g.gia_tri_hien_tai}/${g.gia_tri_muc_tieu})`).join('\n') : 'Chưa đặt mục tiêu'}
-`;
-
-        // Gọi Groq AI
-        const completion = await groq.chat.completions.create({
-            model: 'llama-3.1-8b-instant',
-            messages: [
-                {
-                    role: 'system',
-                    content: `Bạn là "Phương Nam" - trợ lý AI thông minh của nhà hàng "Ẩm Thực Phương Nam".
-Chủ nhà hàng là chị Linh. Hãy xưng hô thân thiện: "chị Linh", "em" (em là Phương Nam).
-
-Nhiệm vụ của bạn:
-- Phân tích dữ liệu kinh doanh và đưa ra nhận xét
-- Đề xuất chiến lược cải thiện doanh thu, thu hút khách hàng
-- Trả lời câu hỏi về tình hình kinh doanh
-- Đưa ra lời khuyên thực tế, cụ thể
-
-Quy tắc:
-- Trả lời bằng tiếng Việt
-- Xưng "em", gọi chủ là "chị Linh"
-- Ngắn gọn, súc tích, dễ hiểu, thân thiện
-- Sử dụng emoji phù hợp
-- Dựa trên dữ liệu thực tế được cung cấp
-- Nếu không có dữ liệu, hãy nói rõ và đề xuất hành động
-
-${businessContext}`
-                },
-                {
-                    role: 'user',
-                    content: message
-                }
-            ],
-            temperature: 0.7,
-            max_tokens: 1024
-        });
-
-        const aiResponse = completion.choices[0]?.message?.content || 'Xin lỗi, tôi không thể xử lý yêu cầu này.';
-        
         // Lưu tin nhắn bot vào lịch sử
         try {
             await db.query(
@@ -663,20 +599,12 @@ ${businessContext}`
             data: {
                 type: 'ai_response',
                 message: aiResponse,
-                suggestions: ['Phân tích doanh thu', 'Đề xuất chiến lược', 'Xem mục tiêu', 'Top sản phẩm']
+                suggestions: ['Doanh thu tháng này', 'Sản phẩm nào đang bán chạy?', 'Phân tích chiến lược giảm giá']
             }
         });
     } catch (error) {
         console.error('Error in admin chatbot:', error);
-        
-        // Fallback vo response cÅ© náº¿u Groq lo—i
-        if (error.message?.includes('API') || error.message?.includes('fetch')) {
-            const stats = await getBusinessStats();
-            const response = generateAIResponse(req.body.message, stats);
-            return res.json({ success: true, data: response });
-        }
-        
-        res.status(500).json({ success: false, message: 'Lo—i xo­ lÃ½ tin nháº¯n: ' + error.message });
+        res.status(500).json({ success: false, message: 'Lỗi xử lý tin nhắn: ' + error.message });
     }
 });
 
