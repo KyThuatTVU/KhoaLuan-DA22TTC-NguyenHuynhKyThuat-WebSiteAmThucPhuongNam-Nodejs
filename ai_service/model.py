@@ -68,7 +68,10 @@ def train_collaborative_model():
         
         # Lưu vào file pkl
         os.makedirs('models', exist_ok=True)
-        with open('models/svd_model.pkl', 'wb') as f:
+        model_dir = os.path.join(os.path.dirname(__file__), 'models')
+        os.makedirs(model_dir, exist_ok=True)
+        model_path = os.path.join(model_dir, 'svd_model.pkl')
+        with open(model_path, 'wb') as f:
             pickle.dump({
                 'user_matrix': matrix_svd,
                 'item_matrix': item_matrix,
@@ -77,7 +80,8 @@ def train_collaborative_model():
                 'svd_obj': svd # Chứa thông tin biến đổi
             }, f)
             
-        print(f"✅ Hoàn tất huấn luyện SVD! Đã lưu model tại models/svd_model.pkl")
+        model_path = os.path.join(os.path.dirname(__file__), 'models', 'svd_model.pkl')
+        print(f"✅ Hoàn tất huấn luyện SVD! Đã lưu model tại {model_path}")
         print(f"Tham số: {len(user_ids)} users x {len(item_ids)} items.")
         return True
 
@@ -87,7 +91,7 @@ def train_collaborative_model():
 
 def get_svd_recommendations(target_user_id, top_n=5):
     try:
-        model_path = 'models/svd_model.pkl'
+        model_path = os.path.join(os.path.dirname(__file__), 'models', 'svd_model.pkl')
         if not os.path.exists(model_path):
             return [] # Chưa train -> Fallback Nodejs
 

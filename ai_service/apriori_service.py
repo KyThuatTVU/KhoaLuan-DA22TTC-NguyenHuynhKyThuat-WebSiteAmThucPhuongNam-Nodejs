@@ -89,7 +89,10 @@ def train_apriori_model(min_support=0.01, min_confidence=0.1):
             rules_dict[key] = sorted(unique_items.values(), key=lambda x: x['lift'], reverse=True)
 
         os.makedirs('models', exist_ok=True)
-        with open('models/apriori_rules.pkl', 'wb') as f:
+        model_dir = os.path.join(os.path.dirname(__file__), 'models')
+        os.makedirs(model_dir, exist_ok=True)
+        model_path = os.path.join(model_dir, 'apriori_rules.pkl')
+        with open(model_path, 'wb') as f:
             pickle.dump(rules_dict, f)
             
         print("✅ Hoàn tất huấn luyện Apriori!")
@@ -105,7 +108,7 @@ def get_apriori_recommendations(cart_item_ids, limit=4):
     Get recommendations based on items currently in cart
     """
     try:
-        model_path = 'models/apriori_rules.pkl'
+        model_path = os.path.join(os.path.dirname(__file__), 'models', 'apriori_rules.pkl')
         if not os.path.exists(model_path):
             return []
 

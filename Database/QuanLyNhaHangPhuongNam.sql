@@ -313,6 +313,7 @@ CREATE TABLE `binh_luan_tin_tuc` (
   `ma_tin_tuc` int NOT NULL,
   `ma_nguoi_dung` int,
   `ten_nguoi_binh_luan` varchar(150),
+  `email_nguoi_binh_luan` varchar(255) DEFAULT NULL,
   `noi_dung` text NOT NULL,
   `trang_thai` enum('pending','approved','rejected') DEFAULT 'pending',
   `ma_binh_luan_cha` int,

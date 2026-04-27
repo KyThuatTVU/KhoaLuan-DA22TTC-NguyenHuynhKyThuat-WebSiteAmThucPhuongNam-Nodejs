@@ -125,6 +125,14 @@
                                 <div class="flex items-center space-x-3"><span class="text-xl">🧧</span><div><p class="font-medium text-slate-700">Intro Tết</p></div></div>
                                 <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="hieu_ung_intro_tet" onchange="saveEffectSetting('hieu_ung_intro_tet', this.checked)" class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 rounded-full peer peer-checked:bg-red-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div></label>
                             </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div class="flex items-center space-x-3"><span class="text-xl">❄️</span><div><p class="font-medium text-slate-700">Tuyết Rơi</p></div></div>
+                                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="hieu_ung_tuyet" onchange="saveEffectSetting('hieu_ung_tuyet', this.checked)" class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 rounded-full peer peer-checked:bg-blue-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div></label>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div class="flex items-center space-x-3"><span class="text-xl">🌸</span><div><p class="font-medium text-slate-700">Hoa Mai Rơi</p></div></div>
+                                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="hieu_ung_hoa_mai" onchange="saveEffectSetting('hieu_ung_hoa_mai', this.checked)" class="sr-only peer"><div class="w-11 h-6 bg-slate-200 peer-focus:ring-4 rounded-full peer peer-checked:bg-yellow-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div></label>
+                            </div>
                             <div class="flex flex-wrap gap-2 pt-2">
                                 <button onclick="previewChristmasIntro()" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium">Xem intro Giáng sinh</button>
                                 <button onclick="previewTetIntro()" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium">Xem intro Tết</button>
@@ -159,6 +167,8 @@
                 document.getElementById('youtube_url').value = data.youtube_url || '';
                 document.getElementById('hieu_ung_intro_giang_sinh').checked = data.hieu_ung_intro_giang_sinh === '1';
                 document.getElementById('hieu_ung_intro_tet').checked = data.hieu_ung_intro_tet === '1';
+                document.getElementById('hieu_ung_tuyet').checked = data.hieu_ung_tuyet === '1';
+                document.getElementById('hieu_ung_hoa_mai').checked = data.hieu_ung_hoa_mai === '1';
             } catch (e) { console.error(e); }
         }
 
