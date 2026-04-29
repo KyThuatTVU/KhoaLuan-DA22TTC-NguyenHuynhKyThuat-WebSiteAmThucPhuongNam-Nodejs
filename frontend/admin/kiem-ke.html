@@ -35,7 +35,12 @@
 
                 <!-- Filters -->
                 <div class="content-card mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <select id="food-drink-filter" onchange="applyFilters()" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold bg-white text-indigo-800">
+                            <option value="all">🍽️ Tất cả loại hàng</option>
+                            <option value="food">🥩 Chỉ Đồ ăn</option>
+                            <option value="drink">🥤 Chỉ Hàng nước</option>
+                        </select>
                         <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm theo ghi chú..."
                             class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500">
                     </div>
@@ -205,20 +210,34 @@
             document.getElementById('current-date').textContent = new Date().toLocaleString('vi-VN');
             document.getElementById('audit-note').value = 'Kiểm kê cuối ngày ' + new Date().toLocaleDateString('vi-VN');
             
+            // Get the select filter for audit items to separate food/drink if needed
+            // By default, showing all, just using the new filter to choose what to display:
+            let filteredIng = ingredients;
+            const filterVal = document.getElementById('food-drink-filter').value;
+            if (filterVal === 'food') {
+                filteredIng = ingredients.filter(i => i.ten_loai_nglieu !== 'Thức uống');
+            } else if (filterVal === 'drink') {
+                filteredIng = ingredients.filter(i => i.ten_loai_nglieu === 'Thức uống');
+            }
+            
             const list = document.getElementById('audit-items-list');
-            list.innerHTML = ingredients.map(ing => `
-                <tr class="audit-row" data-id="${ing.ma_nguyen_lieu}" data-system="${ing.so_luong_ton}">
-                    <td class="px-4 py-3 font-medium text-slate-800">${ing.ten_nguyen_lieu}</td>
-                    <td class="px-4 py-3 text-sm text-slate-500 font-bold">${ing.don_vi_tinh}</td>
-                    <td class="px-4 py-3 text-right font-bold text-slate-600">${parseFloat(ing.so_luong_ton).toLocaleString('vi-VN')} <span class="text-xs text-slate-400 font-normal">${ing.don_vi_tinh}</span></td>
-                    <td class="px-4 py-3 relative">
-                        <input type="number" class="actual-qty w-full px-3 py-1.5 border border-slate-200 rounded text-center font-bold text-indigo-600 pr-10" 
-                               value="${ing.so_luong_ton}" oninput="updateDiff(this)">
-                        <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 pointer-events-none">${ing.don_vi_tinh}</span>
-                    </td>
-                    <td class="px-4 py-3 text-right font-bold diff-display text-slate-400">0</td>
-                </tr>
-            `).join('');
+            if (filteredIng.length === 0) {
+                list.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-500">Không có nguyên liệu nào thuộc nhóm này.</td></tr>';
+            } else {
+                list.innerHTML = filteredIng.map(ing => `
+                    <tr class="audit-row" data-id="${ing.ma_nguyen_lieu}" data-system="${ing.so_luong_ton}">
+                        <td class="px-4 py-3 font-medium text-slate-800">${ing.ten_nguyen_lieu}</td>
+                        <td class="px-4 py-3 text-sm text-slate-500 font-bold">${ing.don_vi_tinh}</td>
+                        <td class="px-4 py-3 text-right font-bold text-slate-600">${parseFloat(ing.so_luong_ton).toLocaleString('vi-VN')} <span class="text-xs text-slate-400 font-normal">${ing.don_vi_tinh}</span></td>
+                        <td class="px-4 py-3 relative">
+                            <input type="number" class="actual-qty w-full px-3 py-1.5 border border-slate-200 rounded text-center font-bold text-indigo-600 pr-10" 
+                                value="${ing.so_luong_ton}" oninput="updateDiff(this)">
+                            <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 pointer-events-none">${ing.don_vi_tinh}</span>
+                        </td>
+                        <td class="px-4 py-3 text-right font-bold diff-display text-slate-400">0</td>
+                    </tr>
+                `).join('');
+            }
 
             document.getElementById('audit-modal').classList.remove('hidden');
         }
@@ -417,9 +436,12 @@
 
         function applyFilters() {
             const s = document.getElementById('search').value.toLowerCase();
-            const filtered = auditHistory.filter(h => 
-                (h.ghi_chu && h.ghi_chu.toLowerCase().includes(s))
-            );
+            const foodDrink = document.getElementById('food-drink-filter').value;
+            
+            const filtered = auditHistory.filter(h => {
+                const matchSearch = h.ghi_chu && h.ghi_chu.toLowerCase().includes(s);
+                return matchSearch;
+            });
             renderAuditList(filtered);
         }
 

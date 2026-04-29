@@ -37,8 +37,28 @@ const updateRecipe = async (req, res) => {
             );
         }
 
+        // Cập nhật lại số lượng tồn của món ăn dựa trên nguyên liệu
+        if (ingredients && ingredients.length > 0) {
+            let maxPortions = Infinity;
+            for (const item of ingredients) {
+                const [nlRows] = await connection.query('SELECT so_luong_ton FROM nguyen_lieu WHERE ma_nguyen_lieu = ?', [item.ma_nguyen_lieu]);
+                if (nlRows.length > 0) {
+                    const slt = parseFloat(nlRows[0].so_luong_ton) || 0;
+                    const can = parseFloat(item.so_luong_can) || 1;
+                    const portions = Math.floor(slt / can);
+                    if (portions < maxPortions) {
+                        maxPortions = portions;
+                    }
+                }
+            }
+            if (maxPortions === Infinity || maxPortions < 0) maxPortions = 0;
+            await connection.query('UPDATE mon_an SET so_luong_ton = ? WHERE ma_mon = ?', [maxPortions, id]);
+        } else {
+            await connection.query('UPDATE mon_an SET so_luong_ton = 0 WHERE ma_mon = ?', [id]);
+        }
+
         await connection.commit();
-        res.json({ success: true, message: 'Cập nhật công thức thành công' });
+        res.json({ success: true, message: 'Cập nhật công thức và tính lại số lượng món thành công' });
     } catch (error) {
         await connection.rollback();
         console.error('Error updating recipe:', error);

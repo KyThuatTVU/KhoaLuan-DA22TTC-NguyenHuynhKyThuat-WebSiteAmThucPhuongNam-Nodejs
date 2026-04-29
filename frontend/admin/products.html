@@ -305,8 +305,10 @@
             document.getElementById('product-form').reset(); 
             if (window.productDraftManager) {
                 window.productDraftManager.setContext('new');
-                if (window.productDraftManager.hasDraft()) {
+                if (isAutoOpen && window.productDraftManager.hasDraft()) {
                     window.productDraftManager.restore();
+                } else if (!isAutoOpen) {
+                    window.productDraftManager.clear();
                 }
             }
             document.getElementById('product-id').value = ''; 
@@ -362,8 +364,12 @@
             }
 
             // Tự động dán lại các đoạn text gõ dở dang chưa lưu
-            if (window.productDraftManager && window.productDraftManager.hasDraft()) {
-                window.productDraftManager.restore();
+            if (window.productDraftManager) {
+                if (isAutoOpen && window.productDraftManager.hasDraft()) {
+                    window.productDraftManager.restore();
+                } else if (!isAutoOpen) {
+                    window.productDraftManager.clear();
+                }
             }
         }
 

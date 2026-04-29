@@ -221,7 +221,11 @@
             document.getElementById('promo-form').reset();
             if (window.promoDraftManager) {
                 window.promoDraftManager.setContext('new');
-                if (window.promoDraftManager.hasDraft()) window.promoDraftManager.restore();
+                if (isAutoOpen && window.promoDraftManager.hasDraft()) {
+                    window.promoDraftManager.restore();
+                } else if (!isAutoOpen) {
+                    window.promoDraftManager.clear();
+                }
             }
             document.getElementById('promo-id').value = '';
             document.getElementById('trang_thai').checked = true;
@@ -251,7 +255,13 @@
             document.getElementById('trang_thai').checked = p.trang_thai === 1;
             document.getElementById('promo-modal').classList.remove('hidden');
             if (!isAutoOpen) sessionStorage.setItem('adminUiState_promotions', JSON.stringify({ action: 'edit', id: id }));
-            if (window.promoDraftManager && window.promoDraftManager.hasDraft()) window.promoDraftManager.restore();
+            if (window.promoDraftManager) {
+                if (isAutoOpen && window.promoDraftManager.hasDraft()) {
+                    window.promoDraftManager.restore();
+                } else if (!isAutoOpen) {
+                    window.promoDraftManager.clear();
+                }
+            }
         }
         
         async function deletePromo(id) {

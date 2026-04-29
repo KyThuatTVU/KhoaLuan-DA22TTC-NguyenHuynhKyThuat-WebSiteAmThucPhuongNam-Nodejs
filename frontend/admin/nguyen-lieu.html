@@ -36,7 +36,12 @@
                 </div>
                 <!-- Filters -->
                 <div class="content-card mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <select id="food-drink-filter" onchange="applyFilters()" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-semibold bg-white text-blue-800">
+                            <option value="all">🍽️ Tất cả loại hàng</option>
+                            <option value="food">🥩 Chỉ Đồ ăn</option>
+                            <option value="drink">🥤 Chỉ Hàng nước</option>
+                        </select>
                         <input type="text" id="search" oninput="applyFilters()" placeholder="Tìm kiếm nguyên liệu..." class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
                         <select id="category-filter" onchange="applyFilters()" class="px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500">
                             <option value="">Tất cả loại nguyên liệu</option>
@@ -448,8 +453,17 @@
             const search = document.getElementById('search').value.toLowerCase();
             const status = document.getElementById('status-filter').value;
             const categoryFilter = document.getElementById('category-filter').value;
+            const foodDrinkFilter = document.getElementById('food-drink-filter').value;
             
             let filtered = ingredients.filter(i => {
+                // Lọc theo Hàng nước/Đồ ăn
+                let isMatchFoodDrink = true;
+                if (foodDrinkFilter === 'food') {
+                    isMatchFoodDrink = i.ten_loai_nglieu !== 'Thức uống';
+                } else if (foodDrinkFilter === 'drink') {
+                    isMatchFoodDrink = i.ten_loai_nglieu === 'Thức uống';
+                }
+
                 // Lọc theo tên
                 const isMatchSearch = i.ten_nguyen_lieu.toLowerCase().includes(search);
                 
@@ -471,7 +485,7 @@
                     }
                 }
                 
-                return isMatchSearch && isMatchStatus && isMatchCategory;
+                return isMatchFoodDrink && isMatchSearch && isMatchStatus && isMatchCategory;
             });
             renderIngredients(filtered);
         }
@@ -480,6 +494,7 @@
             document.getElementById('search').value = '';
             document.getElementById('status-filter').value = '';
             document.getElementById('category-filter').value = '';
+            document.getElementById('food-drink-filter').value = 'all';
             renderIngredients(ingredients);
         }
 
@@ -489,7 +504,11 @@
             
             if (window.ingredientDraftManager) {
                 window.ingredientDraftManager.setContext('new');
-                if (window.ingredientDraftManager.hasDraft()) window.ingredientDraftManager.restore();
+                if (isAutoOpen && window.ingredientDraftManager.hasDraft()) {
+                    window.ingredientDraftManager.restore();
+                } else if (!isAutoOpen) {
+                    window.ingredientDraftManager.clear();
+                }
             }
             
             document.getElementById('ingredient-id').value = '';
@@ -594,8 +613,12 @@
 
             if (!isAutoOpen) sessionStorage.setItem('adminUiState_nguyen_lieu', JSON.stringify({ action: 'edit', id: id }));
             
-            if (window.ingredientDraftManager && window.ingredientDraftManager.hasDraft()) {
-                window.ingredientDraftManager.restore();
+            if (window.ingredientDraftManager) {
+                if (isAutoOpen && window.ingredientDraftManager.hasDraft()) {
+                    window.ingredientDraftManager.restore();
+                } else if (!isAutoOpen) {
+                    window.ingredientDraftManager.clear();
+                }
             }
         }
 

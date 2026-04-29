@@ -61,6 +61,9 @@ const createIngredient = async (req, res) => {
         });
     } catch (error) {
         console.error('Error creating ingredient:', error);
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ success: false, message: 'Tên nguyên liệu đã tồn tại trong hệ thống' });
+        }
         res.status(500).json({ success: false, message: 'Lỗi server' });
     }
 };

@@ -241,6 +241,10 @@
             addItemRow();
         }
 
+        function closeModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
         function openQuickIngredientModal() {
             document.getElementById('quick-ingredient-form').reset();
             // Populate category options in quick modal

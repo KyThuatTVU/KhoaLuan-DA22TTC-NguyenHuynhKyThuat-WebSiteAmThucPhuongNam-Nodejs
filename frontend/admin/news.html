@@ -149,7 +149,14 @@
             document.getElementById('modal-title').textContent = 'Thêm bài viết mới';
             document.getElementById('news-form').reset();
             document.getElementById('news-id').value = '';
-            if (window.newsDraftManager) { window.newsDraftManager.setContext('new'); if (window.newsDraftManager.hasDraft()) window.newsDraftManager.restore(); }
+            if (window.newsDraftManager) { 
+                window.newsDraftManager.setContext('new'); 
+                if (auto && window.newsDraftManager.hasDraft()) {
+                    window.newsDraftManager.restore(); 
+                } else if (!auto) {
+                    window.newsDraftManager.clear();
+                }
+            }
             document.getElementById('news-modal').classList.remove('hidden');
             if (!auto) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'add' }));
         }
@@ -168,7 +175,13 @@
             document.getElementById('trang_thai').value = news.trang_thai ?? 1;
             document.getElementById('news-modal').classList.remove('hidden');
             if (!auto) sessionStorage.setItem('adminUiState_news', JSON.stringify({ action: 'edit', id: id }));
-            if (window.newsDraftManager && window.newsDraftManager.hasDraft()) window.newsDraftManager.restore();
+            if (window.newsDraftManager) {
+                if (auto && window.newsDraftManager.hasDraft()) {
+                    window.newsDraftManager.restore();
+                } else if (!auto) {
+                    window.newsDraftManager.clear();
+                }
+            }
         }
 
         async function deleteNews(id) {
