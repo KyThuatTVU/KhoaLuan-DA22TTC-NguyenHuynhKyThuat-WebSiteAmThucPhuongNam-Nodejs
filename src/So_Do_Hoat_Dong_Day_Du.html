@@ -1381,7 +1381,7 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 520 1090" width="520" height="1090">
+                    <svg class="uml-svg" viewBox="0 0 1600 240" width="1600" height="240">
                         <defs>
                             <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
@@ -1389,105 +1389,107 @@
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead)" />
+                        <circle cx="30" cy="80" r="8" fill="#000000" />
+                        <path d="M 38 80 H 70" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node -->
+                        <polygon points="85,65 100,80 85,95 70,80" class="uml-decision" />
+                        <path d="M 100 80 H 130" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Lấy lịch sử</tspan>
-                            <tspan x="250" dy="14">đơn hàng &amp; đánh giá</tspan>
+                        <rect x="130" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="190" y="75" class="uml-text">
+                            <tspan x="190" dy="0">Lấy lịch sử</tspan>
+                            <tspan x="190" dy="14">đơn hàng &amp; đánh giá</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 250 80 H 280" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Tạo ma trận</tspan>
-                            <tspan x="250" dy="14">Người dùng - Món ăn</tspan>
+                        <rect x="280" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="340" y="75" class="uml-text">
+                            <tspan x="340" dy="0">Tạo ma trận</tspan>
+                            <tspan x="340" dy="14">Người dùng - Món ăn</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 400 80 H 430" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 3 -->
-                        <rect x="190" y="250" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="275" class="uml-text">
-                            <tspan x="250" dy="0">Phân tích SVD</tspan>
-                            <tspan x="250" dy="14">giảm chiều ma trận</tspan>
+                        <rect x="430" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="490" y="75" class="uml-text">
+                            <tspan x="490" dy="0">Phân tích SVD</tspan>
+                            <tspan x="490" dy="14">giảm chiều ma trận</tspan>
                         </text>
-                        <path d="M 250 310 V 340" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 550 80 H 580" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 4 -->
-                        <rect x="190" y="340" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="365" class="uml-text">
-                            <tspan x="250" dy="0">Tính tương đồng</tspan>
-                            <tspan x="250" dy="14">Cosine giữa các User</tspan>
+                        <rect x="580" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="640" y="75" class="uml-text">
+                            <tspan x="640" dy="0">Tính tương đồng</tspan>
+                            <tspan x="640" dy="14">Cosine giữa các User</tspan>
                         </text>
-                        <path d="M 250 400 V 430" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 700 80 H 730" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 5 -->
-                        <rect x="190" y="430" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="455" class="uml-text">
-                            <tspan x="250" dy="0">Xác định nhóm</tspan>
-                            <tspan x="250" dy="14">User cùng sở thích</tspan>
+                        <rect x="730" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="790" y="75" class="uml-text">
+                            <tspan x="790" dy="0">Xác định nhóm</tspan>
+                            <tspan x="790" dy="14">User cùng sở thích</tspan>
                         </text>
-                        <path d="M 250 490 V 520" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 850 80 H 880" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 6 -->
-                        <rect x="190" y="520" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="545" class="uml-text">
-                            <tspan x="250" dy="0">Tính điểm ưa thích</tspan>
-                            <tspan x="250" dy="14">dự đoán cho món ăn</tspan>
+                        <rect x="880" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="940" y="75" class="uml-text">
+                            <tspan x="940" dy="0">Tính điểm ưa thích</tspan>
+                            <tspan x="940" dy="14">dự đoán cho món ăn</tspan>
                         </text>
-                        <path d="M 250 580 V 610" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1000 80 H 1030" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 7 -->
-                        <rect x="190" y="610" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="635" class="uml-text">
-                            <tspan x="250" dy="0">Lọc bỏ các món</tspan>
-                            <tspan x="250" dy="14">đã đặt trước đó</tspan>
+                        <rect x="1030" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1090" y="75" class="uml-text">
+                            <tspan x="1090" dy="0">Lọc bỏ các món</tspan>
+                            <tspan x="1090" dy="14">đã đặt trước đó</tspan>
                         </text>
-                        <path d="M 250 670 V 700" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1150 80 H 1180" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 8 -->
-                        <rect x="190" y="700" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="725" class="uml-text">
-                            <tspan x="250" dy="0">Sắp xếp &amp;</tspan>
-                            <tspan x="250" dy="14">Trích xuất Top gợi ý</tspan>
+                        <rect x="1180" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1240" y="75" class="uml-text">
+                            <tspan x="1240" dy="0">Sắp xếp &amp;</tspan>
+                            <tspan x="1240" dy="14">Trích xuất Top gợi ý</tspan>
                         </text>
-                        <path d="M 250 760 V 790" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1300 80 H 1330" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision -->
-                        <polygon points="250,790 290,820 250,850 210,820" class="uml-decision" />
-                        <text x="195" y="824" class="uml-text" style="text-anchor: end; font-weight: bold;">Chọn món?</text>
+                        <!-- Decision Node -->
+                        <polygon points="1345,65 1360,80 1345,95 1330,80" class="uml-decision" />
+                        <text x="1345" y="45" class="uml-text" style="font-weight: bold;">Chọn món?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 850 V 900" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="875" class="uml-label">Có</text>
+                        <path d="M 1360 80 H 1390" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1368" y="73" class="uml-label">[Có]</text>
 
                         <!-- Act 9 -->
-                        <rect x="190" y="900" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="925" class="uml-text">
-                            <tspan x="250" dy="0">Lưu tương tác</tspan>
-                            <tspan x="250" dy="14">&amp; feedback</tspan>
+                        <rect x="1390" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1450" y="75" class="uml-text">
+                            <tspan x="1450" dy="0">Lưu tương tác</tspan>
+                            <tspan x="1450" dy="14">&amp; feedback</tspan>
                         </text>
-                        <path d="M 250 960 V 1000" class="uml-path" />
-
-                        <!-- Path "Không" -->
-                        <path d="M 290 820 H 410 V 900" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="310" y="810" class="uml-label">Không</text>
-
-                        <!-- Act 10 (Hủy) -->
-                        <rect x="350" y="900" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="930" class="uml-text">Hủy bỏ</text>
-                        <path d="M 410 960 V 1000" class="uml-path" />
-
-                        <!-- Join Bar -->
-                        <line x1="210" y1="1000" x2="450" y2="1000" class="uml-join-bar" />
-                        <path d="M 330 1000 V 1030" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1510 80 H 1528" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- End Node -->
-                        <circle cx="330" cy="1040" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="330" cy="1040" r="5" fill="#000000" />
+                        <circle cx="1540" cy="80" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1540" cy="80" r="5" fill="#000000" />
+
+                        <!-- Path "Không" -->
+                        <path d="M 1345 95 V 150 H 1330" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1353" y="125" class="uml-label">[Không]</text>
+
+                        <!-- Act 10 (Hủy) -->
+                        <rect x="1210" y="150" width="120" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="1270" y="175" class="uml-text">Hủy bỏ</text>
+                        
+                        <!-- Loop Back to Merge Node -->
+                        <path d="M 1210 175 H 85 V 95" class="uml-path" marker-end="url(#arrowhead)" />
                     </svg>
                 </div>
             </div>
@@ -1503,7 +1505,7 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 520 910" width="520" height="910">
+                    <svg class="uml-svg" viewBox="0 0 1380 240" width="1380" height="240">
                         <defs>
                             <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
@@ -1511,89 +1513,91 @@
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead)" />
+                        <circle cx="30" cy="80" r="8" fill="#000000" />
+                        <path d="M 38 80 H 70" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node -->
+                        <polygon points="85,65 100,80 85,95 70,80" class="uml-decision" />
+                        <path d="M 100 80 H 130" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Khách vãng lai</tspan>
-                            <tspan x="250" dy="14">truy cập hệ thống</tspan>
+                        <rect x="130" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="190" y="75" class="uml-text">
+                            <tspan x="190" dy="0">Khách vãng lai</tspan>
+                            <tspan x="190" dy="14">truy cập hệ thống</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 250 80 H 280" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Thống kê số lượt</tspan>
-                            <tspan x="250" dy="14">xem &amp; đơn đặt món</tspan>
+                        <rect x="280" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="340" y="75" class="uml-text">
+                            <tspan x="340" dy="0">Thống kê số lượt</tspan>
+                            <tspan x="340" dy="14">xem &amp; đơn đặt món</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 400 80 H 430" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 3 -->
-                        <rect x="190" y="250" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="275" class="uml-text">
-                            <tspan x="250" dy="0">Tính điểm xu hướng</tspan>
-                            <tspan x="250" dy="14">giảm hao mòn thời gian</tspan>
+                        <rect x="430" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="490" y="75" class="uml-text">
+                            <tspan x="490" dy="0">Tính điểm xu hướng</tspan>
+                            <tspan x="490" dy="14">giảm hao mòn thời gian</tspan>
                         </text>
-                        <path d="M 250 310 V 340" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 550 80 H 580" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 4 -->
-                        <rect x="190" y="340" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="365" class="uml-text">
-                            <tspan x="250" dy="0">Sắp xếp thực đơn</tspan>
-                            <tspan x="250" dy="14">theo điểm giảm dần</tspan>
+                        <rect x="580" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="640" y="75" class="uml-text">
+                            <tspan x="640" dy="0">Sắp xếp thực đơn</tspan>
+                            <tspan x="640" dy="14">theo điểm giảm dần</tspan>
                         </text>
-                        <path d="M 250 400 V 430" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 700 80 H 730" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 5 -->
-                        <rect x="190" y="430" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="455" class="uml-text">
-                            <tspan x="250" dy="0">Lọc bỏ các món</tspan>
-                            <tspan x="250" dy="14">hết nguyên liệu</tspan>
+                        <rect x="730" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="790" y="75" class="uml-text">
+                            <tspan x="790" dy="0">Lọc bỏ các món</tspan>
+                            <tspan x="790" dy="14">hết nguyên liệu</tspan>
                         </text>
-                        <path d="M 250 490 V 520" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 850 80 H 880" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 6 -->
-                        <rect x="190" y="520" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="545" class="uml-text">
-                            <tspan x="250" dy="0">Hiển thị Top 10</tspan>
-                            <tspan x="250" dy="14">món bán chạy gợi ý</tspan>
+                        <rect x="880" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="940" y="75" class="uml-text">
+                            <tspan x="940" dy="0">Hiển thị Top 10</tspan>
+                            <tspan x="940" dy="14">món bán chạy gợi ý</tspan>
                         </text>
-                        <path d="M 250 580 V 610" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1000 80 H 1045" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision -->
-                        <polygon points="250,610 290,640 250,670 210,640" class="uml-decision" />
-                        <text x="195" y="644" class="uml-text" style="text-anchor: end; font-weight: bold;">Chọn món?</text>
+                        <!-- Decision Node -->
+                        <polygon points="1060,65 1075,80 1060,95 1045,80" class="uml-decision" />
+                        <text x="1060" y="45" class="uml-text" style="font-weight: bold;">Chọn món?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 670 V 720" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="695" class="uml-label">Có</text>
+                        <path d="M 1075 80 H 1110" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1082" y="73" class="uml-label">[Có]</text>
 
                         <!-- Act 7 -->
-                        <rect x="190" y="720" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="745" class="uml-text">
-                            <tspan x="250" dy="0">Đặt món thành công</tspan>
-                            <tspan x="250" dy="14">&amp; Cập nhật lượt mua</tspan>
+                        <rect x="1110" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1170" y="75" class="uml-text">
+                            <tspan x="1170" dy="0">Đặt món thành công</tspan>
+                            <tspan x="1170" dy="14">&amp; Cập nhật lượt mua</tspan>
                         </text>
-                        <path d="M 250 780 V 820" class="uml-path" />
-
-                        <!-- Path "Không" -->
-                        <path d="M 290 640 H 410 V 720" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="310" y="630" class="uml-label">Không</text>
-
-                        <!-- Act 8 -->
-                        <rect x="350" y="720" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="750" class="uml-text">Hủy bỏ</text>
-                        <path d="M 410 780 V 820" class="uml-path" />
-
-                        <!-- Join Bar -->
-                        <line x1="210" y1="820" x2="450" y2="820" class="uml-join-bar" />
-                        <path d="M 330 820 V 850" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1230 80 H 1268" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- End Node -->
-                        <circle cx="330" cy="860" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="330" cy="860" r="5" fill="#000000" />
+                        <circle cx="1280" cy="80" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1280" cy="80" r="5" fill="#000000" />
+
+                        <!-- Path "Không" -->
+                        <path d="M 1060 95 V 150 H 1050" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1068" y="125" class="uml-label">[Không]</text>
+
+                        <!-- Act 8 -->
+                        <rect x="930" y="150" width="120" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="990" y="175" class="uml-text">Hủy bỏ</text>
+                        
+                        <!-- Loop Back to Merge Node -->
+                        <path d="M 930 175 H 85 V 95" class="uml-path" marker-end="url(#arrowhead)" />
                     </svg>
                 </div>
             </div>
@@ -1609,7 +1613,7 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 520 910" width="520" height="910">
+                    <svg class="uml-svg" viewBox="0 0 1380 240" width="1380" height="240">
                         <defs>
                             <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
@@ -1617,89 +1621,91 @@
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead)" />
+                        <circle cx="30" cy="80" r="8" fill="#000000" />
+                        <path d="M 38 80 H 70" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node -->
+                        <polygon points="85,65 100,80 85,95 70,80" class="uml-decision" />
+                        <path d="M 100 80 H 130" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Ghi nhận món ăn</tspan>
-                            <tspan x="250" dy="14">khách đã tương tác</tspan>
+                        <rect x="130" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="190" y="75" class="uml-text">
+                            <tspan x="190" dy="0">Ghi nhận món ăn</tspan>
+                            <tspan x="190" dy="14">khách đã tương tác</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 250 80 H 280" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Trích xuất thuộc tính</tspan>
-                            <tspan x="250" dy="14">&amp; đặc trưng món ăn</tspan>
+                        <rect x="280" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="340" y="75" class="uml-text">
+                            <tspan x="340" dy="0">Trích xuất thuộc tính</tspan>
+                            <tspan x="340" dy="14">&amp; đặc trưng món ăn</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 400 80 H 430" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 3 -->
-                        <rect x="190" y="250" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="275" class="uml-text">
-                            <tspan x="250" dy="0">Thiết lập &amp; cập nhật</tspan>
-                            <tspan x="250" dy="14">Hồ sơ gu khách hàng</tspan>
+                        <rect x="430" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="490" y="75" class="uml-text">
+                            <tspan x="490" dy="0">Thiết lập &amp; cập nhật</tspan>
+                            <tspan x="490" dy="14">Hồ sơ gu khách hàng</tspan>
                         </text>
-                        <path d="M 250 310 V 340" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 550 80 H 580" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 4 -->
-                        <rect x="190" y="340" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="365" class="uml-text">
-                            <tspan x="250" dy="0">Tính tương đồng Cosine</tspan>
-                            <tspan x="250" dy="14">món ăn &amp; Hồ sơ gu khách</tspan>
+                        <rect x="580" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="640" y="75" class="uml-text">
+                            <tspan x="640" dy="0">Tính tương đồng Cosine</tspan>
+                            <tspan x="640" dy="14">món ăn &amp; Hồ sơ gu khách</tspan>
                         </text>
-                        <path d="M 250 400 V 430" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 700 80 H 730" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 5 -->
-                        <rect x="190" y="430" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="455" class="uml-text">
-                            <tspan x="250" dy="0">Lọc bỏ món đã đặt</tspan>
-                            <tspan x="250" dy="14">&amp; Xếp hạng score</tspan>
+                        <rect x="730" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="790" y="75" class="uml-text">
+                            <tspan x="790" dy="0">Lọc món đã đặt</tspan>
+                            <tspan x="790" dy="14">&amp; Xếp hạng score</tspan>
                         </text>
-                        <path d="M 250 490 V 520" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 850 80 H 880" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 6 -->
-                        <rect x="190" y="520" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="545" class="uml-text">
-                            <tspan x="250" dy="0">Hiển thị các món</tspan>
-                            <tspan x="250" dy="14">đề xuất tương đồng</tspan>
+                        <rect x="880" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="940" y="75" class="uml-text">
+                            <tspan x="940" dy="0">Hiển thị các món</tspan>
+                            <tspan x="940" dy="14">đề xuất tương đồng</tspan>
                         </text>
-                        <path d="M 250 580 V 610" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1000 80 H 1045" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision -->
-                        <polygon points="250,610 290,640 250,670 210,640" class="uml-decision" />
-                        <text x="195" y="644" class="uml-text" style="text-anchor: end; font-weight: bold;">Chọn món?</text>
+                        <!-- Decision Node -->
+                        <polygon points="1060,65 1075,80 1060,95 1045,80" class="uml-decision" />
+                        <text x="1060" y="45" class="uml-text" style="font-weight: bold;">Chọn món?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 670 V 720" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="695" class="uml-label">Có</text>
+                        <path d="M 1075 80 H 1110" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1082" y="73" class="uml-label">[Có]</text>
 
                         <!-- Act 7 -->
-                        <rect x="190" y="720" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="745" class="uml-text">
-                            <tspan x="250" dy="0">Đặt món thành công</tspan>
-                            <tspan x="250" dy="14">&amp; Lưu feedback nội dung</tspan>
+                        <rect x="1110" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1170" y="75" class="uml-text">
+                            <tspan x="1170" dy="0">Đặt món thành công</tspan>
+                            <tspan x="1170" dy="14">&amp; Lưu feedback nội dung</tspan>
                         </text>
-                        <path d="M 250 780 V 820" class="uml-path" />
-
-                        <!-- Path "Không" -->
-                        <path d="M 290 640 H 410 V 720" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="310" y="630" class="uml-label">Không</text>
-
-                        <!-- Act 8 (Hủy) -->
-                        <rect x="350" y="720" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="750" class="uml-text">Hủy bỏ</text>
-                        <path d="M 410 780 V 820" class="uml-path" />
-
-                        <!-- Join Bar -->
-                        <line x1="210" y1="820" x2="450" y2="820" class="uml-join-bar" />
-                        <path d="M 330 820 V 850" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1230 80 H 1268" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- End Node -->
-                        <circle cx="330" cy="860" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="330" cy="860" r="5" fill="#000000" />
+                        <circle cx="1280" cy="80" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1280" cy="80" r="5" fill="#000000" />
+
+                        <!-- Path "Không" -->
+                        <path d="M 1060 95 V 150 H 1050" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1068" y="125" class="uml-label">[Không]</text>
+
+                        <!-- Act 8 -->
+                        <rect x="930" y="150" width="120" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="990" y="175" class="uml-text">Hủy bỏ</text>
+                        
+                        <!-- Loop Back to Merge Node -->
+                        <path d="M 930 175 H 85 V 95" class="uml-path" marker-end="url(#arrowhead)" />
                     </svg>
                 </div>
             </div>
@@ -1715,7 +1721,7 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 500 1080" width="500" height="1080">
+                    <svg class="uml-svg" viewBox="0 0 1600 380" width="1600" height="380">
                         <defs>
                             <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
@@ -1723,133 +1729,135 @@
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead)" />
+                        <circle cx="30" cy="170" r="8" fill="#000000" />
+                        <path d="M 38 170 H 65" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node -->
+                        <polygon points="80,155 95,170 80,185 65,170" class="uml-decision" />
+                        <path d="M 95 170 H 120" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Khách truy cập</tspan>
-                            <tspan x="250" dy="14">&amp; Lấy mã người dùng</tspan>
+                        <rect x="120" y="140" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="180" y="165" class="uml-text">
+                            <tspan x="180" dy="0">Khách truy cập</tspan>
+                            <tspan x="180" dy="14">&amp; Lấy mã người dùng</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 240 170 H 270" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Lưu hành vi (click, view)</tspan>
-                            <tspan x="250" dy="14">vào table hành vi</tspan>
+                        <rect x="270" y="140" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="330" y="165" class="uml-text">
+                            <tspan x="330" dy="0">Lưu hành vi</tspan>
+                            <tspan x="330" dy="14">(click, view) vào DB</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" />
+                        <path d="M 390 170 H 420" class="uml-path" />
 
                         <!-- Fork Bar -->
-                        <line x1="50" y1="250" x2="450" y2="250" class="uml-join-bar" />
+                        <line x1="420" y1="60" x2="420" y2="280" class="uml-join-bar" />
 
-                        <!-- Branch 1 (Left) -->
-                        <path d="M 90 250 V 290" class="uml-path" marker-end="url(#arrowhead)" />
-                        <rect x="30" y="290" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="90" y="315" class="uml-text">
-                            <tspan x="90" dy="0">Collaborative Filtering</tspan>
-                            <tspan x="90" dy="14">(SVD Model)</tspan>
+                        <!-- Branch 1 -->
+                        <path d="M 420 100 H 450" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="450" y="70" width="110" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="505" y="95" class="uml-text">
+                            <tspan x="505" dy="0">Lọc cộng tác</tspan>
+                            <tspan x="505" dy="14">(SVD Model)</tspan>
                         </text>
-                        <path d="M 90 350 V 380" class="uml-path" marker-end="url(#arrowhead)" />
-                        <rect x="30" y="380" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="90" y="405" class="uml-text">
-                            <tspan x="90" dy="0">Tính điểm tương đồng</tspan>
-                            <tspan x="90" dy="14">nhóm người dùng</tspan>
+                        <path d="M 560 100 H 590" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="590" y="70" width="110" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="645" y="95" class="uml-text">
+                            <tspan x="645" dy="0">Tính tương đồng</tspan>
+                            <tspan x="645" dy="14">nhóm người dùng</tspan>
                         </text>
-                        <path d="M 90 440 V 470" class="uml-path" />
+                        <path d="M 700 100 H 730" class="uml-path" />
 
-                        <!-- Branch 2 (Middle) -->
-                        <path d="M 250 250 V 290" class="uml-path" marker-end="url(#arrowhead)" />
-                        <rect x="190" y="290" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="315" class="uml-text">
-                            <tspan x="250" dy="0">Content-based</tspan>
-                            <tspan x="250" dy="14">(TF-IDF &amp; Cosine)</tspan>
+                        <!-- Branch 2 -->
+                        <path d="M 420 170 H 450" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="450" y="140" width="110" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="505" y="165" class="uml-text">
+                            <tspan x="505" dy="0">Lọc nội dung</tspan>
+                            <tspan x="505" dy="14">(TF-IDF &amp; Cosine)</tspan>
                         </text>
-                        <path d="M 250 350 V 380" class="uml-path" marker-end="url(#arrowhead)" />
-                        <rect x="190" y="380" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="405" class="uml-text">
-                            <tspan x="250" dy="0">Tính điểm tương đồng</tspan>
-                            <tspan x="250" dy="14">đặc trưng món ăn</tspan>
+                        <path d="M 560 170 H 590" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="590" y="140" width="110" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="645" y="165" class="uml-text">
+                            <tspan x="645" dy="0">Tính tương đồng</tspan>
+                            <tspan x="645" dy="14">đặc trưng món ăn</tspan>
                         </text>
-                        <path d="M 250 440 V 470" class="uml-path" />
+                        <path d="M 700 170 H 730" class="uml-path" />
 
-                        <!-- Branch 3 (Right) -->
-                        <path d="M 410 250 V 290" class="uml-path" marker-end="url(#arrowhead)" />
-                        <rect x="350" y="290" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="315" class="uml-text">
-                            <tspan x="410" dy="0">Association Rules</tspan>
-                            <tspan x="410" dy="14">(Thuật toán Apriori)</tspan>
+                        <!-- Branch 3 -->
+                        <path d="M 420 240 H 450" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="450" y="210" width="110" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="505" y="235" class="uml-text">
+                            <tspan x="505" dy="0">Luật kết hợp</tspan>
+                            <tspan x="505" dy="14">(Thuật toán Apriori)</tspan>
                         </text>
-                        <path d="M 410 350 V 380" class="uml-path" marker-end="url(#arrowhead)" />
-                        <rect x="350" y="380" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="405" class="uml-text">
-                            <tspan x="410" dy="0">Tìm các món ăn</tspan>
-                            <tspan x="410" dy="14">thường mua kèm nhau</tspan>
+                        <path d="M 560 240 H 590" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="590" y="210" width="110" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="645" y="235" class="uml-text">
+                            <tspan x="645" dy="0">Tìm món thường</tspan>
+                            <tspan x="645" dy="14">mua kèm nhau</tspan>
                         </text>
-                        <path d="M 410 440 V 470" class="uml-path" />
+                        <path d="M 700 240 H 730" class="uml-path" />
 
-                        <!-- Join Bar 1 -->
-                        <line x1="50" y1="470" x2="450" y2="470" class="uml-join-bar" />
-                        <path d="M 250 470 V 510" class="uml-path" marker-end="url(#arrowhead)" />
+                        <!-- Join Bar -->
+                        <line x1="730" y1="60" x2="730" y2="280" class="uml-join-bar" />
+                        <path d="M 730 170 H 760" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 6 -->
-                        <rect x="190" y="510" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="535" class="uml-text">
-                            <tspan x="250" dy="0">Trộn các danh sách</tspan>
-                            <tspan x="250" dy="14">&amp; Tính điểm kết hợp</tspan>
+                        <rect x="760" y="140" width="130" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="825" y="165" class="uml-text">
+                            <tspan x="825" dy="0">Trộn các danh sách</tspan>
+                            <tspan x="825" dy="14">&amp; Tính điểm kết hợp</tspan>
                         </text>
-                        <path d="M 250 570 V 600" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 890 170 H 920" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 7 -->
-                        <rect x="190" y="600" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="625" class="uml-text">
-                            <tspan x="250" dy="0">Sắp xếp, lọc món hết</tspan>
-                            <tspan x="250" dy="14">&amp; Lưu vào table gợi ý</tspan>
+                        <rect x="920" y="140" width="130" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="985" y="165" class="uml-text">
+                            <tspan x="985" dy="0">Sắp xếp, lọc món hết</tspan>
+                            <tspan x="985" dy="14">&amp; Lưu vào table gợi ý</tspan>
                         </text>
-                        <path d="M 250 660 V 690" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1050 170 H 1080" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 8 -->
-                        <rect x="190" y="690" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="715" class="uml-text">
-                            <tspan x="250" dy="0">Hiển thị gợi ý</tspan>
-                            <tspan x="250" dy="14">tại Homepage / Suggest</tspan>
+                        <rect x="1080" y="140" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1140" y="165" class="uml-text">
+                            <tspan x="1140" dy="0">Hiển thị gợi ý</tspan>
+                            <tspan x="1140" dy="14">tại Homepage / Suggest</tspan>
                         </text>
-                        <path d="M 250 750 V 780" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1200 170 H 1245" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision -->
-                        <polygon points="250,780 290,810 250,840 210,810" class="uml-decision" />
-                        <text x="195" y="814" class="uml-text" style="text-anchor: end; font-weight: bold;">Chọn món?</text>
+                        <!-- Decision Node -->
+                        <polygon points="1260,155 1275,170 1260,185 1245,170" class="uml-decision" />
+                        <text x="1260" y="135" class="uml-text" style="font-weight: bold;">Chọn món?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 840 V 890" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="865" class="uml-label">Có</text>
+                        <path d="M 1275 170 H 1310" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1282" y="163" class="uml-label">[Có]</text>
 
                         <!-- Act 9 -->
-                        <rect x="190" y="890" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="905" class="uml-text">
-                            <tspan x="250" dy="0">Đặt món thành công</tspan>
-                            <tspan x="250" dy="14">&amp; Hoàn thành luồng</tspan>
+                        <rect x="1310" y="140" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1370" y="165" class="uml-text">
+                            <tspan x="1370" dy="0">Đặt món thành công</tspan>
+                            <tspan x="1370" dy="14">&amp; Hoàn thành luồng</tspan>
                         </text>
-                        <path d="M 250 940 V 980" class="uml-path" />
-
-                        <!-- Path "Không" -->
-                        <path d="M 290 810 H 410 V 890" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="310" y="800" class="uml-label">Không</text>
-
-                        <!-- Act 10 (Hủy) -->
-                        <rect x="350" y="880" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="910" class="uml-text">Hủy bỏ</text>
-                        <path d="M 410 940 V 980" class="uml-path" />
-
-                        <!-- Join Bar 2 -->
-                        <line x1="210" y1="980" x2="450" y2="980" class="uml-join-bar" />
-                        <path d="M 330 980 V 1010" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1430 170 H 1468" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- End Node -->
-                        <circle cx="330" cy="1020" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="330" cy="1020" r="5" fill="#000000" />
+                        <circle cx="1480" cy="170" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1480" cy="170" r="5" fill="#000000" />
+
+                        <!-- Path "Không" -->
+                        <path d="M 1260 185 V 240 H 1250" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1268" y="215" class="uml-label">[Không]</text>
+
+                        <!-- Act 10 (Hủy) -->
+                        <rect x="1130" y="240" width="120" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="1190" y="265" class="uml-text">Hủy bỏ</text>
+
+                        <!-- Loop Back to Merge Node -->
+                        <path d="M 1130 265 H 80 V 185" class="uml-path" marker-end="url(#arrowhead)" />
                     </svg>
                 </div>
             </div>
@@ -1865,7 +1873,7 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 520 1020" width="520" height="1020">
+                    <svg class="uml-svg" viewBox="0 0 1320 260" width="1320" height="260">
                         <defs>
                             <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
@@ -1873,101 +1881,105 @@
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead)" />
+                        <circle cx="30" cy="100" r="8" fill="#000000" />
+                        <path d="M 38 100 H 65" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node 1 -->
+                        <polygon points="80,85 95,100 80,115 65,100" class="uml-decision" />
+                        <path d="M 95 100 H 120" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Mở khung chat</tspan>
-                            <tspan x="250" dy="14">&amp; Nhập câu hỏi</tspan>
+                        <rect x="120" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="180" y="95" class="uml-text">
+                            <tspan x="180" dy="0">Mở khung chat</tspan>
+                            <tspan x="180" dy="14">&amp; Nhập câu hỏi</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 240 100 H 270" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Tạo session_id &amp;</tspan>
-                            <tspan x="250" dy="14">lưu tin nhắn vào DB</tspan>
+                        <rect x="270" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="330" y="95" class="uml-text">
+                            <tspan x="330" dy="0">Tạo session_id</tspan>
+                            <tspan x="330" dy="14">&amp; lưu tin nhắn DB</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 390 100 H 420" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 3 -->
-                        <rect x="190" y="250" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="275" class="uml-text">
-                            <tspan x="250" dy="0">Truy vấn tri thức</tspan>
-                            <tspan x="250" dy="14">RAG phù hợp từ DB</tspan>
+                        <rect x="420" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="480" y="95" class="uml-text">
+                            <tspan x="480" dy="0">Truy vấn tri thức</tspan>
+                            <tspan x="480" dy="14">RAG phù hợp từ DB</tspan>
                         </text>
-                        <path d="M 250 310 V 340" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 540 100 H 570" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 4 -->
-                        <rect x="190" y="340" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="365" class="uml-text">
-                            <tspan x="250" dy="0">Tổng hợp context</tspan>
-                            <tspan x="250" dy="14">&amp; Gửi Groq API</tspan>
+                        <rect x="570" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="630" y="95" class="uml-text">
+                            <tspan x="630" dy="0">Tổng hợp context</tspan>
+                            <tspan x="630" dy="14">&amp; Gửi Groq API</tspan>
                         </text>
-                        <path d="M 250 400 V 430" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 690 100 H 720" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 5 -->
-                        <rect x="190" y="430" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="455" class="uml-text">
-                            <tspan x="250" dy="0">Nhận phản hồi</tspan>
-                            <tspan x="250" dy="14">từ Groq LLaMA</tspan>
+                        <rect x="720" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="780" y="95" class="uml-text">
+                            <tspan x="780" dy="0">Nhận phản hồi</tspan>
+                            <tspan x="780" dy="14">từ Groq LLaMA</tspan>
                         </text>
-                        <path d="M 250 490 V 520" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 840 100 H 875" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision 1 -->
-                        <polygon points="250,520 290,550 250,580 210,550" class="uml-decision" />
-                        <text x="195" y="554" class="uml-text" style="text-anchor: end; font-weight: bold;">Hỏi món ăn?</text>
+                        <!-- Decision Node 1 -->
+                        <polygon points="890,85 905,100 890,115 875,100" class="uml-decision" />
+                        <text x="890" y="65" class="uml-text" style="font-weight: bold;">Hỏi món ăn?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 580 V 630" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="605" class="uml-label">Có</text>
+                        <path d="M 890 85 V 65 H 930" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="895" y="75" class="uml-label">[Có]</text>
 
                         <!-- Act 6 -->
-                        <rect x="190" y="630" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="655" class="uml-text">
-                            <tspan x="250" dy="0">Truy vấn DB lấy món,</tspan>
-                            <tspan x="250" dy="14">giá &amp; nút Đặt ngay</tspan>
+                        <rect x="930" y="40" width="130" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="995" y="65" class="uml-text">
+                            <tspan x="995" dy="0">Truy vấn DB lấy món,</tspan>
+                            <tspan x="995" dy="14">giá &amp; nút Đặt ngay</tspan>
                         </text>
-                        <path d="M 250 690 V 730" class="uml-path" />
+                        <path d="M 1060 65 H 1100 V 85" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Path "Không" -->
-                        <path d="M 290 550 H 410 V 630" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="310" y="540" class="uml-label">Không</text>
+                        <path d="M 890 115 V 135 H 930" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="895" y="125" class="uml-label">[Không]</text>
 
                         <!-- Act 7 -->
-                        <rect x="350" y="630" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="660" class="uml-text">Không đính kèm món</text>
-                        <path d="M 410 690 V 730" class="uml-path" />
+                        <rect x="930" y="110" width="130" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="995" y="135" class="uml-text">Không đính kèm món</text>
+                        <path d="M 1060 135 H 1100 V 115" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Join Bar -->
-                        <line x1="210" y1="730" x2="450" y2="730" class="uml-join-bar" />
-                        <path d="M 250 730 V 770" class="uml-path" marker-end="url(#arrowhead)" />
+                        <!-- Merge Node 2 -->
+                        <polygon points="1100,85 1115,100 1100,115 1085,100" class="uml-decision" />
+                        <path d="M 1115 100 H 1135" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 8 -->
-                        <rect x="190" y="770" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="795" class="uml-text">
-                            <tspan x="250" dy="0">Lưu phản hồi &amp;</tspan>
-                            <tspan x="250" dy="14">hiển thị Rich Msg</tspan>
+                        <rect x="1135" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1195" y="95" class="uml-text">
+                            <tspan x="1195" dy="0">Lưu phản hồi &amp;</tspan>
+                            <tspan x="1195" dy="14">hiển thị Rich Msg</tspan>
                         </text>
-                        <path d="M 250 830 V 850" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1255 100 H 1280" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision 2 -->
-                        <polygon points="250,850 290,880 250,910 210,880" class="uml-decision" />
-                        <text x="305" y="884" class="uml-text" style="text-anchor: start; font-weight: bold;">Hỏi tiếp?</text>
+                        <!-- Decision Node 2 -->
+                        <polygon points="1295,85 1310,100 1295,115 1280,100" class="uml-decision" />
+                        <text x="1295" y="65" class="uml-text" style="font-weight: bold;">Hỏi tiếp?</text>
 
-                        <!-- Path "Không" (to End) -->
-                        <path d="M 250 910 V 960" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="935" class="uml-label">Không</text>
+                        <!-- Path "Không" (End) -->
+                        <path d="M 1295 115 V 180" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1303" y="135" class="uml-label">[Không]</text>
 
                         <!-- End Node -->
-                        <circle cx="250" cy="970" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="250" cy="970" r="5" fill="#000000" />
+                        <circle cx="1295" cy="200" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1295" cy="200" r="5" fill="#000000" />
 
-                        <!-- Path "Có" (Loop back) -->
-                        <path d="M 210 880 H 70 V 100 H 190" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="90" y="872" class="uml-label">Có (Hỏi tiếp)</text>
+                        <!-- Path "Có" (Loop back to Merge Node 1) -->
+                        <path d="M 1295 85 V 20 H 80 V 85" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="680" y="15" class="uml-label">[Có]</text>
                     </svg>
                 </div>
             </div>
@@ -1983,7 +1995,7 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 520 1090" width="520" height="1090">
+                    <svg class="uml-svg" viewBox="0 0 1600 240" width="1600" height="240">
                         <defs>
                             <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
@@ -1991,102 +2003,104 @@
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead)" />
+                        <circle cx="30" cy="80" r="8" fill="#000000" />
+                        <path d="M 38 80 H 70" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node -->
+                        <polygon points="85,65 100,80 85,95 70,80" class="uml-decision" />
+                        <path d="M 100 80 H 130" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Lấy danh sách</tspan>
-                            <tspan x="250" dy="14">chi tiết đơn hàng</tspan>
+                        <rect x="130" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="190" y="75" class="uml-text">
+                            <tspan x="190" dy="0">Lấy danh sách</tspan>
+                            <tspan x="190" dy="14">chi tiết đơn hàng</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 250 80 H 280" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Gom nhóm món ăn</tspan>
-                            <tspan x="250" dy="14">theo từng đơn hàng</tspan>
+                        <rect x="280" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="340" y="75" class="uml-text">
+                            <tspan x="340" dy="0">Gom nhóm món ăn</tspan>
+                            <tspan x="340" dy="14">theo từng đơn hàng</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 400 80 H 430" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 3 -->
-                        <rect x="190" y="250" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="275" class="uml-text">
-                            <tspan x="250" dy="0">Mã hóa One-hot</tspan>
-                            <tspan x="250" dy="14">Transaction Matrix</tspan>
+                        <rect x="430" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="490" y="75" class="uml-text">
+                            <tspan x="490" dy="0">Mã hóa One-hot</tspan>
+                            <tspan x="490" dy="14">Transaction Matrix</tspan>
                         </text>
-                        <path d="M 250 310 V 340" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 550 80 H 580" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 4 -->
-                        <rect x="190" y="340" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="365" class="uml-text">
-                            <tspan x="250" dy="0">Apriori: Tìm các</tspan>
-                            <tspan x="250" dy="14">tập món ăn phổ biến</tspan>
+                        <rect x="580" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="640" y="75" class="uml-text">
+                            <tspan x="640" dy="0">Apriori: Tìm các</tspan>
+                            <tspan x="640" dy="14">tập món ăn phổ biến</tspan>
                         </text>
-                        <path d="M 250 400 V 430" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 700 80 H 730" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 5 -->
-                        <rect x="190" y="430" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="455" class="uml-text">
-                            <tspan x="250" dy="0">Sinh luật kết hợp</tspan>
-                            <tspan x="250" dy="14">theo Confidence &amp; Lift</tspan>
+                        <rect x="730" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="790" y="75" class="uml-text">
+                            <tspan x="790" dy="0">Sinh luật kết hợp</tspan>
+                            <tspan x="790" dy="14">theo Confidence &amp; Lift</tspan>
                         </text>
-                        <path d="M 250 490 V 520" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 850 80 H 880" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 6 -->
-                        <rect x="190" y="520" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="545" class="uml-text">
-                            <tspan x="250" dy="0">Lọc luật tiền đề = 1</tspan>
-                            <tspan x="250" dy="14">&amp; lưu file rules.pkl</tspan>
+                        <rect x="880" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="940" y="75" class="uml-text">
+                            <tspan x="940" dy="0">Lọc luật tiền đề = 1</tspan>
+                            <tspan x="940" dy="14">&amp; lưu file rules.pkl</tspan>
                         </text>
-                        <path d="M 250 580 V 610" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1000 80 H 1030" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 7 -->
-                        <rect x="190" y="610" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="635" class="uml-text">
-                            <tspan x="250" dy="0">Tra cứu giỏ hàng</tspan>
-                            <tspan x="250" dy="14">với rules.pkl</tspan>
+                        <rect x="1030" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1090" y="75" class="uml-text">
+                            <tspan x="1090" dy="0">Tra cứu giỏ hàng</tspan>
+                            <tspan x="1090" dy="14">với rules.pkl</tspan>
                         </text>
-                        <path d="M 250 670 V 700" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1150 80 H 1180" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 8 -->
-                        <rect x="190" y="700" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="725" class="uml-text">
-                            <tspan x="250" dy="0">Tính điểm = Lift*Conf,</tspan>
-                            <tspan x="250" dy="14">trích xuất Top món</tspan>
+                        <rect x="1180" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1240" y="75" class="uml-text">
+                            <tspan x="1240" dy="0">Tính điểm = Lift*Conf,</tspan>
+                            <tspan x="1240" dy="14">trích xuất Top món</tspan>
                         </text>
-                        <path d="M 250 760 V 790" class="uml-path" marker-end="url(#arrowhead)" />
+                        <path d="M 1300 80 H 1335" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision -->
-                        <polygon points="250,790 290,820 250,850 210,820" class="uml-decision" />
-                        <text x="195" y="824" class="uml-text" style="text-anchor: end; font-weight: bold;">Mua kèm?</text>
+                        <!-- Decision Node -->
+                        <polygon points="1350,65 1365,80 1350,95 1335,80" class="uml-decision" />
+                        <text x="1350" y="45" class="uml-text" style="font-weight: bold;">Mua kèm?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 850 V 900" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="260" y="875" class="uml-label">Có</text>
+                        <path d="M 1365 80 H 1400" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1372" y="73" class="uml-label">[Có]</text>
 
                         <!-- Act 9 -->
-                        <rect x="190" y="900" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="930" class="uml-text">Đặt hàng thành công</text>
-                        <path d="M 250 960 V 1000" class="uml-path" />
-
-                        <!-- Path "Không" -->
-                        <path d="M 290 820 H 410 V 900" class="uml-path" marker-end="url(#arrowhead)" />
-                        <text x="310" y="810" class="uml-label">Không</text>
-
-                        <!-- Act 10 (Hủy) -->
-                        <rect x="350" y="900" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="930" class="uml-text">Hủy bỏ</text>
-                        <path d="M 410 960 V 1000" class="uml-path" />
-
-                        <!-- Join Bar -->
-                        <line x1="210" y1="1000" x2="450" y2="1000" class="uml-join-bar" />
-                        <path d="M 330 1000 V 1030" class="uml-path" marker-end="url(#arrowhead)" />
+                        <rect x="1400" y="50" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1460" y="75" class="uml-text">Đặt hàng thành công</text>
+                        <path d="M 1520 80 H 1548" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- End Node -->
-                        <circle cx="330" cy="1040" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="330" cy="1040" r="5" fill="#000000" />
+                        <circle cx="1560" cy="80" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1560" cy="80" r="5" fill="#000000" />
+
+                        <!-- Path "Không" -->
+                        <path d="M 1350 95 V 150 H 1340" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="1358" y="125" class="uml-label">[Không]</text>
+
+                        <!-- Act 10 (Hủy) -->
+                        <rect x="1210" y="150" width="120" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="1270" y="175" class="uml-text">Hủy bỏ</text>
+                        
+                        <!-- Loop Back to Merge Node -->
+                        <path d="M 1210 175 H 85 V 95" class="uml-path" marker-end="url(#arrowhead)" />
                     </svg>
                 </div>
             </div>
@@ -2102,94 +2116,94 @@
             </div>
             <div class="diagram">
                 <div class="uml-svg-container">
-                    <svg class="uml-svg" viewBox="0 0 520 910" width="520" height="910">
+                    <svg class="uml-svg" viewBox="0 0 1320 240" width="1320" height="240">
                         <defs>
-                            <marker id="arrowhead-diag19" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
                             </marker>
                         </defs>
 
                         <!-- Start Node -->
-                        <circle cx="250" cy="30" r="8" fill="#000000" />
-                        <path d="M 250 38 V 70" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <circle cx="30" cy="100" r="8" fill="#000000" />
+                        <path d="M 38 100 H 80" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 1 -->
-                        <rect x="190" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="95" class="uml-text">
-                            <tspan x="250" dy="0">Thêm món chính</tspan>
-                            <tspan x="250" dy="14">vào giỏ hàng</tspan>
+                        <rect x="80" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="140" y="95" class="uml-text">
+                            <tspan x="140" dy="0">Thêm món chính</tspan>
+                            <tspan x="140" dy="14">vào giỏ hàng</tspan>
                         </text>
-                        <path d="M 250 130 V 160" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <path d="M 200 100 H 230" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 2 -->
-                        <rect x="190" y="160" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="185" class="uml-text">
-                            <tspan x="250" dy="0">Frontend gửi</tspan>
-                            <tspan x="250" dy="14">giỏ hàng cho AI</tspan>
+                        <rect x="230" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="290" y="95" class="uml-text">
+                            <tspan x="290" dy="0">Frontend gửi</tspan>
+                            <tspan x="290" dy="14">giỏ hàng cho AI</tspan>
                         </text>
-                        <path d="M 250 220 V 250" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <path d="M 350 100 H 380" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 3 -->
-                        <rect x="190" y="250" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="275" class="uml-text">
-                            <tspan x="250" dy="0">AI Service tra cứu</tspan>
-                            <tspan x="250" dy="14">rules.pkl đã train</tspan>
+                        <rect x="380" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="440" y="95" class="uml-text">
+                            <tspan x="440" dy="0">AI Service tra cứu</tspan>
+                            <tspan x="440" dy="14">rules.pkl</tspan>
                         </text>
-                        <path d="M 250 310 V 340" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <path d="M 500 100 H 530" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 4 -->
-                        <rect x="190" y="340" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="365" class="uml-text">
-                            <tspan x="250" dy="0">Tính điểm và lọc</tspan>
-                            <tspan x="250" dy="14">Top món kèm</tspan>
+                        <rect x="530" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="590" y="95" class="uml-text">
+                            <tspan x="590" dy="0">Tính điểm &amp; lọc</tspan>
+                            <tspan x="590" dy="14">món ăn kèm gợi ý</tspan>
                         </text>
-                        <path d="M 250 400 V 430" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <path d="M 650 100 H 680" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 5 -->
-                        <rect x="190" y="430" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="455" class="uml-text">
-                            <tspan x="250" dy="0">Hiển thị gợi ý</tspan>
-                            <tspan x="250" dy="14">lên giỏ hàng</tspan>
+                        <rect x="680" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="740" y="95" class="uml-text">
+                            <tspan x="740" dy="0">Hiển thị đề xuất</tspan>
+                            <tspan x="740" dy="14">lên giỏ hàng</tspan>
                         </text>
-                        <path d="M 250 490 V 520" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <path d="M 800 100 H 835" class="uml-path" marker-end="url(#arrowhead)" />
 
-                        <!-- Decision -->
-                        <polygon points="250,520 290,550 250,580 210,550" class="uml-decision" />
-                        <text x="195" y="554" class="uml-text" style="text-anchor: end; font-weight: bold;">Mua kèm?</text>
+                        <!-- Decision Node -->
+                        <polygon points="850,85 865,100 850,115 835,100" class="uml-decision" />
+                        <text x="850" y="65" class="uml-text" style="font-weight: bold;">Mua kèm?</text>
 
                         <!-- Path "Có" -->
-                        <path d="M 250 580 V 630" class="uml-path" marker-end="url(#arrowhead-diag19)" />
-                        <text x="260" y="605" class="uml-label">Có</text>
+                        <path d="M 850 85 V 65 H 890" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="855" y="75" class="uml-label">[Có]</text>
 
                         <!-- Act 6 -->
-                        <rect x="190" y="630" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="655" class="uml-text">
-                            <tspan x="250" dy="0">Thêm món kèm</tspan>
-                            <tspan x="250" dy="14">vào giỏ hàng</tspan>
+                        <rect x="890" y="40" width="130" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="955" y="65" class="uml-text">
+                            <tspan x="955" dy="0">Thêm món kèm</tspan>
+                            <tspan x="955" dy="14">vào giỏ hàng</tspan>
                         </text>
-                        <path d="M 250 690 V 720" class="uml-path" marker-end="url(#arrowhead-diag19)" />
-
-                        <!-- Act 7 -->
-                        <rect x="190" y="720" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="250" y="750" class="uml-text">Đặt hàng thành công</text>
-                        <path d="M 250 780 V 820" class="uml-path" />
+                        <path d="M 1020 65 H 1060 V 85" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Path "Không" -->
-                        <path d="M 290 550 H 410 V 720" class="uml-path" marker-end="url(#arrowhead-diag19)" />
-                        <text x="310" y="540" class="uml-label">Không</text>
+                        <path d="M 850 115 V 135 H 890" class="uml-path" marker-end="url(#arrowhead)" />
+                        <text x="855" y="125" class="uml-label">[Không]</text>
+
+                        <!-- Act 7 -->
+                        <rect x="890" y="110" width="130" height="50" rx="8" ry="8" class="uml-box" />
+                        <text x="955" y="135" class="uml-text">Giữ nguyên giỏ hàng</text>
+                        <path d="M 1020 135 H 1060 V 115" class="uml-path" marker-end="url(#arrowhead)" />
+
+                        <!-- Merge Node 2 -->
+                        <polygon points="1060,85 1075,100 1060,115 1045,100" class="uml-decision" />
+                        <path d="M 1075 100 H 1100" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- Act 8 -->
-                        <rect x="350" y="720" width="120" height="60" rx="8" ry="8" class="uml-box" />
-                        <text x="410" y="745" class="uml-text">Giữ nguyên giỏ hàng</text>
-                        <path d="M 410 780 V 820" class="uml-path" />
-
-                        <!-- Join Bar -->
-                        <line x1="210" y1="820" x2="450" y2="820" class="uml-join-bar" />
-                        <path d="M 330 820 V 850" class="uml-path" marker-end="url(#arrowhead-diag19)" />
+                        <rect x="1100" y="70" width="120" height="60" rx="8" ry="8" class="uml-box" />
+                        <text x="1160" y="95" class="uml-text">Đặt hàng thành công</text>
+                        <path d="M 1220 100 H 1258" class="uml-path" marker-end="url(#arrowhead)" />
 
                         <!-- End Node -->
-                        <circle cx="330" cy="860" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
-                        <circle cx="330" cy="860" r="5" fill="#000000" />
+                        <circle cx="1270" cy="100" r="10" fill="#ffffff" stroke="#000000" stroke-width="1.5" />
+                        <circle cx="1270" cy="100" r="5" fill="#000000" />
                     </svg>
                 </div>
             </div>

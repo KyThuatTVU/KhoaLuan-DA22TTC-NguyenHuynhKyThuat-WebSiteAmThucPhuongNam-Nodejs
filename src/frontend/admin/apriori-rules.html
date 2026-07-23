@@ -245,63 +245,79 @@
 
             emptyState.classList.add('hidden');
 
-            container.innerHTML = filteredRules.map(rule => `
-                <div class="rule-card bg-white rounded-lg shadow p-6">
-                    <div class="flex items-start gap-6">
-                        <!-- Antecedent (Món gốc) -->
-                        <div class="flex-1">
-                            <div class="flex items-center gap-4">
-                                <img src="http://localhost:3000/images/${rule.antecedent.image}" 
-                                     alt="${rule.antecedent.name}"
-                                     class="w-20 h-20 object-cover rounded-lg"
-                                     onerror="this.src='http://localhost:3000/images/default-food.jpg'">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-gray-900 mb-1">${rule.antecedent.name}</h3>
-                                    <p class="text-sm text-gray-500">${new Intl.NumberFormat('vi-VN').format(rule.antecedent.price)} đ</p>
-                                </div>
-                            </div>
-                        </div>
+            container.innerHTML = filteredRules.map(rule => {
+                // Xử lý đường dẫn ảnh cho antecedent
+                let antImg = rule.antecedent.image || 'default-food.jpg';
+                if (!antImg.startsWith('http') && !antImg.startsWith('/images/')) {
+                    antImg = '/images/' + antImg.replace(/^\/+/, '');
+                }
+                const antImgUrl = antImg.startsWith('http') ? antImg : `http://localhost:3000${antImg}`;
 
-                        <!-- Arrow -->
-                        <div class="flex items-center justify-center">
-                            <div class="bg-orange-100 rounded-full p-3">
-                                <i class="fas fa-arrow-right text-orange-600 text-xl"></i>
-                            </div>
-                        </div>
+                // Xử lý đường dẫn ảnh cho consequent
+                let consImg = rule.consequent.image || 'default-food.jpg';
+                if (!consImg.startsWith('http') && !consImg.startsWith('/images/')) {
+                    consImg = '/images/' + consImg.replace(/^\/+/, '');
+                }
+                const consImgUrl = consImg.startsWith('http') ? consImg : `http://localhost:3000${consImg}`;
 
-                        <!-- Consequent (Món được gợi ý) -->
-                        <div class="flex-1">
-                            <div class="flex items-center gap-4">
-                                <img src="http://localhost:3000/images/${rule.consequent.image}" 
-                                     alt="${rule.consequent.name}"
-                                     class="w-20 h-20 object-cover rounded-lg"
-                                     onerror="this.src='http://localhost:3000/images/default-food.jpg'">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-gray-900 mb-1">${rule.consequent.name}</h3>
-                                    <p class="text-sm text-gray-500">${new Intl.NumberFormat('vi-VN').format(rule.consequent.price)} đ</p>
+                return `
+                    <div class="rule-card bg-white rounded-lg shadow p-6">
+                        <div class="flex items-start gap-6">
+                            <!-- Antecedent (Món gốc) -->
+                            <div class="flex-1">
+                                <div class="flex items-center gap-4">
+                                    <img src="${antImgUrl}" 
+                                         alt="${rule.antecedent.name}"
+                                         class="w-20 h-20 object-cover rounded-lg"
+                                         onerror="this.src='../images/default-food.jpg'">
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-gray-900 mb-1">${rule.antecedent.name}</h3>
+                                        <p class="text-sm text-gray-500">${new Intl.NumberFormat('vi-VN').format(rule.antecedent.price)} đ</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+    
+                            <!-- Arrow -->
+                            <div class="flex items-center justify-center">
+                                <div class="bg-orange-100 rounded-full p-3">
+                                    <i class="fas fa-arrow-right text-orange-600 text-xl"></i>
+                                </div>
+                            </div>
+    
+                            <!-- Consequent (Món được gợi ý) -->
+                            <div class="flex-1">
+                                <div class="flex items-center gap-4">
+                                    <img src="${consImgUrl}" 
+                                         alt="${rule.consequent.name}"
+                                         class="w-20 h-20 object-cover rounded-lg"
+                                         onerror="this.src='../images/default-food.jpg'">
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-gray-900 mb-1">${rule.consequent.name}</h3>
+                                        <p class="text-sm text-gray-500">${new Intl.NumberFormat('vi-VN').format(rule.consequent.price)} đ</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <!-- Metrics -->
-                        <div class="w-48">
-                            <div class="mb-3">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-sm text-gray-600">Confidence:</span>
-                                    <span class="text-sm font-semibold text-gray-900">${(rule.confidence * 100).toFixed(1)}%</span>
+                            <!-- Metrics -->
+                            <div class="w-48">
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm text-gray-600">Confidence:</span>
+                                        <span class="text-sm font-semibold text-gray-900">${(rule.confidence * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="confidence-bar rounded-full h-2" style="width: ${rule.confidence * 100}%"></div>
+                                    </div>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="confidence-bar rounded-full h-2" style="width: ${rule.confidence * 100}%"></div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-600">Lift:</span>
+                                    <span class="font-semibold ${rule.lift > 1 ? 'text-green-600' : 'text-gray-600'}">${rule.lift.toFixed(2)}x</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-600">Lift:</span>
-                                <span class="font-semibold ${rule.lift > 1 ? 'text-green-600' : 'text-gray-600'}">${rule.lift.toFixed(2)}x</span>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function showEmptyState(message) {

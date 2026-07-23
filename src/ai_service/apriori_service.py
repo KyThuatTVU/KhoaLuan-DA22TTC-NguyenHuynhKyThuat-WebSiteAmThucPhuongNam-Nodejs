@@ -41,10 +41,12 @@ def train_apriori_model(min_support=0.015, min_confidence=0.3):
     try:
         conn = get_db_connection()
         
-        # Get orders and items
+        # Get orders and items (chỉ lấy đơn hàng giao thành công 'delivered')
         query = """
-            SELECT ma_don_hang, ma_mon
-            FROM chi_tiet_don_hang
+            SELECT ct.ma_don_hang, ct.ma_mon
+            FROM chi_tiet_don_hang ct
+            JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
+            WHERE dh.trang_thai = 'delivered'
         """
         df = pd.read_sql(query, conn)
         conn.close()

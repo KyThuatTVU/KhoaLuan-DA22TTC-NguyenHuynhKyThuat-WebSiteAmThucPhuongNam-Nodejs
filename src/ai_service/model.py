@@ -29,6 +29,7 @@ def train_collaborative_model():
         conn = get_db_connection()
         
         # Lấy dữ liệu: Cột user, cột item, cột rating (được tính bằng số lượng mua + số sao nếu có)
+        # Chỉ lấy những đơn hàng đã hoàn tất giao thành công (delivered)
         query = """
             SELECT 
                 dh.ma_nguoi_dung as user_id,
@@ -38,7 +39,7 @@ def train_collaborative_model():
             FROM chi_tiet_don_hang ct
             JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
             LEFT JOIN danh_gia_san_pham dg ON ct.ma_mon = dg.ma_mon AND dh.ma_nguoi_dung = dg.ma_nguoi_dung
-            WHERE dh.ma_nguoi_dung IS NOT NULL
+            WHERE dh.ma_nguoi_dung IS NOT NULL AND dh.trang_thai = 'delivered'
             GROUP BY dh.ma_nguoi_dung, ct.ma_mon
         """
         
@@ -118,9 +119,9 @@ def get_svd_recommendations(target_user_id, top_n=5):
         user_vector = user_matrix[user_idx]
         predicted_ratings = np.dot(user_vector, item_matrix)
         
-        # Tìm những items người dùng ĐÃ MUA để loại trừ khỏi gợi ý (Không bắt khách mua lại nếu ko cần)
+        # Tìm những items người dùng ĐÃ MUA (giao thành công) để loại trừ khỏi gợi ý (Không bắt khách mua lại nếu ko cần)
         conn = get_db_connection()
-        purchased_query = f"SELECT DISTINCT ct.ma_mon FROM chi_tiet_don_hang ct JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang WHERE dh.ma_nguoi_dung = {target_user_id}"
+        purchased_query = f"SELECT DISTINCT ct.ma_mon FROM chi_tiet_don_hang ct JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang WHERE dh.ma_nguoi_dung = {target_user_id} AND dh.trang_thai = 'delivered'"
         purchased_df = pd.read_sql(purchased_query, conn)
         conn.close()
         

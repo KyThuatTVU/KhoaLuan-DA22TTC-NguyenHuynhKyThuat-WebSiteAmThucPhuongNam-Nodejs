@@ -144,12 +144,12 @@ const getTopSelling = async (req, res) => {
 
         const [topProducts] = await db.query(`
             SELECT m.ma_mon, m.ten_mon, m.anh_mon, m.gia_tien, m.mo_ta_chi_tiet,
-                   (SELECT COUNT(*) FROM chi_tiet_don_hang ct WHERE ct.ma_mon = m.ma_mon) as da_ban,
+                   (SELECT COUNT(*) FROM chi_tiet_don_hang ct JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang WHERE ct.ma_mon = m.ma_mon AND dh.trang_thai = 'delivered') as da_ban,
                    COALESCE((SELECT AVG(so_sao) FROM danh_gia_san_pham dg WHERE dg.ma_mon = m.ma_mon AND dg.trang_thai = 'approved'), 0) as avg_rating,
                    (SELECT COUNT(*) FROM danh_gia_san_pham dg WHERE dg.ma_mon = m.ma_mon AND dg.trang_thai = 'approved') as total_reviews,
                    GROUP_CONCAT(DISTINCT mk.id_thuoc_tinh) as flavor_ids,
                    (
-                       ((SELECT COUNT(*) FROM chi_tiet_don_hang ct WHERE ct.ma_mon = m.ma_mon) * ${wOrder}) +
+                       ((SELECT COUNT(*) FROM chi_tiet_don_hang ct JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang WHERE ct.ma_mon = m.ma_mon AND dh.trang_thai = 'delivered') * ${wOrder}) +
                        ((SELECT COUNT(*) FROM hanh_vi_nguoi_dung h WHERE h.ma_mon = m.ma_mon AND h.hanh_vi = 'click') * ${wClick}) +
                        ((SELECT COUNT(*) FROM hanh_vi_nguoi_dung h WHERE h.ma_mon = m.ma_mon AND h.hanh_vi = 'view') * ${wView}) +
                        ((SELECT COUNT(*) FROM hanh_vi_nguoi_dung h WHERE h.ma_mon = m.ma_mon AND h.hanh_vi = 'like') * ${wLike}) +
@@ -159,6 +159,7 @@ const getTopSelling = async (req, res) => {
             LEFT JOIN mon_an_khau_vi mk ON m.ma_mon = mk.ma_mon
             WHERE m.trang_thai = 1
             GROUP BY m.ma_mon
+            HAVING popularity_score > 0
             ORDER BY popularity_score DESC, m.ma_mon DESC
             LIMIT 100
         `);
@@ -178,55 +179,9 @@ const getTopSelling = async (req, res) => {
             }
         }
 
-        let filteredProducts = topProducts;
-        if (userId) {
-            // Fetch preferred flavors from survey
-            const [surveyPrefs] = await db.query(
-                `SELECT id_thuoc_tinh FROM so_thich_khau_vi_nguoi_dung WHERE ma_nguoi_dung = ?`,
-                [userId]
-            );
-            const preferredIds = surveyPrefs.map(p => p.id_thuoc_tinh);
-
-            // Fetch preferred flavors from ML preference profile (score >= 0.5)
-            const [mlPrefs] = await db.query(
-                `SELECT tag_key FROM user_preference_profile WHERE ma_nguoi_dung = ? AND score >= 0.5`,
-                [userId]
-            );
-            const tagKeyToFlavorId = {
-                'cay': 1, 'chua': 2, 'man': 3, 'ngot': 4,
-                'an_chay': 5, 'thanh_mat': 6, 'thit_bo': 7,
-                'thit_ga': 7, 'hai_san': 8, 'chien': 9, 'tuoi': 10
-            };
-            mlPrefs.forEach(p => {
-                const id = tagKeyToFlavorId[p.tag_key];
-                if (id && !preferredIds.includes(id)) {
-                    preferredIds.push(id);
-                }
-            });
-
-            const isSpicyPreferred = preferredIds.includes(1);
-
-            filteredProducts = topProducts.filter(product => {
-                const productFlavorIds = product.flavor_ids 
-                    ? product.flavor_ids.split(',').map(Number)
-                    : [];
-
-                // 1. Exclude spicy if user does not prefer spicy
-                if (productFlavorIds.includes(1) && !isSpicyPreferred) {
-                    return false;
-                }
-
-                // 2. If user has survey or ML profile preferences, ensure the dish matches at least one (if gán nhãn)
-                if (preferredIds.length > 0 && productFlavorIds.length > 0) {
-                    const hasMatch = productFlavorIds.some(fid => preferredIds.includes(fid));
-                    if (!hasMatch) {
-                        return false;
-                    }
-                }
-
-                return true;
-            });
-        }
+        // "Top Bán Chạy" là số liệu toàn nhà hàng — KHÔNG lọc theo sở thích cá nhân.
+        // Mỗi người dùng đều thấy cùng bảng xếp hạng khách quan dựa trên dữ liệu thực tế.
+        const filteredProducts = topProducts;
 
         res.json({ success: true, data: filteredProducts.slice(0, limit) });
     } catch (error) {

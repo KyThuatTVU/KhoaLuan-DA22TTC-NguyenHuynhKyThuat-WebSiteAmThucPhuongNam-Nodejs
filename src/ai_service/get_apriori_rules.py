@@ -12,7 +12,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '../backend/.env'))
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_USER = os.getenv("DB_USER", "root")
-DB_PASS = os.getenv("DB_PASSWORD", "")
+DB_PASS = os.getenv("DB_PASSWORD", "TVU@842004")
 DB_NAME = os.getenv("DB_NAME", "amthuc_phuongnam")
 
 def get_db_connection():

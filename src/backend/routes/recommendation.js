@@ -5,7 +5,7 @@ const db = require('../config/database');
 const axios = require('axios');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this';
-const PYTHON_API_URL = process.env.PYTHON_ML_URL || 'http://localhost:5000/api/ml/recommend/hybrid';
+const PYTHON_API_URL = process.env.PYTHON_ML_URL || 'http://localhost:5000/api/ml/recommend/collaborative';
 const PYTHON_APRIORI_URL = process.env.PYTHON_APRIORI_URL || 'http://localhost:5000/api/ml/recommend/apriori';
 
 // ==================== ML RECOMMENDATION ENGINE ====================
@@ -94,7 +94,7 @@ const KEYWORD_CATEGORY_MAP = {
     'tôm': 'tom', 'tom': 'tom', 'shrimp': 'tom',
     'cá': 'ca', 'ca': 'ca', 'fish': 'ca',
     'hải sản': 'hai_san', 'seafood': 'hai_san',
-    'cua': 'hai_san', 'mực': 'hai_san',
+    'lẩu cua': 'hai_san', 'canh cua': 'hai_san', 'cua đồng': 'hai_san', 'cua hoàng đế': 'hai_san', 'món cua': 'hai_san', 'mực': 'hai_san',
     
     // Nướng
     'nướng': 'nuong', 'nuong': 'nuong', 'grill': 'nuong', 'bbq': 'bbq',
@@ -204,12 +204,12 @@ async function getUserChatAnalysis(userId) {
  */
 async function findSimilarUsers(userId, limit = 5) {
     try {
-        // Lấy các món user đã mua
+        // Lấy các món user đã mua (giao hàng thành công)
         const [userOrders] = await db.query(
             `SELECT DISTINCT ct.ma_mon 
              FROM chi_tiet_don_hang ct
              JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
-             WHERE dh.ma_nguoi_dung = ?`,
+             WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'`,
             [userId]
         );
         
@@ -217,12 +217,12 @@ async function findSimilarUsers(userId, limit = 5) {
         
         const userDishes = userOrders.map(o => o.ma_mon);
         
-        // Tìm users khác đã mua các món tương tự
+        // Tìm users khác đã mua các món tương tự (giao hàng thành công)
         const [similarUsers] = await db.query(
             `SELECT dh.ma_nguoi_dung, COUNT(DISTINCT ct.ma_mon) as common_dishes
              FROM chi_tiet_don_hang ct
              JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
-             WHERE ct.ma_mon IN (?) AND dh.ma_nguoi_dung != ? AND dh.ma_nguoi_dung IS NOT NULL
+             WHERE ct.ma_mon IN (?) AND dh.ma_nguoi_dung != ? AND dh.ma_nguoi_dung IS NOT NULL AND dh.trang_thai = 'delivered'
              GROUP BY dh.ma_nguoi_dung
              ORDER BY common_dishes DESC
              LIMIT ?`,
@@ -275,7 +275,7 @@ async function getCollaborativeRecommendations(userId, limit = 5, searchKeyword 
                 mlRecommendations = rows.map(r => ({
                     ...r,
                     recommendation_type: 'collaborative',
-                    reason: 'Được nhiều khách hàng có sở thích giống bạn yêu thích'
+                    reason: 'Được nhiều khách hàng có cùng khẩu vị chọn mua'
                 }));
             } 
         } catch (pyErr) {
@@ -326,12 +326,12 @@ async function getSQLCollaborativeRecommendations(userId, limit = 5) {
         
         const similarUserIds = similarUsers.map(u => u.ma_nguoi_dung);
         
-        // 2. Lấy các món user chưa mua nhưng users tương tự đã mua
+        // 2. Lấy các món user chưa mua nhưng users tương tự đã mua (chỉ xét đơn đã giao thành công)
         const [userOrders] = await db.query(
             `SELECT DISTINCT ct.ma_mon 
              FROM chi_tiet_don_hang ct
              JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
-             WHERE dh.ma_nguoi_dung = ?`,
+             WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'`,
             [userId]
         );
         const userDishes = userOrders.map(o => o.ma_mon);
@@ -350,7 +350,7 @@ async function getSQLCollaborativeRecommendations(userId, limit = 5) {
             JOIN mon_an m ON ct.ma_mon = m.ma_mon
             LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
             LEFT JOIN danh_gia_san_pham dg ON m.ma_mon = dg.ma_mon AND dg.trang_thai = 'approved'
-            WHERE dh.ma_nguoi_dung IN (?) AND m.trang_thai = 1
+            WHERE dh.ma_nguoi_dung IN (?) AND m.trang_thai = 1 AND dh.trang_thai = 'delivered'
         `;
         const params = [similarUserIds];
         
@@ -382,7 +382,7 @@ async function getSQLCollaborativeRecommendations(userId, limit = 5) {
         return recommendations.map(r => ({
             ...r,
             recommendation_type: 'collaborative',
-            reason: 'Món ngon bán chạy được các thực khách thân quen lựa chọn'
+            reason: 'Món ăn phổ biến được khách hàng cùng khẩu vị đặt mua'
         }));
     } catch (error) {
         console.error('Error getting collaborative SQL recommendations:', error.message);
@@ -556,7 +556,7 @@ async function getContentBasedRecommendations(userId, limit = 5, preferredFlavor
                      SELECT ct.ma_mon 
                      FROM chi_tiet_don_hang ct
                      JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
-                     WHERE dh.ma_nguoi_dung = ?
+                     WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'
                      
                      UNION ALL
                      
@@ -578,23 +578,23 @@ async function getContentBasedRecommendations(userId, limit = 5, preferredFlavor
             favoriteFlavors = userPreferences.slice(0, 3).map(p => p.id_thuoc_tinh);
         }
         
-        // 4. Lấy giá trung bình người dùng hay mua
+        // 4. Lấy giá trung bình người dùng hay mua (chỉ tính đơn hàng đã giao thành công)
         const [priceStats] = await db.query(
             `SELECT AVG(m.gia_tien) as avg_price
              FROM chi_tiet_don_hang ct
              JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
              JOIN mon_an m ON ct.ma_mon = m.ma_mon
-             WHERE dh.ma_nguoi_dung = ?`,
+             WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'`,
             [userId]
         );
         const avgPrice = priceStats[0]?.avg_price || 150000; // Default 150k
         
-        // 5. Lấy các món user chưa mua
+        // 5. Lấy các món user chưa mua (chỉ tính đơn hàng đã giao thành công)
         const [userOrders] = await db.query(
             `SELECT DISTINCT ct.ma_mon 
              FROM chi_tiet_don_hang ct
              JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
-             WHERE dh.ma_nguoi_dung = ?`,
+             WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'`,
             [userId]
         );
         const userDishes = userOrders.map(o => o.ma_mon);
@@ -935,12 +935,12 @@ async function getChatBasedRecommendations(userId, limit = 5) {
             params.push(pattern);
         }
         
-        // Lấy các món user đã mua để loại trừ
+        // Lấy các món user đã mua để loại trừ (chỉ tính đơn đã giao thành công)
         const [userOrders] = await db.query(
             `SELECT DISTINCT ct.ma_mon 
              FROM chi_tiet_don_hang ct
              JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
-             WHERE dh.ma_nguoi_dung = ?`,
+             WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'`,
             [userId]
         );
         const userDishes = userOrders.map(o => o.ma_mon);
@@ -960,13 +960,20 @@ async function getChatBasedRecommendations(userId, limit = 5) {
         
         const [recommendations] = await db.query(query, params);
         
-        // Thêm lý do gợi ý
-        const topKeyword = chatAnalysis.topKeywords[0]?.keyword || 'sở thích';
-        return recommendations.map(r => ({
-            ...r,
-            recommendation_type: 'chat_based',
-            reason: `💬 Dựa trên cuộc trò chuyện của bạn về "${topKeyword}"`
-        }));
+        // Thêm lý do gợi ý khớp với từng món ăn cụ thể
+        return recommendations.map(r => {
+            const tenMonLower = r.ten_mon.toLowerCase();
+            const matchedKw = chatAnalysis.topKeywords.find(k => {
+                return tenMonLower.includes(k.keyword.toLowerCase());
+            });
+            
+            const keywordToShow = matchedKw ? matchedKw.keyword : (chatAnalysis.topKeywords[0]?.keyword || 'sở thích');
+            return {
+                ...r,
+                recommendation_type: 'chat_based',
+                reason: `💬 Dựa trên cuộc trò chuyện của bạn về "${keywordToShow}"`
+            };
+        });
     } catch (error) {
         console.error('Error getting chat-based recommendations:', error.message);
         return [];
@@ -1248,8 +1255,12 @@ router.get('/', async (req, res) => {
     try {
         const userId = getUserFromToken(req);
         const limit = parseInt(req.query.limit) || 50; // Tăng limit để có đủ món cho trang thực đơn
+        // mode='homepage': chỉ trả content-based + collaborative (trang chủ đã có Top Bán Chạy riêng)
+        // mode='menu' hoặc không truyền: trả đầy đủ 3 phương pháp (kể cả popularity fallback)
+        const mode = req.query.mode || 'menu';
         
         let recommendations = [];
+        let preferredFlavorIds = [];
         
         if (userId) {
             // 1. Lấy sở thích khẩu vị rõ ràng của người dùng (từ khảo sát/cold start)
@@ -1262,13 +1273,24 @@ router.get('/', async (req, res) => {
             // 2. Thống kê hành vi click chuột từ DB (học ngầm sở thích dài hạn - Shopee style)
             let implicitFlavorIds = [];
             try {
+                // Tính điểm hành vi có trọng số: like=5 (học ngay từ 1 lần thích), view=2, click=1
+                // → 1 lần LIKE = học ngay khẩu vị của món đó
+                // → 5 lần CLICK = học được
                 const [implicitPrefs] = await db.query(`
-                    SELECT mk.id_thuoc_tinh, COUNT(h.id) as click_count
+                    SELECT mk.id_thuoc_tinh,
+                           SUM(
+                               CASE h.hanh_vi
+                                   WHEN 'like'  THEN 5
+                                   WHEN 'view'  THEN 2
+                                   WHEN 'click' THEN 1
+                                   ELSE 0
+                               END
+                           ) as weighted_score
                     FROM hanh_vi_nguoi_dung h
                     JOIN mon_an_khau_vi mk ON h.ma_mon = mk.ma_mon
                     WHERE h.ma_nguoi_dung = ? AND h.hanh_vi IN ('click', 'view', 'like')
                     GROUP BY mk.id_thuoc_tinh
-                    HAVING click_count >= 5
+                    HAVING weighted_score >= 5
                 `, [userId]);
                 implicitFlavorIds = implicitPrefs.map(p => p.id_thuoc_tinh);
             } catch (dbErr) {
@@ -1276,7 +1298,7 @@ router.get('/', async (req, res) => {
             }
 
             // Gộp cả 2 nguồn sở thích (Khao sát + Học ngầm từ click DB)
-            const preferredFlavorIds = [...new Set([...explicitFlavorIds, ...implicitFlavorIds])];
+            preferredFlavorIds = [...new Set([...explicitFlavorIds, ...implicitFlavorIds])];
             console.log(`🎯 [ML Preference Profile] User ${userId}: Explicit=[${explicitFlavorIds.join(',')}], Implicit Clicks=[${implicitFlavorIds.join(',')}]`);
 
             // User đã đăng nhập - sử dụng ML recommendations
@@ -1378,28 +1400,77 @@ router.get('/', async (req, res) => {
                 const filteredContent = contentBased.filter(r => matchingDishIds.has(r.ma_mon));
                 const filteredChat = chatBased.filter(r => matchingDishIds.has(r.ma_mon));
                 
-                // CẢI TIẾN: Nếu sau khi lọc không còn đủ món, bổ sung thêm các món khác với score thấp hơn
                 const filteredCount = filteredContent.length + filteredChat.length + collaborative.length;
                 console.log(`🎯 [Filter Debug] User ${userId}: filteredContent=${filteredContent.length}, filteredChat=${filteredChat.length}, collaborative=${collaborative.length}, total=${filteredCount}`);
                 
-                if (filteredCount < 15) {  // Giảm từ 20 → 15 để vừa đủ
-                    console.log(`⚠️ [Recommendation] Chỉ có ${filteredCount} món sau khi lọc khẩu vị. Bổ sung thêm các món khác...`);
-                    // Bổ sung các món không match khẩu vị nhưng có score cao (giảm score xuống 75% thay vì 60%)
-                    const nonMatchedContent = contentBased
-                        .filter(r => !matchingDishIds.has(r.ma_mon))
-                        .map(r => ({ ...r, score: (r.score || 0) * 0.75, reason: r.reason + ' (Gợi ý đa dạng)' }));
-                    const nonMatchedChat = chatBased
-                        .filter(r => !matchingDishIds.has(r.ma_mon))
-                        .map(r => ({ ...r, score: (r.score || 0) * 0.75, reason: r.reason + ' (Gợi ý đa dạng)' }));
-                    
-                    recommendations = [
-                        ...directBoostedDishes, 
-                        ...filteredContent, 
-                        ...filteredChat, 
-                        ...collaborative,
-                        ...nonMatchedContent.slice(0, 8),  // Giảm từ 10 → 8 món
-                        ...nonMatchedChat.slice(0, 8)
-                    ];
+                if (filteredCount < 15) {
+                    if (mode === 'homepage') {
+                        // Trang chủ: KHÔNG bổ sung popularity — đã có mục "Top Bán Chạy" riêng bên dưới
+                        console.log(`ℹ️ [Recommendation] mode=homepage → chỉ trả content-based + collaborative, bỏ qua popularity fallback`);
+                        recommendations = [
+                            ...directBoostedDishes,
+                            ...filteredContent,
+                            ...filteredChat,
+                            ...collaborative
+                        ];
+                    } else {
+                        // Trang menu: bổ sung popularity-based để đủ số lượng hiển thị
+                        console.log(`⚠️ [Recommendation] Chỉ có ${filteredCount} món sau khi lọc khẩu vị. Bổ sung bằng Popularity-based (mode=menu)...`);
+                        const existingIds = new Set([
+                            ...directBoostedDishes.map(r => r.ma_mon),
+                            ...filteredContent.map(r => r.ma_mon),
+                            ...filteredChat.map(r => r.ma_mon),
+                            ...collaborative.map(r => r.ma_mon)
+                        ]);
+                        const [userPurchased] = await db.query(
+                            `SELECT DISTINCT ct.ma_mon FROM chi_tiet_don_hang ct
+                             JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
+                             WHERE dh.ma_nguoi_dung = ? AND dh.trang_thai = 'delivered'`,
+                            [userId]
+                        );
+                        const purchasedIds = new Set(userPurchased.map(r => r.ma_mon));
+                        const [allDishes] = await db.query(
+                            `SELECT m.ma_mon, m.ten_mon, m.anh_mon, m.gia_tien, m.trang_thai,
+                                    d.ten_danh_muc,
+                                    (SELECT COUNT(*) FROM chi_tiet_don_hang ct 
+                                     JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
+                                     WHERE ct.ma_mon = m.ma_mon AND dh.trang_thai = 'delivered') as order_count,
+                                    (SELECT COUNT(*) FROM hanh_vi_nguoi_dung h WHERE h.ma_mon = m.ma_mon AND h.hanh_vi = 'click') as click_count,
+                                    (SELECT COUNT(*) FROM hanh_vi_nguoi_dung h WHERE h.ma_mon = m.ma_mon AND h.hanh_vi = 'view') as view_count,
+                                    (SELECT COUNT(*) FROM hanh_vi_nguoi_dung h WHERE h.ma_mon = m.ma_mon AND h.hanh_vi = 'like') as like_count,
+                                    (SELECT AVG(so_sao) FROM danh_gia_san_pham dg WHERE dg.ma_mon = m.ma_mon AND dg.trang_thai = 'approved') as avg_rating
+                             FROM mon_an m
+                             LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                             WHERE m.trang_thai = 1`
+                        );
+                        const wts = getPopularityWeights();
+                        const popularDishes = allDishes
+                            .filter(d => !existingIds.has(d.ma_mon) && !purchasedIds.has(d.ma_mon))
+                            .map(d => ({
+                                ...d,
+                                popularity_score: (parseInt(d.order_count || 0) * (wts.orders || 30))
+                                    + (parseInt(d.click_count || 0) * (wts.clicks || 20))
+                                    + (parseInt(d.view_count || 0) * (wts.views || 15))
+                                    + (parseInt(d.like_count || 0) * (wts.likes || 15))
+                                    + (parseFloat(d.avg_rating || 0) * 20 * ((wts.rating || 20) / 100))
+                            }))
+                            .filter(d => d.popularity_score > 0)
+                            .sort((a, b) => b.popularity_score - a.popularity_score)
+                            .slice(0, 15 - filteredCount)
+                            .map(d => ({
+                                ...d,
+                                score: d.popularity_score * 0.5,
+                                recommendation_type: 'popular',
+                                reason: `🔥 Được nhiều người yêu thích (${d.order_count} đơn)`
+                            }));
+                        recommendations = [
+                            ...directBoostedDishes,
+                            ...filteredContent,
+                            ...filteredChat,
+                            ...collaborative,
+                            ...popularDishes
+                        ];
+                    }
                 } else {
                     recommendations = [...directBoostedDishes, ...filteredContent, ...filteredChat, ...collaborative];
                 }
@@ -1437,7 +1508,7 @@ router.get('/', async (req, res) => {
                     }));
                 }
                 
-                // Nếu chưa đủ, lấy thêm món mới chung
+                // Nếu chưa đủ, lấy thêm món mới chung nhưng PHẢI khớp khẩu vị người dùng (nếu đã đăng nhập)
                 if (newDishes.length < 5) {
                     const excludedIds = newDishes.map(r => r.ma_mon);
                     const remainingNewLimit = 5 - newDishes.length;
@@ -1447,13 +1518,20 @@ router.get('/', async (req, res) => {
                             m.ma_mon, m.ten_mon, m.anh_mon, m.gia_tien, m.ngay_tao,
                             d.ten_danh_muc,
                             DATEDIFF(NOW(), m.ngay_tao) as days_old,
-                            COALESCE((SELECT AVG(so_sao) FROM danh_gia_san_pham dg WHERE dg.ma_mon = m.ma_mon AND dg.trang_thai = 'approved'), 0) as avg_rating
+                            COALESCE((SELECT AVG(so_sao) FROM danh_gia_san_pham dg WHERE dg.ma_mon = m.ma_mon AND dg.trang_thai = 'approved'), 0) as avg_rating,
+                            GROUP_CONCAT(DISTINCT kv.ten_thuoc_tinh SEPARATOR ', ') as matched_flavors
                         FROM mon_an m
                         LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                        JOIN mon_an_khau_vi makv ON m.ma_mon = makv.ma_mon
+                        JOIN thuoc_tinh_khau_vi kv ON makv.id_thuoc_tinh = kv.id
                         WHERE m.trang_thai = 1
                         AND DATEDIFF(NOW(), m.ngay_tao) <= 30
                     `;
                     const params = [];
+                    if (preferredFlavorIds.length > 0) {
+                        query += ` AND kv.id IN (?)`;
+                        params.push(preferredFlavorIds);
+                    }
                     if (excludedIds.length > 0) {
                         query += ` AND m.ma_mon NOT IN (?)`;
                         params.push(excludedIds);
@@ -1465,9 +1543,9 @@ router.get('/', async (req, res) => {
                     generalNewDishes.forEach(dish => {
                         newDishes.push({
                             ...dish,
-                            score: 89, // Món mới chung (hạ từ 97 xuống 89)
-                            recommendation_type: 'trending',
-                            reason: `🆕 Món mới ra mắt (${dish.days_old} ngày trước)`
+                            score: 89, 
+                            recommendation_type: 'content_based',
+                            reason: `🆕 Món mới ra mắt, hợp khẩu vị của bạn (${dish.matched_flavors || 'Khẩu vị yêu thích'})`
                         });
                     });
                 }
@@ -1536,7 +1614,7 @@ router.get('/', async (req, res) => {
                         JOIN mon_an_khau_vi mk ON m.ma_mon = mk.ma_mon
                         LEFT JOIN thuoc_tinh_khau_vi f ON mk.id_thuoc_tinh = f.id
                         LEFT JOIN chi_tiet_don_hang ct ON m.ma_mon = ct.ma_mon
-                        LEFT JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang AND dh.thoi_gian_tao >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                        LEFT JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang AND dh.thoi_gian_tao >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND dh.trang_thai = 'delivered'
                         LEFT JOIN danh_gia_san_pham dg ON m.ma_mon = dg.ma_mon AND dg.trang_thai = 'approved'
                         WHERE m.trang_thai = 1 AND mk.id_thuoc_tinh IN (?) ${excludedIds.length > 0 ? 'AND m.ma_mon NOT IN (?)' : ''}
                         GROUP BY m.ma_mon
@@ -1551,25 +1629,41 @@ router.get('/', async (req, res) => {
                     }));
                 }
                 
-                // Nếu vẫn thiếu, lấy trending chung
+                // Nếu vẫn thiếu, lấy thêm trending nhưng PHẢI khớp khẩu vị người dùng
                 if (trending.length < trendingLimit) {
                     const finalTrendingLimit = trendingLimit - trending.length;
                     const finalExcludedIds = [...excludedIds, ...trending.map(t => t.ma_mon)];
-                    const query = `
-                        SELECT m.*, d.ten_danh_muc, COUNT(ct.ma_ct_don) as order_count, AVG(dg.so_sao) as avg_rating
+                    let query = `
+                        SELECT m.*, d.ten_danh_muc, COUNT(ct.ma_ct_don) as order_count, AVG(dg.so_sao) as avg_rating,
+                               GROUP_CONCAT(DISTINCT f.ten_thuoc_tinh SEPARATOR ', ') as flavor_names
                         FROM mon_an m
                         LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                        JOIN mon_an_khau_vi mk ON m.ma_mon = mk.ma_mon
+                        LEFT JOIN thuoc_tinh_khau_vi f ON mk.id_thuoc_tinh = f.id
                         LEFT JOIN chi_tiet_don_hang ct ON m.ma_mon = ct.ma_mon
-                        LEFT JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang AND dh.thoi_gian_tao >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                        LEFT JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang AND dh.thoi_gian_tao >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND dh.trang_thai = 'delivered'
                         LEFT JOIN danh_gia_san_pham dg ON m.ma_mon = dg.ma_mon AND dg.trang_thai = 'approved'
-                        WHERE m.trang_thai = 1 ${finalExcludedIds.length > 0 ? 'AND m.ma_mon NOT IN (?)' : ''}
-                        GROUP BY m.ma_mon
-                        ORDER BY order_count DESC, avg_rating DESC, m.ma_mon DESC
-                        LIMIT ?
+                        WHERE m.trang_thai = 1
                     `;
-                    const params = finalExcludedIds.length > 0 ? [finalExcludedIds, finalTrendingLimit] : [finalTrendingLimit];
+                    const params = [];
+                    if (preferredFlavorIds.length > 0) {
+                        query += ` AND mk.id_thuoc_tinh IN (?)`;
+                        params.push(preferredFlavorIds);
+                    }
+                    if (finalExcludedIds.length > 0) {
+                        query += ` AND m.ma_mon NOT IN (?)`;
+                        params.push(finalExcludedIds);
+                    }
+                    query += ` GROUP BY m.ma_mon ORDER BY order_count DESC, avg_rating DESC, m.ma_mon DESC LIMIT ?`;
+                    params.push(finalTrendingLimit);
+
                     const [res] = await db.query(query, params);
-                    trending.push(...res);
+                    const matchedTrending = res.map(t => ({
+                        ...t,
+                        recommendation_type: 'content_based',
+                        reason: `Phù hợp với khẩu vị của bạn (${t.flavor_names || 'Khẩu vị yêu thích'})`
+                    }));
+                    trending.push(...matchedTrending);
                 }
 
                 trending.forEach((item, index) => {
@@ -1720,15 +1814,69 @@ router.get('/', async (req, res) => {
             missing -= takeRemaining;
         }
 
-        // 3. Bù tiếp bằng Trending (nếu vẫn thiếu)
+        // 3. Nếu vẫn thiếu (đặc biệt khi user đã mua nhiều), lấy thêm món khớp khẩu vị của user từ DB
+        if (missing > 0 && userId && preferredFlavorIds.length > 0) {
+            try {
+                const excludedIds = finalRecommendations.map(r => r.ma_mon);
+                // Lấy danh sách món đã mua để loại trừ tiếp
+                const [userOrders] = await db.query(
+                    `SELECT DISTINCT ct.ma_mon 
+                     FROM chi_tiet_don_hang ct
+                     JOIN don_hang dh ON ct.ma_don_hang = dh.ma_don_hang
+                     WHERE dh.ma_nguoi_dung = ?`,
+                    [userId]
+                );
+                const purchasedIds = userOrders.map(o => o.ma_mon);
+                const finalExcluded = [...new Set([...excludedIds, ...purchasedIds])];
+
+                const query = `
+                    SELECT m.*, d.ten_danh_muc, COALESCE(AVG(dg.so_sao), 0) as avg_rating,
+                           GROUP_CONCAT(DISTINCT f.ten_thuoc_tinh SEPARATOR ', ') as flavor_names
+                    FROM mon_an m
+                    LEFT JOIN danh_muc d ON m.ma_danh_muc = d.ma_danh_muc
+                    JOIN mon_an_khau_vi mk ON m.ma_mon = mk.ma_mon
+                    LEFT JOIN thuoc_tinh_khau_vi f ON mk.id_thuoc_tinh = f.id
+                    LEFT JOIN danh_gia_san_pham dg ON m.ma_mon = dg.ma_mon AND dg.trang_thai = 'approved'
+                    WHERE m.trang_thai = 1 
+                      AND mk.id_thuoc_tinh IN (?)
+                      ${finalExcluded.length > 0 ? 'AND m.ma_mon NOT IN (?)' : ''}
+                    GROUP BY m.ma_mon
+                    ORDER BY avg_rating DESC, m.ma_mon DESC
+                    LIMIT ?
+                `;
+                const params = finalExcluded.length > 0 
+                    ? [preferredFlavorIds, finalExcluded, missing] 
+                    : [preferredFlavorIds, missing];
+
+                const [extraFlavorDishes] = await db.query(query, params);
+                if (extraFlavorDishes.length > 0) {
+                    extraFlavorDishes.forEach((item, index) => {
+                        item.score = 70 - index;
+                        item.recommendation_type = 'content_based';
+                        item.reason = `Hợp khẩu vị của bạn (${item.flavor_names || 'Khẩu vị yêu thích'})`;
+                        finalRecommendations.push(item);
+                    });
+                    missing -= extraFlavorDishes.length;
+                }
+            } catch (dbErr) {
+                console.error('Error filling missing quota with database query:', dbErr.message);
+            }
+        }
+
+        // 4. Bù tiếp bằng Trending (nếu vẫn thiếu và không lọc trùng được)
         if (missing > 0) {
             let allowedTrending = groups.trending;
-            // Nếu khách đã đăng nhập, KHÔNG dùng Trending chung chung để bù (để tránh trùng lặp với phần Top Bán Chạy ở UI)
             if (userId) {
-                allowedTrending = groups.trending.filter(t => t.reason && !t.reason.includes('Đang được nhiều người đặt'));
+                // Nếu đã đăng nhập, chỉ cho phép bù bằng những món khớp khẩu vị (đã được dán nhãn content_based hoặc khớp preferred flavor)
+                allowedTrending = groups.trending.filter(t => {
+                    const isContentBased = t.recommendation_type === 'content_based';
+                    const hasReasonFlavor = t.reason && t.reason.includes('khẩu vị');
+                    return isContentBased || hasReasonFlavor;
+                });
             }
             const takeTrending = Math.min(missing, allowedTrending.length);
             finalRecommendations.push(...allowedTrending.slice(0, takeTrending));
+            missing -= takeTrending;
         }
 
         // 4. Trộn ngẫu nhiên (Shuffle) kết quả để hiển thị đa dạng, không bị cứng nhắc theo điểm
@@ -2348,7 +2496,7 @@ router.get('/admin/stats', async (req, res) => {
                       AND dh.ten_khach_vang_lai IS NOT NULL
                       AND dh.ten_khach_vang_lai <> ''
                       AND LOWER(TRIM(nd_name.ten_nguoi_dung)) = LOWER(TRIM(dh.ten_khach_vang_lai))
-                WHERE dh.trang_thai <> 'cancelled'
+                WHERE dh.trang_thai = 'delivered'
                   AND COALESCE(dh.ma_nguoi_dung, nd_phone.ma_nguoi_dung, nd_name.ma_nguoi_dung) IS NOT NULL
                 GROUP BY COALESCE(dh.ma_nguoi_dung, nd_phone.ma_nguoi_dung, nd_name.ma_nguoi_dung), m.ma_mon, m.ten_mon
                 ORDER BY latest_purchase DESC
@@ -2834,8 +2982,23 @@ router.get('/admin/algorithm-metrics', async (req, res) => {
                 const [explicitPrefs] = await db.query('SELECT id_thuoc_tinh FROM so_thich_khau_vi_nguoi_dung WHERE ma_nguoi_dung = ?', [user.ma_nguoi_dung]);
                 const explicitFlavorIds = explicitPrefs.map(p => p.id_thuoc_tinh);
                 
-                const [implicitPrefs] = await db.query('SELECT mk.id_thuoc_tinh FROM hanh_vi_nguoi_dung h JOIN mon_an_khau_vi mk ON h.ma_mon = mk.ma_mon WHERE h.ma_nguoi_dung = ? AND h.hanh_vi IN ("click", "view", "like") GROUP BY mk.id_thuoc_tinh HAVING COUNT(h.id) >= 5', [user.ma_nguoi_dung]);
-                const implicitFlavorIds = implicitPrefs.map(p => p.id_thuoc_tinh);
+                 const [implicitPrefs] = await db.query(`
+                     SELECT mk.id_thuoc_tinh,
+                            SUM(
+                                CASE h.hanh_vi
+                                    WHEN 'like'  THEN 5
+                                    WHEN 'view'  THEN 2
+                                    WHEN 'click' THEN 1
+                                    ELSE 0
+                                END
+                            ) as weighted_score
+                     FROM hanh_vi_nguoi_dung h
+                     JOIN mon_an_khau_vi mk ON h.ma_mon = mk.ma_mon
+                     WHERE h.ma_nguoi_dung = ? AND h.hanh_vi IN ('click', 'view', 'like')
+                     GROUP BY mk.id_thuoc_tinh
+                     HAVING weighted_score >= 5
+                 `, [user.ma_nguoi_dung]);
+                 const implicitFlavorIds = implicitPrefs.map(p => p.id_thuoc_tinh);
                 
                 const preferredFlavorIds = [...new Set([...explicitFlavorIds, ...implicitFlavorIds])];
                 

@@ -39,10 +39,10 @@ function analyzeUserIntent(message) {
     const monAnKeywords = [
         'mon', 'an', 'do an', 'thuc an', 'com', 'pho', 'bun', 'mi', 'canh', 'lau',
         'nuong', 'chien', 'xao', 'hap', 'kho', 'goi', 'nem', 'cha', 'banh',
-        'ga', 'bo', 'heo', 'ca', 'tom', 'muc', 'cua', 'oc', 'vit',
+        'ga', 'bo', 'heo', 'ca', 'tom', 'muc', 'oc', 'vit',
         'rau', 'salad', 'sup', 'chao', 'hu tieu', 'banh mi', 'che',
         'tra', 'nuoc', 'sinh to', 'cafe', 'kem', 'trang mieng',
-        'hai san', 'thit', 'dau hu', 'trung', 'nam'
+        'hai san', 'thit', 'dau hu', 'trung'
     ];
 
     const danhMucKeywords = {
@@ -50,7 +50,7 @@ function analyzeUserIntent(message) {
         'mon chinh': ['mon chinh', 'main', 'chinh'],
         'lau': ['lau', 'hotpot', 'nau lau'],
         'nuong': ['nuong', 'bbq', 'do nuong'],
-        'hai san': ['hai san', 'seafood', 'tom', 'cua', 'muc', 'ca'],
+        'hai san': ['hai san', 'seafood', 'tom', 'muc', 'ca'],
         'com': ['com', 'rice', 'com trang', 'com chien'],
         'trang mieng': ['trang mieng', 'dessert', 'che', 'kem', 'banh ngot'],
         'do uong': ['do uong', 'nuoc uong', 'tra', 'cafe', 'sinh to', 'nuoc ep', 'bia', 'ruou'],

@@ -1036,7 +1036,7 @@ font-bold text-gray-800 mb-4 sm:mb-6 text-center">
                     console.error(e);
                 }
 
-                const response = await fetch('http://localhost:3000/api/recommendations?limit=8&t=' + Date.now() + boostParam, { headers });
+                const response = await fetch('http://localhost:3000/api/recommendations?limit=8&mode=homepage&t=' + Date.now() + boostParam, { headers });
                 const result = await response.json();
                 
                 if (result.success && result.data && result.data.length > 0) {

@@ -1,7 +1,7 @@
 const db = require('../config/database');
 
 const TAG_DEFINITIONS = [
-    { key: 'hai_san', label: 'Hải sản', group: 'Nguyên liệu', affectsRecommendation: true, synonyms: ['hai san', 'tom', 'muc', 'cua', 'ngheu', 'so', 'oc', 'ca kho', 'ca chien', 'ca loc'] },
+    { key: 'hai_san', label: 'Hải sản', group: 'Nguyên liệu', affectsRecommendation: true, synonyms: ['hai san', 'tom', 'muc', 'lau cua', 'canh cua', 'cua dong', 'cua hoang de', 'mon cua', 'ngheu', 'so', 'oc', 'ca kho', 'ca chien', 'ca loc', 'ca'] },
     { key: 'thit_bo', label: 'Thịt bò', group: 'Nguyên liệu', affectsRecommendation: true, synonyms: ['bo', 'thit bo', 'beef'] },
     { key: 'thit_ga', label: 'Thịt gà', group: 'Nguyên liệu', affectsRecommendation: true, synonyms: ['ga', 'thit ga', 'chicken'] },
     { key: 'rau_nam', label: 'Rau nấm', group: 'Nguyên liệu', affectsRecommendation: true, synonyms: ['rau', 'nam', 'nam tuoi', 'rau xanh'] },
@@ -33,7 +33,7 @@ const POSITIVE_TERMS = [
 ];
 
 const NEGATIVE_TERMS = [
-    'khong ngon', 'do', 'te', 'chan', 'that vong', 'kho an', 'nhat',
+    'khong thich', 'khong an', 'khong uong', 'khong ngon', 'do', 'te', 'chan', 'that vong', 'kho an', 'nhat',
     'qua man', 'man qua', 'qua ngot', 'ngot qua', 'qua cay', 'cay qua',
     'dau mo', 'ngay', 'tanh', 'hoi', 'nguoi', 'kho', 'dat', 'mac', 'cham',
     'khong hai long'
@@ -69,14 +69,76 @@ function findMatches(text, tag) {
 }
 
 function inferSentimentAroundTag(text, matches) {
-    const hasPositive = POSITIVE_TERMS.some(term => containsPhrase(text, normalizeText(term)));
-    const hasNegative = NEGATIVE_TERMS.some(term => containsPhrase(text, normalizeText(term)));
-    const negatedTag = matches.some(match =>
-        NEGATION_TERMS.some(negation => containsPhrase(text, `${negation} ${match}`))
-    );
+    if (!matches || matches.length === 0) return 'neutral';
 
-    if (hasNegative || negatedTag) return 'negative';
-    if (hasPositive) return 'positive';
+    const words = text.split(/\s+/);
+    let isNegative = false;
+    let isPositive = false;
+
+    for (const match of matches) {
+        const normMatch = normalizeText(match);
+        const matchWords = normMatch.split(/\s+/);
+
+        // Tìm vị trí của từ khớp (match) trong mảng từ (words)
+        let wordIndex = -1;
+        for (let i = 0; i <= words.length - matchWords.length; i++) {
+            let found = true;
+            for (let j = 0; j < matchWords.length; j++) {
+                if (words[i + j] !== matchWords[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                wordIndex = i;
+                break;
+            }
+        }
+
+        if (wordIndex === -1) continue;
+
+        // Trích xuất ngữ cảnh cục bộ (5 từ trước và 4 từ sau từ khớp)
+        const localWords = words.slice(
+            Math.max(0, wordIndex - 5),
+            Math.min(words.length, wordIndex + matchWords.length + 4)
+        );
+        const localContext = localWords.join(' ');
+
+        // 1. Kiểm tra từ tiêu cực cục bộ
+        const hasLocalNegative = NEGATIVE_TERMS.some(term => {
+            const normTerm = normalizeText(term);
+            return containsPhrase(localContext, normTerm);
+        });
+
+        // 2. Kiểm tra từ phủ định trực tiếp cục bộ đứng trước (regex)
+        const hasLocalNegation = NEGATION_TERMS.some(negation => {
+            const normNegation = normalizeText(negation);
+            const pattern = new RegExp(`(^|\\s)${normNegation}(\\s+\\w+){0,3}\\s+${normMatch}(\\s|$)`);
+            const matched = pattern.test(localContext);
+            if (matched) {
+                console.log(`🎯 [Sentiment Debug] Detected negation locally: "${normNegation} ... ${normMatch}" in context "${localContext}"`);
+            }
+            return matched;
+        });
+
+        if (hasLocalNegative || hasLocalNegation) {
+            isNegative = true;
+            break; // Ưu tiên hàng đầu cho tiêu cực cục bộ
+        }
+
+        // 3. Kiểm tra từ tích cực cục bộ
+        const hasLocalPositive = POSITIVE_TERMS.some(term => {
+            const normTerm = normalizeText(term);
+            return containsPhrase(localContext, normTerm);
+        });
+
+        if (hasLocalPositive) {
+            isPositive = true;
+        }
+    }
+
+    if (isNegative) return 'negative';
+    if (isPositive) return 'positive';
     return 'neutral';
 }
 
@@ -511,11 +573,12 @@ async function processChatbotMessagePreference(userId, text, rebuildProfileAfter
 
         // 1. Lấy tất cả món ăn đang hoạt động để so khớp
         const [dishes] = await db.query(`
-            SELECT m.ma_mon, m.ten_mon, GROUP_CONCAT(DISTINCT mk.id_thuoc_tinh) as flavor_ids
+            SELECT m.ma_mon, m.ten_mon, m.mo_ta_chi_tiet, m.tu_khoa,
+                   GROUP_CONCAT(DISTINCT mk.id_thuoc_tinh) as flavor_ids
             FROM mon_an m
             JOIN mon_an_khau_vi mk ON m.ma_mon = mk.ma_mon
             WHERE m.trang_thai = 1
-            GROUP BY m.ma_mon, m.ten_mon
+            GROUP BY m.ma_mon, m.ten_mon, m.mo_ta_chi_tiet, m.tu_khoa
         `);
 
         let insertedCount = 0;
@@ -529,10 +592,28 @@ async function processChatbotMessagePreference(userId, text, rebuildProfileAfter
                 const scoreDelta = isPositive ? 1.5 : -1.5;
                 const confidence = 0.8;
 
+                const dishText = normalizeText([
+                    dish.ten_mon,
+                    dish.tu_khoa,
+                    dish.mo_ta_chi_tiet
+                ].filter(Boolean).join(' '));
+
                 const flavorIds = dish.flavor_ids ? dish.flavor_ids.split(',').map(Number) : [];
                 for (const fId of flavorIds) {
                     const tagKeys = FLAVOR_TO_TAG_KEY[fId] || [];
                     for (const tagKey of tagKeys) {
+                        // Xác thực xem món ăn có thực sự chứa nguyên liệu này không để tránh gán nhãn sai (chỉ áp dụng cho các tag bị trùng lặp như thit_bo và thit_ga)
+                        if (tagKey === 'thit_bo' || tagKey === 'thit_ga') {
+                            const tagDef = TAG_MAP.get(tagKey);
+                            if (tagDef) {
+                                const dishMatches = findMatches(dishText, tagDef);
+                                if (dishMatches.length === 0) {
+                                    // Món ăn không thực sự chứa nguyên liệu này, bỏ qua tagKey này
+                                    continue;
+                                }
+                            }
+                        }
+
                         await db.query(`
                             INSERT INTO chatbot_preference_insights
                                 (ma_nguoi_dung, ma_mon, ten_mon, tag_key, sentiment, score_delta, confidence, evidence)

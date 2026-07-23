@@ -273,7 +273,7 @@ function renderMenuProducts() {
                 // Badge cho lọc cộng tác - màu xanh dương
                 preferredBadgeHTML = `
                     <span class="category-badge text-blue-600 border-blue-200 bg-blue-50 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-                        <i class="fas fa-users mr-1"></i>Khách tương tự thích
+                        <i class="fas fa-users mr-1"></i>Khách cùng khẩu vị đã mua
                     </span>
                 `;
             } else {
